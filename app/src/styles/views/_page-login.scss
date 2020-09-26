@@ -1,0 +1,98 @@
+$color-error: $color-red;
+
+.auth {
+    height: 100%;
+
+    h1 {
+        font-size: 2rem; // 32px
+        margin-bottom: 1.75rem;
+    }
+
+    #root {
+        height: 100%;
+    }
+
+    .container {
+        height: calc(100% - 50px);
+        width: 80%;
+        max-width: 80% !important; // override some definitions
+        margin: 0 auto;
+        padding: 0;
+        display: flex;
+    }
+
+    .bg-origin {
+        flex-basis: 50%;
+        background-image: url(images/logo.png);
+        background-position: right 30%;
+        background-repeat: no-repeat;
+        background-size: contain;
+        @include media-breakpoint-down(xs) {
+            display: none;
+        }
+    }
+
+    .bp3-navbar-heading {
+        font-size: 18px;
+    }
+
+    .login-form {
+        width: 30rem;
+        @include media-breakpoint-down(xs) {
+            width: 100%;
+        }
+
+        margin: auto 0;
+        padding-bottom: 25vh;
+
+        .alert-danger {
+            background: white;
+            border-color: $color-error;
+            color: $color-error;
+        }
+    }
+
+    .form-group {
+        margin-left: 0;
+        margin-right: 0;
+
+        label {
+            font-size: 1rem;
+            font-family: "Proxima Nova Lt", "Arial", sans-serif;
+        }
+
+        .text-danger {
+            color: $color-error !important;
+        }
+    }
+
+    input.form-control {
+        border: 0;
+        height: auto;
+        padding: 0;
+        font-size: 1.5rem; // 24px
+        font-family: "Gilroy", "Arial", sans-serif;
+
+        &::placeholder {
+            opacity: 0.4;
+            color: black;
+        }
+
+        &.is-invalid {
+            color: $color-error;
+        }
+    }
+
+    .btn,
+    div a {
+        width: 100%;
+        text-align: center;
+        font-size: 1rem;
+        font-family: "Gilroy", "Arial", sans-serif;
+
+        &:hover {
+            text-decoration: none;
+            opacity: 0.7;
+        }
+    }
+}

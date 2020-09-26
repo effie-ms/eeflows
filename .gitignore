@@ -1,0 +1,34 @@
+# Ignore everything in .idea
+.idea
+
+*.mo
+*.pyo
+*.pyc
+.sass-cache/
+yarn-error.log
+node_modules/
+venv/
+.cache/
+
+.data/
+
+eeflows/django.env
+eeflows/settings/local.py
+eeflows/settings/local_test.py
+eeflows/db.sqlite3
+eeflows/assets/
+
+eeflows/.cache
+eeflows/.pytest_cache
+eeflows/.coverage
+eeflows/coverage
+eeflows/cover/
+
+# Node Project files
+app/build/
+app/coverage/
+
+# Missing translations file
+**/locales/**/*.missing.json
+
+eeflows/docs/_build

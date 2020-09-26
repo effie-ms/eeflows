@@ -1,0 +1,21 @@
+@import "global-variables";
+@import "~@blueprintjs/core/lib/scss/variables";
+
+$icon-font-path: '~@blueprintjs/icons/resources/icons';
+
+$pt-font-family: 'Inter UI', sans-serif;
+$pt-intent-primary: $gray-800;
+$navbar-height: 3.5rem;
+
+$pt-text-color-disabled: rgba(92, 112, 128, 0.7);
+
+$eeflows-gray: $gray-800;
+$eeflows-gray-light: $gray-600;
+$eeflows-gray-lighter: $gray-400;
+
+$button-intents: (
+    "primary": ($pt-intent-primary, $eeflows-gray-light, $eeflows-gray-lighter),
+    "success": ($pt-intent-success, $green2, $green1),
+    "warning": ($pt-intent-warning, $orange2, $orange1),
+    "danger": ($pt-intent-danger, $red2, $red1)
+);

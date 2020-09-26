@@ -1,0 +1,16 @@
+$circle-size: 1.5rem;
+
+.circle {
+    display: block;
+    height: $circle-size;
+    width: $circle-size;
+    line-height: $circle-size;
+
+    border-radius: $circle-size;
+
+    background-color: black;
+    color: white;
+    text-align: center;
+    vertical-align: middle;
+    font-size: $font-size-sm;
+}

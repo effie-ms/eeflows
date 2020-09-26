@@ -1,0 +1,16 @@
+.idea
+
+app/node_modules/
+venv/
+
+.data/
+
+**/__pycache__
+*.pyo
+*.pyc
+
+eeflows/.cache
+eeflows/.pytest_cache
+eeflows/.coverage
+eeflows/coverage
+eeflows/cover/

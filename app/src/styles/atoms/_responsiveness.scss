@@ -1,0 +1,31 @@
+.col--mobile-no-padding {
+    @include media-breakpoint-down(sm) {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+
+.message-panel-wrapper {
+    .message-panel {
+        @include media-breakpoint-down(md) {
+            max-width: 100%;
+        }
+    }
+}
+
+// Responsive container that lets children wrap with vertical margins
+.responsive-container {
+    --container-vertical-spacing: 0.25rem;
+
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    // Apply negative top and bottom margins to counteract vertical spacing
+    margin-top: calc(-1 * var(--container-vertical-spacing));
+    margin-bottom: calc(-1 * var(--container-vertical-spacing));
+
+    > * {
+        margin: var(--container-vertical-spacing) 0;
+    }
+}

@@ -1,0 +1,9 @@
+from settings.test import *
+
+
+DATABASES['default']['HOST'] = 'postgres'
+DATABASES['default']['USER'] = 'eeflows'
+DATABASES['default']['PASSWORD'] = 'eeflows'
+
+CACHES['default']['LOCATION'] = "redis://redis:6379/1"
+

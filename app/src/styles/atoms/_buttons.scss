@@ -1,0 +1,154 @@
+button {
+    &.btn-secondary {
+        font-size: 1em;
+        padding: 1% 0;
+    }
+
+    &.btn-black {
+        background-color: black;
+        color: white;
+    }
+
+    &.btn-white {
+        background-color: white;
+        color: black;
+
+        &.disabled {
+            color: #999999;
+        }
+    }
+
+    &.btn {
+        border-radius: 1.5rem;
+    }
+}
+
+.btn:hover {
+    // The default bootstrap hover color for buttons is too dark for the btn-black buttons
+    color: #999999;
+}
+
+/*
+Custom checkbox styles
+
+source: https://codepen.io/spacemonkey/pen/vmZROv
+*/
+[type="checkbox"] {
+    position: absolute; // take it out of document flow
+    opacity: 0; // hide it
+
+    & + label {
+        position: relative;
+        cursor: pointer;
+        padding: 0;
+    }
+
+    // Box.
+    & + label:before {
+        content: '';
+        margin-right: 10px;
+        display: inline-block;
+        vertical-align: text-top;
+        width: 16px;
+        height: 16px;
+        background: white;
+        border-radius: 3px;
+    }
+
+    // Box hover
+    &:hover + label:before {
+        background: $color-bg-dark-gray;
+    }
+
+    // Box focus
+    &:focus + label:before {
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.12);
+    }
+
+    // Disabled state label.
+    &:disabled + label {
+        color: #B8B8B8;
+        cursor: auto;
+    }
+
+    // Disabled box.
+    &:disabled + label:before {
+        box-shadow: none;
+        background: #DDDDDD;
+    }
+
+    // Checkmark. Could be replaced with an image.
+    &:checked + label:after {
+        content: '';
+        position: absolute;
+        left: 3px;
+        top: 10px;
+        background: black;
+        width: 2px;
+        height: 2px;
+        box-shadow:
+            2px 0 0 black,
+            4px 0 0 black,
+            4px -2px 0 black,
+            4px -4px 0 black,
+            4px -6px 0 black,
+            4px -8px 0 black;
+        transform: rotate(45deg);
+    }
+}
+
+/*
+Custom styles for radio buttons
+
+source: https://codepen.io/manabox/pen/raQmpL (here modified somewhat)
+*/
+[type="radio"]:checked,
+[type="radio"]:not(:checked) {
+    position: absolute;
+    left: -9999px;
+}
+
+[type="radio"]:checked + label,
+[type="radio"]:not(:checked) + label {
+    position: relative;
+    padding-left: 28px;
+    cursor: pointer;
+    line-height: 20px;
+    display: inline-block;
+}
+
+[type="radio"]:checked + label:before,
+[type="radio"]:not(:checked) + label:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 16px;
+    height: 16px;
+    border-radius: 100%;
+    background: white;
+    border: 1px solid black;
+}
+
+[type="radio"]:checked + label:after,
+[type="radio"]:not(:checked) + label:after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    background: black;
+    position: absolute;
+    top: 3.2px;
+    left: 3.2px;
+    border-radius: 100%;
+    transition: all 0.2s ease;
+}
+
+[type="radio"]:not(:checked) + label:after {
+    opacity: 0;
+    transform: scale(0);
+}
+
+[type="radio"]:checked + label:after {
+    opacity: 1;
+    transform: scale(1);
+}

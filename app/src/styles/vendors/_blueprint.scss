@@ -1,0 +1,99 @@
+@import "../config/blueprint-variables";
+@import "~@blueprintjs/core/src/blueprint";
+@import "~@blueprintjs/datetime/src/blueprint-datetime";
+@import "~@blueprintjs/icons/src/blueprint-icons";
+
+.bp3-portal {
+    z-index: 2000;
+}
+
+.bp3-toast {
+    align-items: center;
+}
+
+.bp3-toast-container.bp3-toast-container-top {
+    top: $navbar-height;
+}
+
+// Add support for large dialogs
+.bp3-dialog--large {
+    width: 1000px;
+    height: calc(100vh - 80px);
+    min-height: 400px;
+    padding-bottom: 0;
+    @include media-breakpoint-down(sm) {
+        height: 100vh;
+        margin: 0;
+    }
+}
+
+.bp3-switch-toggle {
+    .toggle-label {
+        user-select: none;
+    }
+
+    &.active-left {
+        .label-left {
+            color: $green1;
+            font-weight: $font-weight-bold;
+        }
+    }
+
+    &.active-right {
+        .label-right {
+            color: $green1;
+            font-weight: $font-weight-bold;
+        }
+    }
+
+    .bp3-control.bp3-switch {
+        $switch-width: 1.75em !default;
+        $padding: $switch-width / 1em * $control-indicator-size + $control-indicator-spacing;
+
+        $switch-checked-background-color: $control-checked-background-color !default;
+        $switch-checked-background-color-hover: $control-checked-background-color-hover !default;
+        $switch-checked-background-color-active: $control-checked-background-color-active !default;
+        $switch-checked-background-color-disabled: rgba($blue3, 0.5) !default;
+
+        @mixin indicator-colors($selector, $color, $hover-color, $active-color, $disabled-color) {
+            input#{$selector} ~ .bp3-control-indicator {
+                background: $color;
+            }
+
+            &:hover input#{$selector} ~ .bp3-control-indicator {
+                background: $hover-color;
+            }
+
+            input#{$selector}:not(:disabled):active ~ .bp3-control-indicator {
+                background: $active-color;
+            }
+
+            input#{$selector}:disabled ~ .bp3-control-indicator {
+                background: $disabled-color;
+            }
+        }
+
+        padding-left: $padding / 2;
+        padding-right: $padding / 2;
+        margin-right: 0;
+
+        .bp3-control-indicator {
+            margin-left: 0;
+            margin-right: 0;
+        }
+        @include indicator-colors(
+            "",
+            $switch-checked-background-color,
+            $switch-checked-background-color-hover,
+            $switch-checked-background-color-active,
+            $switch-checked-background-color-disabled
+        );
+        @include indicator-colors(
+            ":checked",
+            $switch-checked-background-color,
+            $switch-checked-background-color-hover,
+            $switch-checked-background-color-active,
+            $switch-checked-background-color-disabled
+        );
+    }
+}
