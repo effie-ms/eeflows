@@ -17,7 +17,7 @@ from stations.utils.bioperiods import (
     get_fish_coeff_by_bioperiod_and_flow_type,
     get_full_bioperiod_range,
 )
-from stations.utils.read_data import get_measurement_df
+from stations.utils.read_data import get_measurement_ts
 
 
 client = APIClient()
@@ -338,7 +338,7 @@ class StationsTest(TestCase):
         fill_missing_values = False
         avg_forecast_df_with_compatibility = None
 
-        temperature_min_df, _ = get_measurement_df(
+        temperature_min_ts, _ = get_measurement_ts(
             pd_excel_file,
             SensorType.WaterTemperature,
             MeasurementType.MIN,
@@ -347,9 +347,9 @@ class StationsTest(TestCase):
             fill_missing_values,
             avg_forecast_df_with_compatibility,
         )
-        self.assertEqual(len(temperature_min_df), 366)
+        self.assertEqual(len(temperature_min_ts), 366)
 
-        discharge_avg_df, _ = get_measurement_df(
+        discharge_avg_ts, _ = get_measurement_ts(
             pd_excel_file,
             SensorType.Discharge,
             MeasurementType.AVG,
@@ -358,9 +358,9 @@ class StationsTest(TestCase):
             fill_missing_values,
             avg_forecast_df_with_compatibility,
         )
-        self.assertEqual(len(discharge_avg_df), 366)
+        self.assertEqual(len(discharge_avg_ts), 366)
 
-        wlevel_max_df, _ = get_measurement_df(
+        wlevel_max_df, _ = get_measurement_ts(
             pd_excel_file,
             SensorType.WaterLevel,
             MeasurementType.MAX,
@@ -373,7 +373,7 @@ class StationsTest(TestCase):
 
         # invalid excel
         pd_invalid_xl = pd.ExcelFile(self.invalid_xl)
-        df, _ = get_measurement_df(
+        ts, _ = get_measurement_ts(
             pd_invalid_xl,
             SensorType.WaterTemperature,
             MeasurementType.MIN,
@@ -382,13 +382,13 @@ class StationsTest(TestCase):
             fill_missing_values,
             avg_forecast_df_with_compatibility,
         )
-        self.assertEqual(df, None)
+        self.assertEqual(ts, None)
 
         # dates out of range
         out_from = datetime.date(2008, 1, 1)
         out_to = datetime.date(2020, 12, 31)
 
-        discharge_avg_df, _ = get_measurement_df(
+        discharge_avg_ts, _ = get_measurement_ts(
             pd_excel_file,
             SensorType.Discharge,
             MeasurementType.AVG,
@@ -397,9 +397,9 @@ class StationsTest(TestCase):
             fill_missing_values,
             avg_forecast_df_with_compatibility,
         )
-        self.assertEqual(len(discharge_avg_df), 365 * 3 + 366 * 2)
+        self.assertEqual(len(discharge_avg_ts), 365 * 3 + 366 * 2)
 
-        discharge_avg_df, _ = get_measurement_df(
+        discharge_avg_ts, _ = get_measurement_ts(
             pd_excel_file,
             SensorType.Discharge,
             MeasurementType.AVG,
@@ -408,10 +408,10 @@ class StationsTest(TestCase):
             fill_missing_values,
             avg_forecast_df_with_compatibility,
         )
-        self.assertEqual(len(discharge_avg_df), 365 * 6 + 366 * 3)
+        self.assertEqual(len(discharge_avg_ts), 365 * 6 + 366 * 3)
 
         # from_time is after to_time
-        discharge_avg_df, _ = get_measurement_df(
+        discharge_avg_ts, _ = get_measurement_ts(
             pd_excel_file,
             SensorType.Discharge,
             MeasurementType.AVG,
@@ -420,10 +420,10 @@ class StationsTest(TestCase):
             fill_missing_values,
             avg_forecast_df_with_compatibility,
         )
-        self.assertEqual(len(discharge_avg_df), 0)
+        self.assertEqual(len(discharge_avg_ts), 0)
 
         # from_time is same as to_time
-        discharge_avg_df, _ = get_measurement_df(
+        discharge_avg_df, _ = get_measurement_ts(
             pd_excel_file,
             SensorType.Discharge,
             MeasurementType.AVG,
@@ -432,7 +432,7 @@ class StationsTest(TestCase):
             fill_missing_values,
             avg_forecast_df_with_compatibility,
         )
-        self.assertEqual(len(discharge_avg_df), 1)
+        self.assertEqual(len(discharge_avg_ts), 1)
 
     def test_get_bioperiod_start_dates_within(self):
         from_time = datetime.date(2012, 1, 1)

@@ -41,75 +41,82 @@ ForecastPointSVG.propTypes = {
 };
 
 export const CustomizedDot = ({
-    cx,
-    cy,
-    exceedsEflow,
-    exceedsSecondAxis,
-    forecastEflow,
-    forecastSecondAxis,
-    entityKey,
+    coord,
+    measurementType,
+    timeSeriesType,
+    eflowType,
+    isForecast,
+    thresholdValue,
 }) => {
-    const exceedsEflowColour = exceedsEflow ? 'green' : 'red';
-    let exceedsSecondAxisColour = exceedsSecondAxis ? 'red' : 'green';
-    if (entityKey === 'WL') {
-        exceedsSecondAxisColour = exceedsSecondAxis ? 'green' : 'red';
+    let measurementValue;
+    let exceedsThreshold;
+    let isPredicted;
+
+    if (timeSeriesType === 'EF') {
+        isPredicted = coord.payload[`${measurementType}_discharge_predicted`];
+        measurementValue =
+            coord.payload[
+                `${measurementType}_discharge${isForecast ? '_forecast' : ''}`
+            ];
+        const threshold =
+            coord.payload[
+                `${measurementType}_${eflowType}_eflow_level${
+                    isForecast ? '_forecast' : ''
+                }`
+            ];
+        exceedsThreshold = measurementValue > threshold;
+    } else {
+        isPredicted =
+            coord.payload[`${measurementType}_second_axis_ts_predicted`];
+        measurementValue =
+            coord.payload[
+                `${measurementType}_second_axis_ts${
+                    isForecast ? '_forecast' : ''
+                }`
+            ];
+        exceedsThreshold = measurementValue > thresholdValue;
     }
 
-    if (entityKey === 'EF') {
-        if (forecastEflow) {
-            return (
-                <ForecastPointSVG
-                    cx={cx}
-                    cy={cy}
-                    complianceColour={exceedsEflowColour}
-                    fillDot
-                />
-            );
-        } else {
-            return (
-                <HistoryPointSVG
-                    cx={cx}
-                    cy={cy}
-                    complianceColour={exceedsEflowColour}
-                    fillDot
-                />
-            );
-        }
-    } else {
-        if (forecastSecondAxis) {
-            return (
-                <ForecastPointSVG
-                    cx={cx}
-                    cy={cy}
-                    complianceColour={exceedsSecondAxisColour}
-                    fillDot={false}
-                />
-            );
-        }
-        return (
-            <HistoryPointSVG
-                cx={cx}
-                cy={cy}
-                complianceColour={exceedsSecondAxisColour}
-                fillDot={false}
-            />
-        );
+    let exceedanceColour;
+    if (timeSeriesType === 'EF' || timeSeriesType === 'WL') {
+        exceedanceColour = exceedsThreshold ? 'green' : 'red';
+    } else if (timeSeriesType === 'TW') {
+        exceedanceColour = exceedsThreshold ? 'red' : 'green';
     }
+
+    return (
+        coord &&
+        coord.cx &&
+        coord.cy &&
+        (isPredicted || isForecast ? (
+            <ForecastPointSVG
+                cx={coord.cx}
+                cy={coord.cy}
+                complianceColour={exceedanceColour}
+                fillDot={timeSeriesType === 'EF'}
+            />
+        ) : (
+            <HistoryPointSVG
+                cx={coord.cx}
+                cy={coord.cy}
+                complianceColour={exceedanceColour}
+                fillDot={timeSeriesType === 'EF'}
+            />
+        ))
+    );
 };
 
 CustomizedDot.propTypes = {
-    cx: PropTypes.number.isRequired,
-    cy: PropTypes.number.isRequired,
-    entityKey: PropTypes.oneOf(['TW', 'WL', 'EF', 'Q']).isRequired,
-    exceedsEflow: PropTypes.bool,
-    exceedsSecondAxis: PropTypes.bool,
-    forecastEflow: PropTypes.bool,
-    forecastSecondAxis: PropTypes.bool,
+    coord: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+    measurementType: PropTypes.oneOf(['min', 'avg', 'max', 'all']).isRequired,
+    timeSeriesType: PropTypes.oneOf(['TW', 'WL', 'EF']).isRequired,
+    eflowType: PropTypes.oneOf(['low', 'base', 'critical', 'subsistence']),
+    isForecast: PropTypes.bool.isRequired,
+    thresholdValue: PropTypes.number,
 };
 
 CustomizedDot.defaultProps = {
-    exceedsEflow: null,
-    exceedsSecondAxis: null,
-    forecastEflow: null,
-    forecastSecondAxis: null,
+    coord: null,
+    eflowType: null,
+    thresholdValue: null,
 };

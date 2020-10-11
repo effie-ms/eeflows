@@ -44,7 +44,6 @@ class StationViewSet(viewsets.ModelViewSet):
 
         sec_axis_ts_type_abbr = input_serializer.validated_data["secondAxisType"]
         sec_axis_ts_type = get_sensor_type_by_abbreviation(sec_axis_ts_type_abbr)
-        sec_axis_threshold = input_serializer.validated_data["secondAxisThreshold"]
 
         fet_id = input_serializer.validated_data["fetId"]
         area = input_serializer.validated_data["area"]
@@ -99,7 +98,6 @@ class StationViewSet(viewsets.ModelViewSet):
             from_time,
             to_time,
             sec_axis_ts_type,
-            sec_axis_threshold,
             area,
             area_factor,
             fet_id,
@@ -118,7 +116,6 @@ class StationViewSet(viewsets.ModelViewSet):
             "from_time": str(from_time),
             "to_time": str(to_time),
             "second_axis_time_series_type": sec_axis_ts_type_abbr,
-            "second_axis_threshold": sec_axis_threshold,
             "fill_missing_eflows": fill_missing_eflows,
             "fill_missing_sec_axis": fill_missing_sec_axis,
             "multi_stations_eflows": multi_stations_eflows,
