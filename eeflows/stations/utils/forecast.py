@@ -32,7 +32,13 @@ def get_mean_values_df_by_ts_type(ts_type):
 
 
 def get_predicted_measurement_df(
-    station, sensor_type, from_time, to_time, multi_stations, forecast_var,
+    station,
+    sensor_type,
+    from_time,
+    to_time,
+    multi_stations,
+    forecast_var,
+    enable_forecasting,
 ):
     from stations.utils.read_data import get_sheet_substring_sensor_type
 
@@ -42,6 +48,15 @@ def get_predicted_measurement_df(
     ]
 
     forecast_ts = pd.Series(index=all_dates_within, dtype="float64")
+
+    if not enable_forecasting:
+        forecasting_summary = {
+            "algorithm": "Disabled",
+            "variable": "-",
+            "R2": None,
+            "dependent_stations": [],
+        }
+        return forecast_ts, forecasting_summary
 
     whole_input_df = get_mean_values_df_by_ts_type(forecast_var)
     whole_output_df = get_mean_values_df_by_ts_type(sensor_type)

@@ -76,7 +76,7 @@ const api = createSagaRouter(
                 'forecastEflowsVariable=${forecastEflowsVariable}&' +
                 'forecastSecondAxisVariable=${forecastSecondAxisVariable}&' +
                 'meanLowFlowMethod=${meanLowFlowMethod}&meanLowFlowMethodFrequency=${meanLowFlowMethodFrequency}&' +
-                'multiplyByFishCoefficients=${multiplyByFishCoefficients}',
+                'multiplyByFishCoefficients=${multiplyByFishCoefficients}&enableForecasting=${enableForecasting}',
         },
     },
     {

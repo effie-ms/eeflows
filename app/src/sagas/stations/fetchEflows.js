@@ -24,6 +24,7 @@ export const fetchEflowsAction = (
     meanLowFlowMethod,
     meanLowFlowMethodFrequency,
     multiplyByFishCoefficients,
+    enableForecasting,
 ) => ({
     type: FETCH_EFLOWS_ACTION_TYPE,
     stationId,
@@ -43,6 +44,7 @@ export const fetchEflowsAction = (
     meanLowFlowMethod,
     meanLowFlowMethodFrequency,
     multiplyByFishCoefficients,
+    enableForecasting,
 });
 
 function* fetchEflows({
@@ -63,6 +65,7 @@ function* fetchEflows({
     meanLowFlowMethod,
     meanLowFlowMethodFrequency,
     multiplyByFishCoefficients,
+    enableForecasting,
 }) {
     try {
         const fromTime = formatDate(from);
@@ -86,6 +89,7 @@ function* fetchEflows({
             meanLowFlowMethod,
             meanLowFlowMethodFrequency,
             multiplyByFishCoefficients,
+            enableForecasting,
         });
         const parsedEflows = JSON.parse(eflows.replace(/\bNaN\b/g, 'null'));
         parsedEflows.eflows_ts.forEach(function(part, index, arr) {
@@ -142,6 +146,7 @@ export const fetchEflowsInitialWorker = ({ params }) => {
         params.meanLowFlowMethod,
         params.meanLowFlowMethodFrequency,
         params.multiplyByFishCoefficients,
+        params.enableForecasting,
     );
 };
 

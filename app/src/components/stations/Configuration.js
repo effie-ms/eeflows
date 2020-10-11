@@ -61,6 +61,8 @@ export const Configuration = ({
     onSetMultiplyByFishCoefficients,
     onRunEstimation,
     watershed,
+    enableForecasting,
+    setEnableForecasting,
 }) => {
     const [activeTab, setActiveTab] = useState('1');
 
@@ -217,6 +219,8 @@ export const Configuration = ({
                                 setForecastSecondAxisVariable={
                                     setForecastSecondAxisVariable
                                 }
+                                enableForecasting={enableForecasting}
+                                setEnableForecasting={setEnableForecasting}
                             />
                         </TabPane>
                     </TabContent>
@@ -319,6 +323,8 @@ Configuration.propTypes = {
     onSetMultiplyByFishCoefficients: PropTypes.func.isRequired,
     onRunEstimation: PropTypes.func.isRequired,
     watershed: PropTypes.number.isRequired,
+    enableForecasting: PropTypes.bool.isRequired,
+    setEnableForecasting: PropTypes.func.isRequired,
 };
 
 Configuration.defaultProps = {

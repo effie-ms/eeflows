@@ -277,6 +277,7 @@ def get_eflow_all_types_df(
     low_flow_method,
     low_flow_method_freq,
     use_fish_coeff,
+    enable_forecasting,
 ):
     (
         forecast_discharge_levels_ts,
@@ -288,6 +289,7 @@ def get_eflow_all_types_df(
         to_time,
         multi_stations_eflows,
         forecast_eflows_var,
+        enable_forecasting,
     )
 
     min_eflow_df = get_eflows_df(
@@ -378,6 +380,7 @@ def get_second_axis_all_types_df(
     fill_missing_sec_axis,
     multi_stations_sec_axis,
     forecast_sec_axis_var,
+    enable_forecasting,
 ):
     (
         avg_sec_axis_forecast_ts,
@@ -389,6 +392,7 @@ def get_second_axis_all_types_df(
         to_time,
         multi_stations_sec_axis,
         forecast_sec_axis_var,
+        enable_forecasting,
     )
     avg_sec_axis_forecast_ts.name = "avg_second_axis_ts_forecast"
 
@@ -469,6 +473,7 @@ def get_eflows_compliance(
     low_flow_method,
     low_flow_method_freq,
     use_fish_coeff,
+    enable_forecasting,
 ):
     (eflow_all_types_df, forecasting_eflows_summary_dict,) = get_eflow_all_types_df(
         station,
@@ -484,6 +489,7 @@ def get_eflows_compliance(
         low_flow_method,
         low_flow_method_freq,
         use_fish_coeff,
+        enable_forecasting,
     )
 
     (
@@ -498,6 +504,7 @@ def get_eflows_compliance(
         fill_missing_sec_axis,
         multi_stations_sec_axis,
         forecast_sec_axis_var,
+        enable_forecasting,
     )
 
     eflow_and_sec_axis_df = pd.concat(

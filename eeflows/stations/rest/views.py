@@ -83,6 +83,8 @@ class StationViewSet(viewsets.ModelViewSet):
         )
         use_fish_coeff = input_serializer.validated_data["multiplyByFishCoefficients"]
 
+        enable_forecasting = input_serializer.validated_data["enableForecasting"]
+
         fet = FET.objects.filter(pk=fet_id).first()
 
         bioperiods_boundaries = get_bioperiod_start_dates_within(
@@ -110,6 +112,7 @@ class StationViewSet(viewsets.ModelViewSet):
             low_flow_method,
             low_flow_method_freq,
             use_fish_coeff,
+            enable_forecasting,
         )
 
         payload = {

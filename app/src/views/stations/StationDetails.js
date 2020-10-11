@@ -99,6 +99,8 @@ const StationDetails = ({ station, eflows, onFetchEflows, fets }) => {
         setMultiplyByFishCoefficients,
     ] = useState(true);
 
+    const [enableForecasting, setEnableForecasting] = useState(false);
+
     useEffect(() => {
         if (eflows !== null && eflows.length !== 0) {
             setShowProcessingBar(false);
@@ -170,6 +172,7 @@ const StationDetails = ({ station, eflows, onFetchEflows, fets }) => {
                 meanLowFlowMethod,
                 meanLowFlowMethodFrequency,
                 multiplyByFishCoefficients,
+                enableForecasting,
             );
         }
     };
@@ -317,6 +320,8 @@ const StationDetails = ({ station, eflows, onFetchEflows, fets }) => {
                             }
                             onRunEstimation={onRunEstimation}
                             watershed={station.catchment_area}
+                            enableForecasting={enableForecasting}
+                            setEnableForecasting={setEnableForecasting}
                         />
                         {(eflows !== null || showProcessingBar === true) &&
                             showGraphs && (
@@ -391,6 +396,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
         meanLowFlowMethod,
         meanLowFlowMethodFrequency,
         multiplyByFishCoefficients,
+        enableForecasting,
     ) =>
         dispatch(
             fetchEflowsAction(
@@ -411,6 +417,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
                 meanLowFlowMethod,
                 meanLowFlowMethodFrequency,
                 multiplyByFishCoefficients,
+                enableForecasting,
             ),
         ),
 });

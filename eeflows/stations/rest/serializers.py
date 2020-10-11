@@ -94,6 +94,8 @@ class EflowsInputSerializer(serializers.Serializer):
         format="iso-8601"
     )  # year-month-day (e.g. 2020-01-02)
 
+    enableForecasting = serializers.BooleanField()
+
     forecastMultiStationsEflows = serializers.BooleanField()
     forecastMultiStationsSecondAxis = serializers.BooleanField()
 
