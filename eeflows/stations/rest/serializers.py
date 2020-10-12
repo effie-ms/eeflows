@@ -78,14 +78,10 @@ class EflowsInputSerializer(serializers.Serializer):
     """
 
     secondAxisType = serializers.CharField()
-    secondAxisThreshold = serializers.FloatField()
 
     area = serializers.FloatField()
     areaFactor = serializers.FloatField()
     fetId = serializers.IntegerField()
-
-    fillMissingEflows = serializers.BooleanField()
-    fillMissingSecondAxis = serializers.BooleanField()
 
     fromTime = serializers.DateField(
         format="iso-8601"
@@ -96,15 +92,8 @@ class EflowsInputSerializer(serializers.Serializer):
 
     enableForecasting = serializers.BooleanField()
 
-    forecastMultiStationsEflows = serializers.BooleanField()
-    forecastMultiStationsSecondAxis = serializers.BooleanField()
-
-    forecastEflowsVariable = serializers.CharField()
-    forecastSecondAxisVariable = serializers.CharField()
-
     meanLowFlowMethod = serializers.CharField()
     meanLowFlowMethodFrequency = serializers.CharField()
-    multiplyByFishCoefficients = serializers.BooleanField()
 
     def validate(self, attrs):
         attrs = super().validate(attrs)
@@ -113,20 +102,6 @@ class EflowsInputSerializer(serializers.Serializer):
         sec_axis_ts_type = get_sensor_type_by_abbreviation(sec_axis_ts_type_abbr)
         if sec_axis_ts_type is None:
             raise serializers.ValidationError({"secondAxisType": "Unknown"})
-
-        forecast_eflows_variable_abbr = attrs["forecastEflowsVariable"]
-        forecast_eflows_variable = get_sensor_type_by_abbreviation(
-            forecast_eflows_variable_abbr
-        )
-        if forecast_eflows_variable is None:
-            raise serializers.ValidationError({"forecastEflowsVariable": "Unknown"})
-
-        forecast_second_axis_variable_abbr = attrs["forecastSecondAxisVariable"]
-        forecast_second_axis_variable = get_sensor_type_by_abbreviation(
-            forecast_second_axis_variable_abbr
-        )
-        if forecast_second_axis_variable is None:
-            raise serializers.ValidationError({"forecastSecondAxisVariable": "Unknown"})
 
         low_flow_method = get_low_flow_method_by_abbr(attrs["meanLowFlowMethod"])
         low_flow_method_freq = get_low_flow_method_freq_by_abbr(

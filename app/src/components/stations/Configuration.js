@@ -11,8 +11,6 @@ import { gettext } from 'utils/text';
 import { LowFlowTabPane } from 'components/stations/configuration/LowFlowTabPane';
 import { FETConfiguration } from 'components/stations/configuration/FETConfiguration';
 import { MeasurementsConfiguration } from 'components/stations/configuration/MeasurementsConfiguration';
-import { VisualizationBlock } from 'components/stations/configuration/VisualizationBlock';
-import { ForecastingTabPane } from 'components/stations/configuration/ForecastingTabPane';
 
 export const Configuration = ({
     startDate,
@@ -22,43 +20,17 @@ export const Configuration = ({
     onSetCatchmentArea,
     areaFactor,
     onSetAreaFactor,
-    eflowThreshold,
-    onSetEflowThreshold,
     fets,
     selectedFETId,
     onSetSelectedFETId,
-    eflowMeasurementType,
-    onSetEflowMeasurementType,
-    secondAxisMeasurementType,
-    onSetSecondAxisMeasurementType,
     secondAxisTimeSeriesType,
     onSetSecondAxisTimeSeriesType,
     secondAxisThreshold,
     onSetSecondAxisThreshold,
-    showSecondaryAxis,
-    setShowSecondaryAxis,
-    fillMissingValuesDischarge,
-    setFillMissingValuesDischarge,
-    showFullForecastDischarge,
-    setShowFullForecastDischarge,
-    multiStationsForecastDischarge,
-    setMultiStationsForecastDischarge,
-    fillMissingValuesSecondAxis,
-    setFillMissingValuesSecondAxis,
-    showFullForecastSecondAxis,
-    setShowFullForecastSecondAxis,
-    multiStationsForecastSecondAxis,
-    setMultiStationsForecastSecondAxis,
-    forecastEflowsVariable,
-    setForecastEflowsVariable,
-    forecastSecondAxisVariable,
-    setForecastSecondAxisVariable,
     meanLowFlowMethod,
     onSetMeanLowFlowMethod,
     meanLowFlowMethodFrequency,
     onSetMeanLowFlowMethodFrequency,
-    multiplyByFishCoefficients,
-    onSetMultiplyByFishCoefficients,
     onRunEstimation,
     watershed,
     enableForecasting,
@@ -92,23 +64,29 @@ export const Configuration = ({
                                     toggle('1');
                                 }}
                             >
-                                {gettext('Low flow parameters')}
+                                {gettext('Environmental flow estimation')}
                             </NavLink>
                         </NavItem>
                         <Divider />
-                        <NavItem>
-                            <NavLink
-                                className={classnames({
-                                    active: activeTab === '2',
-                                })}
-                                onClick={() => {
-                                    toggle('2');
-                                }}
-                            >
-                                {gettext('Environmental low flow formula')}
-                            </NavLink>
-                        </NavItem>
-                        <Divider />
+                        {meanLowFlowMethod === 'RAELFF' && (
+                            <>
+                                <NavItem>
+                                    <NavLink
+                                        className={classnames({
+                                            active: activeTab === '2',
+                                        })}
+                                        onClick={() => {
+                                            toggle('2');
+                                        }}
+                                    >
+                                        {gettext(
+                                            'Regionally Applicable Env. Low Flow Formula',
+                                        )}
+                                    </NavLink>
+                                </NavItem>
+                                <Divider />
+                            </>
+                        )}
                         <NavItem>
                             <NavLink
                                 className={classnames({
@@ -119,19 +97,6 @@ export const Configuration = ({
                                 }}
                             >
                                 {gettext('Compound event')}
-                            </NavLink>
-                        </NavItem>
-                        <Divider />
-                        <NavItem>
-                            <NavLink
-                                className={classnames({
-                                    active: activeTab === '4',
-                                })}
-                                onClick={() => {
-                                    toggle('4');
-                                }}
-                            >
-                                {gettext('Forecasting')}
                             </NavLink>
                         </NavItem>
                     </Nav>
@@ -154,6 +119,8 @@ export const Configuration = ({
                                 areaFactor={areaFactor}
                                 onSetAreaFactor={onSetAreaFactor}
                                 watershed={watershed}
+                                enableForecasting={enableForecasting}
+                                setEnableForecasting={setEnableForecasting}
                             />
                         </TabPane>
                         <TabPane tabId="2">
@@ -161,12 +128,6 @@ export const Configuration = ({
                                 fets={fets}
                                 selectedFETId={selectedFETId}
                                 onSetSelectedFETId={onSetSelectedFETId}
-                                multiplyByFishCoefficients={
-                                    multiplyByFishCoefficients
-                                }
-                                onSetMultiplyByFishCoefficients={
-                                    onSetMultiplyByFishCoefficients
-                                }
                             />
                         </TabPane>
                         <TabPane tabId="3">
@@ -183,46 +144,6 @@ export const Configuration = ({
                                 }
                             />
                         </TabPane>
-                        <TabPane tabId="4">
-                            <ForecastingTabPane
-                                fillMissingValuesDischarge={
-                                    fillMissingValuesDischarge
-                                }
-                                setFillMissingValuesDischarge={
-                                    setFillMissingValuesDischarge
-                                }
-                                multiStationsForecastDischarge={
-                                    multiStationsForecastDischarge
-                                }
-                                setMultiStationsForecastDischarge={
-                                    setMultiStationsForecastDischarge
-                                }
-                                fillMissingValuesSecondAxis={
-                                    fillMissingValuesSecondAxis
-                                }
-                                setFillMissingValuesSecondAxis={
-                                    setFillMissingValuesSecondAxis
-                                }
-                                multiStationsForecastSecondAxis={
-                                    multiStationsForecastSecondAxis
-                                }
-                                setMultiStationsForecastSecondAxis={
-                                    setMultiStationsForecastSecondAxis
-                                }
-                                forecastEflowsVariable={forecastEflowsVariable}
-                                setForecastEflowsVariable={
-                                    setForecastEflowsVariable
-                                }
-                                forecastSecondAxisVariable={
-                                    forecastSecondAxisVariable
-                                }
-                                setForecastSecondAxisVariable={
-                                    setForecastSecondAxisVariable
-                                }
-                                enableForecasting={enableForecasting}
-                                setEnableForecasting={setEnableForecasting}
-                            />
-                        </TabPane>
                     </TabContent>
                     <div className="d-flex justify-content-end">
                         <Button
@@ -233,29 +154,6 @@ export const Configuration = ({
                             onClick={() => onRunEstimation()}
                         />
                     </div>
-                </Card>
-                <Card elevation={Elevation.TWO} className="mt-3">
-                    <VisualizationBlock
-                        eflowMeasurementType={eflowMeasurementType}
-                        onSetEflowMeasurementType={onSetEflowMeasurementType}
-                        secondAxisMeasurementType={secondAxisMeasurementType}
-                        onSetSecondAxisMeasurementType={
-                            onSetSecondAxisMeasurementType
-                        }
-                        secondAxisTimeSeriesType={secondAxisTimeSeriesType}
-                        showSecondaryAxis={showSecondaryAxis}
-                        setShowSecondaryAxis={setShowSecondaryAxis}
-                        eflowThreshold={eflowThreshold}
-                        onSetEflowThreshold={onSetEflowThreshold}
-                        showFullForecastDischarge={showFullForecastDischarge}
-                        setShowFullForecastDischarge={
-                            setShowFullForecastDischarge
-                        }
-                        showFullForecastSecondAxis={showFullForecastSecondAxis}
-                        setShowFullForecastSecondAxis={
-                            setShowFullForecastSecondAxis
-                        }
-                    />
                 </Card>
             </Card>
         </div>
@@ -270,46 +168,20 @@ Configuration.propTypes = {
     onSetCatchmentArea: PropTypes.func.isRequired,
     areaFactor: PropTypes.number.isRequired,
     onSetAreaFactor: PropTypes.func.isRequired,
-    eflowThreshold: PropTypes.oneOf(['low', 'base', 'critical', 'subsistence'])
-        .isRequired,
-    onSetEflowThreshold: PropTypes.func.isRequired,
     fets: PropTypes.arrayOf(FETInfoShape),
     selectedFETId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
         .isRequired,
     onSetSelectedFETId: PropTypes.func.isRequired,
-    eflowMeasurementType: PropTypes.oneOf(['min', 'avg', 'max', 'all'])
-        .isRequired,
-    onSetEflowMeasurementType: PropTypes.func.isRequired,
-    secondAxisMeasurementType: PropTypes.oneOf(['min', 'avg', 'max', 'all'])
-        .isRequired,
-    onSetSecondAxisMeasurementType: PropTypes.func.isRequired,
     secondAxisTimeSeriesType: PropTypes.oneOf(['TW', 'WL']).isRequired,
     onSetSecondAxisTimeSeriesType: PropTypes.func.isRequired,
     secondAxisThreshold: PropTypes.number.isRequired,
     onSetSecondAxisThreshold: PropTypes.func.isRequired,
-    showSecondaryAxis: PropTypes.bool.isRequired,
-    setShowSecondaryAxis: PropTypes.func.isRequired,
-    fillMissingValuesDischarge: PropTypes.bool.isRequired,
-    showFullForecastDischarge: PropTypes.bool.isRequired,
-    multiStationsForecastDischarge: PropTypes.bool.isRequired,
-    setFillMissingValuesDischarge: PropTypes.func.isRequired,
-    setShowFullForecastDischarge: PropTypes.func.isRequired,
-    setMultiStationsForecastDischarge: PropTypes.func.isRequired,
-    fillMissingValuesSecondAxis: PropTypes.bool.isRequired,
-    showFullForecastSecondAxis: PropTypes.bool.isRequired,
-    multiStationsForecastSecondAxis: PropTypes.bool.isRequired,
-    setFillMissingValuesSecondAxis: PropTypes.func.isRequired,
-    setShowFullForecastSecondAxis: PropTypes.func.isRequired,
-    setMultiStationsForecastSecondAxis: PropTypes.func.isRequired,
-    forecastEflowsVariable: PropTypes.oneOf(['Q', 'TW', 'WL']).isRequired,
-    setForecastEflowsVariable: PropTypes.func.isRequired,
-    forecastSecondAxisVariable: PropTypes.oneOf(['Q', 'TW', 'WL']).isRequired,
-    setForecastSecondAxisVariable: PropTypes.func.isRequired,
     meanLowFlowMethod: PropTypes.oneOf([
         'TNT30',
         'TNT20',
         'EXCEED95',
         'EXCEED75',
+        'RAELFF',
     ]).isRequired,
     onSetMeanLowFlowMethod: PropTypes.func.isRequired,
     meanLowFlowMethodFrequency: PropTypes.oneOf([
@@ -319,8 +191,6 @@ Configuration.propTypes = {
         'MONTHLY',
     ]).isRequired,
     onSetMeanLowFlowMethodFrequency: PropTypes.func.isRequired,
-    multiplyByFishCoefficients: PropTypes.bool.isRequired,
-    onSetMultiplyByFishCoefficients: PropTypes.func.isRequired,
     onRunEstimation: PropTypes.func.isRequired,
     watershed: PropTypes.number.isRequired,
     enableForecasting: PropTypes.bool.isRequired,

@@ -51,7 +51,7 @@ def get_predicted_measurement_df(
 
     if not enable_forecasting:
         forecasting_summary = {
-            "algorithm": "Disabled",
+            "algorithm": "-",
             "variable": "-",
             "R2": None,
             "dependent_stations": [],

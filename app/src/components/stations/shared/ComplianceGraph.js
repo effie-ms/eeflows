@@ -196,7 +196,7 @@ export const ComplianceGraph = ({
     showFullForecastDischarge,
     showFullForecastSecondAxis,
 }) => (
-    <div id="compliance-graph">
+    <div id="compliance-graph" className="w-100 mt-3">
         <p style={{ textAlign: 'center', fontSize: '18px' }}>
             {gettext(`${stationName}:
         ${gettext(

@@ -12,252 +12,475 @@ import { getCompliancePercentagesEflow } from 'utils/complianceSummaries';
 import { ProcessingState } from 'components/stations/shared/ProcessingState';
 import { ExportDropdown } from 'components/stations/shared/ExportDropdown';
 
+const getExportDataComplianceTableEflowsLow = eflowsTS => ({
+    winterLowObserved: getCompliancePercentagesEflow(
+        eflowsTS,
+        'OW',
+        'LOW',
+        false,
+    ),
+    springLowObserved: getCompliancePercentagesEflow(
+        eflowsTS,
+        'SS',
+        'LOW',
+        false,
+    ),
+    summerLowObserved: getCompliancePercentagesEflow(
+        eflowsTS,
+        'RG',
+        'LOW',
+        false,
+    ),
+    autumnLowObserved: getCompliancePercentagesEflow(
+        eflowsTS,
+        'FS',
+        'LOW',
+        false,
+    ),
+    winterLowForecast: getCompliancePercentagesEflow(
+        eflowsTS,
+        'OW',
+        'LOW',
+        true,
+    ),
+    springLowForecast: getCompliancePercentagesEflow(
+        eflowsTS,
+        'SS',
+        'LOW',
+        true,
+    ),
+    summerLowForecast: getCompliancePercentagesEflow(
+        eflowsTS,
+        'RG',
+        'LOW',
+        true,
+    ),
+    autumnLowForecast: getCompliancePercentagesEflow(
+        eflowsTS,
+        'FS',
+        'LOW',
+        true,
+    ),
+});
+
+const getExportDataComplianceTableEflowsRAELFF = eflowsTS => ({
+    winterBaseObserved: getCompliancePercentagesEflow(
+        eflowsTS,
+        'OW',
+        'BASE',
+        false,
+    ),
+    winterBaseForecast: getCompliancePercentagesEflow(
+        eflowsTS,
+        'OW',
+        'BASE',
+        true,
+    ),
+    winterSubsistenceObserved: getCompliancePercentagesEflow(
+        eflowsTS,
+        'OW',
+        'SUBSISTENCE',
+        false,
+    ),
+    winterSubsistenceForecast: getCompliancePercentagesEflow(
+        eflowsTS,
+        'OW',
+        'SUBSISTENCE',
+        true,
+    ),
+    winterCriticalObserved: getCompliancePercentagesEflow(
+        eflowsTS,
+        'OW',
+        'CRITICAL',
+        false,
+    ),
+    winterCriticalForecast: getCompliancePercentagesEflow(
+        eflowsTS,
+        'OW',
+        'CRITICAL',
+        true,
+    ),
+    springBaseObserved: getCompliancePercentagesEflow(
+        eflowsTS,
+        'SS',
+        'BASE',
+        false,
+    ),
+    springBaseForecast: getCompliancePercentagesEflow(
+        eflowsTS,
+        'SS',
+        'BASE',
+        true,
+    ),
+    springSubsistenceObserved: getCompliancePercentagesEflow(
+        eflowsTS,
+        'SS',
+        'SUBSISTENCE',
+        false,
+    ),
+    springSubsistenceForecast: getCompliancePercentagesEflow(
+        eflowsTS,
+        'SS',
+        'SUBSISTENCE',
+        true,
+    ),
+    springCriticalObserved: getCompliancePercentagesEflow(
+        eflowsTS,
+        'SS',
+        'CRITICAL',
+        false,
+    ),
+    springCriticalForecast: getCompliancePercentagesEflow(
+        eflowsTS,
+        'SS',
+        'CRITICAL',
+        true,
+    ),
+
+    summerBaseObserved: getCompliancePercentagesEflow(
+        eflowsTS,
+        'RG',
+        'BASE',
+        false,
+    ),
+    summerBaseForecast: getCompliancePercentagesEflow(
+        eflowsTS,
+        'RG',
+        'BASE',
+        true,
+    ),
+    summerSubsistenceObserved: getCompliancePercentagesEflow(
+        eflowsTS,
+        'RG',
+        'SUBSISTENCE',
+        false,
+    ),
+    summerSubsistenceForecast: getCompliancePercentagesEflow(
+        eflowsTS,
+        'RG',
+        'SUBSISTENCE',
+        true,
+    ),
+    summerCriticalObserved: getCompliancePercentagesEflow(
+        eflowsTS,
+        'RG',
+        'CRITICAL',
+        false,
+    ),
+    summerCriticalForecast: getCompliancePercentagesEflow(
+        eflowsTS,
+        'RG',
+        'CRITICAL',
+        true,
+    ),
+
+    autumnBaseObserved: getCompliancePercentagesEflow(
+        eflowsTS,
+        'FS',
+        'BASE',
+        false,
+    ),
+    autumnBaseForecast: getCompliancePercentagesEflow(
+        eflowsTS,
+        'FS',
+        'BASE',
+        true,
+    ),
+    autumnSubsistenceObserved: getCompliancePercentagesEflow(
+        eflowsTS,
+        'FS',
+        'SUBSISTENCE',
+        false,
+    ),
+    autumnSubsistenceForecast: getCompliancePercentagesEflow(
+        eflowsTS,
+        'FS',
+        'SUBSISTENCE',
+        true,
+    ),
+    autumnCriticalObserved: getCompliancePercentagesEflow(
+        eflowsTS,
+        'FS',
+        'CRITICAL',
+        false,
+    ),
+    autumnCriticalForecast: getCompliancePercentagesEflow(
+        eflowsTS,
+        'FS',
+        'CRITICAL',
+        true,
+    ),
+});
+
+const ComplianceTableEflowsLow = ({ eflowsTS, enableForecasting }) => {
+    const data = getExportDataComplianceTableEflowsLow(eflowsTS);
+
+    return (
+        <Table bordered striped className="mt-4 fish-coefficients-table">
+            <thead>
+                <tr>
+                    <th>{gettext('Compliance')}</th>
+                    <th>{gettext('Threshold')}</th>
+                    <th>{gettext('Spring Spawning')}</th>
+                    <th>{gettext('Rearing and Growth')}</th>
+                    <th>{gettext('Fall Spawning')}</th>
+                    <th>{gettext('Overwintering')}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">{gettext('Compliant: Observations')}</th>
+                    <td>
+                        <p>{gettext('Low')}</p>
+                    </td>
+                    <td>
+                        <p>{data.springLowObserved.compliant}</p>
+                    </td>
+                    <td>
+                        <p>{data.summerLowObserved.compliant}</p>
+                    </td>
+                    <td>
+                        <p>{data.autumnLowObserved.compliant}</p>
+                    </td>
+                    <td>
+                        <p>{data.winterLowObserved.compliant}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">{gettext('Noncompliant: Observations')}</th>
+                    <td>
+                        <p>{gettext('Low')}</p>
+                    </td>
+                    <td>
+                        <p>{data.springLowObserved.noncompliant}</p>
+                    </td>
+                    <td>
+                        <p>{data.summerLowObserved.noncompliant}</p>
+                    </td>
+                    <td>
+                        <p>{data.autumnLowObserved.noncompliant}</p>
+                    </td>
+                    <td>
+                        <p>{data.winterLowObserved.noncompliant}</p>
+                    </td>
+                </tr>
+                {enableForecasting && (
+                    <tr>
+                        <th scope="row">{gettext('Compliant: Predictions')}</th>
+                        <td>
+                            <p>{gettext('Low')}</p>
+                        </td>
+                        <td>
+                            <p>{data.springLowForecast.compliant}</p>
+                        </td>
+                        <td>
+                            <p>{data.summerLowForecast.compliant}</p>
+                        </td>
+                        <td>
+                            <p>{data.autumnLowForecast.compliant}</p>
+                        </td>
+                        <td>
+                            <p>{data.winterLowForecast.compliant}</p>
+                        </td>
+                    </tr>
+                )}
+                {enableForecasting && (
+                    <tr>
+                        <th scope="row">
+                            {gettext('Noncompliant: Predictions')}
+                        </th>
+                        <td>
+                            <p>{gettext('Low')}</p>
+                        </td>
+                        <td>
+                            <p>{data.springLowForecast.noncompliant}</p>
+                        </td>
+                        <td>
+                            <p>{data.summerLowForecast.noncompliant}</p>
+                        </td>
+                        <td>
+                            <p>{data.autumnLowForecast.noncompliant}</p>
+                        </td>
+                        <td>
+                            <p>{data.winterLowForecast.noncompliant}</p>
+                        </td>
+                    </tr>
+                )}
+            </tbody>
+        </Table>
+    );
+};
+ComplianceTableEflowsLow.propTypes = {
+    eflowsTS: PropTypes.arrayOf(EflowsShape),
+    enableForecasting: PropTypes.bool.isRequired,
+};
+ComplianceTableEflowsLow.defaultProps = {
+    eflowsTS: [],
+};
+
+const ComplianceTableEflowsRAELFF = ({ eflowsTS, enableForecasting }) => {
+    const data = getExportDataComplianceTableEflowsRAELFF(eflowsTS);
+
+    return (
+        <Table bordered striped className="mt-4 fish-coefficients-table">
+            <thead>
+                <tr>
+                    <th>{gettext('Compliance')}</th>
+                    <th>{gettext('Threshold')}</th>
+                    <th>{gettext('Spring Spawning')}</th>
+                    <th>{gettext('Rearing and Growth')}</th>
+                    <th>{gettext('Fall Spawning')}</th>
+                    <th>{gettext('Overwintering')}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">{gettext('Compliant: Observations')}</th>
+                    <td>
+                        <p>{gettext('Base')}</p>
+                        <p>{gettext('Critical')}</p>
+                        <p>{gettext('Subsistence')}</p>
+                    </td>
+                    <td>
+                        <p>{data.springBaseObserved.compliant}</p>
+                        <p>{data.springCriticalObserved.compliant}</p>
+                        <p>{data.springSubsistenceObserved.compliant}</p>
+                    </td>
+                    <td>
+                        <p>{data.summerBaseObserved.compliant}</p>
+                        <p>{data.summerCriticalObserved.compliant}</p>
+                        <p>{data.summerSubsistenceObserved.compliant}</p>
+                    </td>
+                    <td>
+                        <p>{data.autumnBaseObserved.compliant}</p>
+                        <p>{data.autumnCriticalObserved.compliant}</p>
+                        <p>{data.autumnSubsistenceObserved.compliant}</p>
+                    </td>
+                    <td>
+                        <p>{data.winterBaseObserved.compliant}</p>
+                        <p>{data.winterCriticalObserved.compliant}</p>
+                        <p>{data.winterSubsistenceObserved.compliant}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">{gettext('Noncompliant: Observations')}</th>
+                    <td>
+                        <p>{gettext('Base')}</p>
+                        <p>{gettext('Critical')}</p>
+                        <p>{gettext('Subsistence')}</p>
+                    </td>
+                    <td>
+                        <p>{data.springBaseObserved.noncompliant}</p>
+                        <p>{data.springCriticalObserved.noncompliant}</p>
+                        <p>{data.springSubsistenceObserved.noncompliant}</p>
+                    </td>
+                    <td>
+                        <p>{data.summerBaseObserved.noncompliant}</p>
+                        <p>{data.summerCriticalObserved.noncompliant}</p>
+                        <p>{data.summerSubsistenceObserved.noncompliant}</p>
+                    </td>
+                    <td>
+                        <p>{data.autumnBaseObserved.noncompliant}</p>
+                        <p>{data.autumnCriticalObserved.noncompliant}</p>
+                        <p>{data.autumnSubsistenceObserved.noncompliant}</p>
+                    </td>
+                    <td>
+                        <p>{data.winterBaseObserved.noncompliant}</p>
+                        <p>{data.winterCriticalObserved.noncompliant}</p>
+                        <p>{data.winterSubsistenceObserved.noncompliant}</p>
+                    </td>
+                </tr>
+                {enableForecasting && (
+                    <tr>
+                        <th scope="row">{gettext('Compliant: Predictions')}</th>
+                        <td>
+                            <p>{gettext('Base')}</p>
+                            <p>{gettext('Critical')}</p>
+                            <p>{gettext('Subsistence')}</p>
+                        </td>
+                        <td>
+                            <p>{data.springBaseForecast.compliant}</p>
+                            <p>{data.springCriticalForecast.compliant}</p>
+                            <p>{data.springSubsistenceForecast.compliant}</p>
+                        </td>
+                        <td>
+                            <p>{data.summerBaseForecast.compliant}</p>
+                            <p>{data.summerCriticalForecast.compliant}</p>
+                            <p>{data.summerSubsistenceForecast.compliant}</p>
+                        </td>
+                        <td>
+                            <p>{data.autumnBaseForecast.compliant}</p>
+                            <p>{data.autumnCriticalForecast.compliant}</p>
+                            <p>{data.autumnSubsistenceForecast.compliant}</p>
+                        </td>
+                        <td>
+                            <p>{data.winterBaseForecast.compliant}</p>
+                            <p>{data.winterCriticalForecast.compliant}</p>
+                            <p>{data.winterSubsistenceForecast.compliant}</p>
+                        </td>
+                    </tr>
+                )}
+                {enableForecasting && (
+                    <tr>
+                        <th scope="row">
+                            {gettext('Noncompliant: Predictions')}
+                        </th>
+                        <td>
+                            <p>{gettext('Base')}</p>
+                            <p>{gettext('Critical')}</p>
+                            <p>{gettext('Subsistence')}</p>
+                        </td>
+                        <td>
+                            <p>{data.springBaseForecast.noncompliant}</p>
+                            <p>{data.springCriticalForecast.noncompliant}</p>
+                            <p>{data.springSubsistenceForecast.noncompliant}</p>
+                        </td>
+                        <td>
+                            <p>{data.summerBaseForecast.noncompliant}</p>
+                            <p>{data.summerCriticalForecast.noncompliant}</p>
+                            <p>{data.summerSubsistenceForecast.noncompliant}</p>
+                        </td>
+                        <td>
+                            <p>{data.autumnBaseForecast.noncompliant}</p>
+                            <p>{data.autumnCriticalForecast.noncompliant}</p>
+                            <p>{data.autumnSubsistenceForecast.noncompliant}</p>
+                        </td>
+                        <td>
+                            <p>{data.winterBaseForecast.noncompliant}</p>
+                            <p>{data.winterCriticalForecast.noncompliant}</p>
+                            <p>{data.winterSubsistenceForecast.noncompliant}</p>
+                        </td>
+                    </tr>
+                )}
+            </tbody>
+        </Table>
+    );
+};
+ComplianceTableEflowsRAELFF.propTypes = {
+    eflowsTS: PropTypes.arrayOf(EflowsShape),
+    enableForecasting: PropTypes.bool.isRequired,
+};
+ComplianceTableEflowsRAELFF.defaultProps = {
+    eflowsTS: [],
+};
+
 export const ComplianceTableEflows = ({
     eflowsTS,
     stationName,
     startDate,
     endDate,
     showProcessingBar,
-    forecastingEnabled,
+    enableForecasting,
+    meanLowFlowMethod,
 }) => {
-    // Overwintering compliance
-    const winterLowObserved = getCompliancePercentagesEflow(
-        eflowsTS,
-        'OW',
-        'LOW',
-        false,
-    );
-    const winterLowForecast = getCompliancePercentagesEflow(
-        eflowsTS,
-        'OW',
-        'LOW',
-        true,
-    );
-    const winterBaseObserved = getCompliancePercentagesEflow(
-        eflowsTS,
-        'OW',
-        'BASE',
-        false,
-    );
-    const winterBaseForecast = getCompliancePercentagesEflow(
-        eflowsTS,
-        'OW',
-        'BASE',
-        true,
-    );
-    const winterSubsistenceObserved = getCompliancePercentagesEflow(
-        eflowsTS,
-        'OW',
-        'SUBSISTENCE',
-        false,
-    );
-    const winterSubsistenceForecast = getCompliancePercentagesEflow(
-        eflowsTS,
-        'OW',
-        'SUBSISTENCE',
-        true,
-    );
-    const winterCriticalObserved = getCompliancePercentagesEflow(
-        eflowsTS,
-        'OW',
-        'CRITICAL',
-        false,
-    );
-    const winterCriticalForecast = getCompliancePercentagesEflow(
-        eflowsTS,
-        'OW',
-        'CRITICAL',
-        true,
-    );
-
-    // Spring Spawning compliance
-    const springLowObserved = getCompliancePercentagesEflow(
-        eflowsTS,
-        'SS',
-        'LOW',
-        false,
-    );
-    const springLowForecast = getCompliancePercentagesEflow(
-        eflowsTS,
-        'SS',
-        'LOW',
-        true,
-    );
-    const springBaseObserved = getCompliancePercentagesEflow(
-        eflowsTS,
-        'SS',
-        'BASE',
-        false,
-    );
-    const springBaseForecast = getCompliancePercentagesEflow(
-        eflowsTS,
-        'SS',
-        'BASE',
-        true,
-    );
-    const springSubsistenceObserved = getCompliancePercentagesEflow(
-        eflowsTS,
-        'SS',
-        'SUBSISTENCE',
-        false,
-    );
-    const springSubsistenceForecast = getCompliancePercentagesEflow(
-        eflowsTS,
-        'SS',
-        'SUBSISTENCE',
-        true,
-    );
-    const springCriticalObserved = getCompliancePercentagesEflow(
-        eflowsTS,
-        'SS',
-        'CRITICAL',
-        false,
-    );
-    const springCriticalForecast = getCompliancePercentagesEflow(
-        eflowsTS,
-        'SS',
-        'CRITICAL',
-        true,
-    );
-
-    // Rearing and Growth compliance
-    const summerLowObserved = getCompliancePercentagesEflow(
-        eflowsTS,
-        'RG',
-        'LOW',
-        false,
-    );
-    const summerLowForecast = getCompliancePercentagesEflow(
-        eflowsTS,
-        'RG',
-        'LOW',
-        true,
-    );
-    const summerBaseObserved = getCompliancePercentagesEflow(
-        eflowsTS,
-        'RG',
-        'BASE',
-        false,
-    );
-    const summerBaseForecast = getCompliancePercentagesEflow(
-        eflowsTS,
-        'RG',
-        'BASE',
-        true,
-    );
-    const summerSubsistenceObserved = getCompliancePercentagesEflow(
-        eflowsTS,
-        'RG',
-        'SUBSISTENCE',
-        false,
-    );
-    const summerSubsistenceForecast = getCompliancePercentagesEflow(
-        eflowsTS,
-        'RG',
-        'SUBSISTENCE',
-        true,
-    );
-    const summerCriticalObserved = getCompliancePercentagesEflow(
-        eflowsTS,
-        'RG',
-        'CRITICAL',
-        false,
-    );
-    const summerCriticalForecast = getCompliancePercentagesEflow(
-        eflowsTS,
-        'RG',
-        'CRITICAL',
-        true,
-    );
-
-    // Fall Spawning compliance
-    const autumnLowObserved = getCompliancePercentagesEflow(
-        eflowsTS,
-        'FS',
-        'LOW',
-        false,
-    );
-    const autumnLowForecast = getCompliancePercentagesEflow(
-        eflowsTS,
-        'FS',
-        'LOW',
-        true,
-    );
-    const autumnBaseObserved = getCompliancePercentagesEflow(
-        eflowsTS,
-        'FS',
-        'BASE',
-        false,
-    );
-    const autumnBaseForecast = getCompliancePercentagesEflow(
-        eflowsTS,
-        'FS',
-        'BASE',
-        true,
-    );
-    const autumnSubsistenceObserved = getCompliancePercentagesEflow(
-        eflowsTS,
-        'FS',
-        'SUBSISTENCE',
-        false,
-    );
-    const autumnSubsistenceForecast = getCompliancePercentagesEflow(
-        eflowsTS,
-        'FS',
-        'SUBSISTENCE',
-        true,
-    );
-    const autumnCriticalObserved = getCompliancePercentagesEflow(
-        eflowsTS,
-        'FS',
-        'CRITICAL',
-        false,
-    );
-    const autumnCriticalForecast = getCompliancePercentagesEflow(
-        eflowsTS,
-        'FS',
-        'CRITICAL',
-        true,
-    );
-
-    const getExportableData = () => ({
-        winterLowObserved,
-        winterLowForecast,
-        winterBaseObserved,
-        winterBaseForecast,
-        winterSubsistenceObserved,
-        winterSubsistenceForecast,
-        winterCriticalObserved,
-        winterCriticalForecast,
-        springLowObserved,
-        springLowForecast,
-        springBaseObserved,
-        springBaseForecast,
-        springSubsistenceObserved,
-        springSubsistenceForecast,
-        springCriticalObserved,
-        springCriticalForecast,
-        summerLowObserved,
-        summerLowForecast,
-        summerBaseObserved,
-        summerBaseForecast,
-        summerSubsistenceObserved,
-        summerSubsistenceForecast,
-        summerCriticalObserved,
-        summerCriticalForecast,
-        autumnLowObserved,
-        autumnLowForecast,
-        autumnBaseObserved,
-        autumnBaseForecast,
-        autumnSubsistenceObserved,
-        autumnSubsistenceForecast,
-        autumnCriticalObserved,
-        autumnCriticalForecast,
-    });
-
     const summaryName = `${getTimeSeriesNameByAbbreviation(
         'EF',
     )} compliance percentages`;
+
+    const exportData =
+        meanLowFlowMethod !== 'RAELFF'
+            ? getExportDataComplianceTableEflowsLow(eflowsTS)
+            : getExportDataComplianceTableEflowsRAELFF(eflowsTS);
 
     return (
         <div
@@ -279,11 +502,13 @@ export const ComplianceTableEflows = ({
                     disabled={showProcessingBar}
                     onDownloadExcel={() =>
                         downloadAsExcelComplianceSummaries(
-                            getExportableData(),
+                            exportData,
                             'EF',
+                            enableForecasting,
                             stationName,
                             startDate,
                             endDate,
+                            meanLowFlowMethod,
                         )
                     }
                     onDownloadImage={() =>
@@ -300,232 +525,17 @@ export const ComplianceTableEflows = ({
                             `${stationName}: ${summaryName} (${startDate}-${endDate})`,
                         )}
                     </p>
-                    <Table
-                        bordered
-                        striped
-                        className="mt-4 fish-coefficients-table"
-                    >
-                        <thead>
-                            <tr>
-                                <th>{gettext('Compliance')}</th>
-                                <th>{gettext('Threshold')}</th>
-                                <th>{gettext('Spring Spawning')}</th>
-                                <th>{gettext('Rearing and Growth')}</th>
-                                <th>{gettext('Fall Spawning')}</th>
-                                <th>{gettext('Overwintering')}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th scope="row">
-                                    {gettext('Compliant: Observations')}
-                                </th>
-                                <td>
-                                    <p>{gettext('Low')}</p>
-                                    <p>{gettext('Base')}</p>
-                                    <p>{gettext('Critical')}</p>
-                                    <p>{gettext('Subsistence')}</p>
-                                </td>
-                                <td>
-                                    <p>{springLowObserved.compliant}</p>
-                                    <p>{springBaseObserved.compliant}</p>
-                                    <p>{springCriticalObserved.compliant}</p>
-                                    <p>{springSubsistenceObserved.compliant}</p>
-                                </td>
-                                <td>
-                                    <p>{summerLowObserved.compliant}</p>
-                                    <p>{summerBaseObserved.compliant}</p>
-                                    <p>{summerCriticalObserved.compliant}</p>
-                                    <p>{summerSubsistenceObserved.compliant}</p>
-                                </td>
-                                <td>
-                                    <p>{autumnLowObserved.compliant}</p>
-                                    <p>{autumnBaseObserved.compliant}</p>
-                                    <p>{autumnCriticalObserved.compliant}</p>
-                                    <p>{autumnSubsistenceObserved.compliant}</p>
-                                </td>
-                                <td>
-                                    <p>{winterLowObserved.compliant}</p>
-                                    <p>{winterBaseObserved.compliant}</p>
-                                    <p>{winterCriticalObserved.compliant}</p>
-                                    <p>{winterSubsistenceObserved.compliant}</p>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">
-                                    {gettext('Noncompliant: Observations')}
-                                </th>
-                                <td>
-                                    <p>{gettext('Low')}</p>
-                                    <p>{gettext('Base')}</p>
-                                    <p>{gettext('Critical')}</p>
-                                    <p>{gettext('Subsistence')}</p>
-                                </td>
-                                <td>
-                                    <p>{springLowObserved.noncompliant}</p>
-                                    <p>{springBaseObserved.noncompliant}</p>
-                                    <p>{springCriticalObserved.noncompliant}</p>
-                                    <p>
-                                        {springSubsistenceObserved.noncompliant}
-                                    </p>
-                                </td>
-                                <td>
-                                    <p>{summerLowObserved.noncompliant}</p>
-                                    <p>{summerBaseObserved.noncompliant}</p>
-                                    <p>{summerCriticalObserved.noncompliant}</p>
-                                    <p>
-                                        {summerSubsistenceObserved.noncompliant}
-                                    </p>
-                                </td>
-                                <td>
-                                    <p>{autumnLowObserved.noncompliant}</p>
-                                    <p>{autumnBaseObserved.noncompliant}</p>
-                                    <p>{autumnCriticalObserved.noncompliant}</p>
-                                    <p>
-                                        {autumnSubsistenceObserved.noncompliant}
-                                    </p>
-                                </td>
-                                <td>
-                                    <p>{winterLowObserved.noncompliant}</p>
-                                    <p>{winterBaseObserved.noncompliant}</p>
-                                    <p>{winterCriticalObserved.noncompliant}</p>
-                                    <p>
-                                        {winterSubsistenceObserved.noncompliant}
-                                    </p>
-                                </td>
-                            </tr>
-                            {forecastingEnabled && (
-                                <tr>
-                                    <th scope="row">
-                                        {gettext('Compliant: Predictions')}
-                                    </th>
-                                    <td>
-                                        <p>{gettext('Low')}</p>
-                                        <p>{gettext('Base')}</p>
-                                        <p>{gettext('Critical')}</p>
-                                        <p>{gettext('Subsistence')}</p>
-                                    </td>
-                                    <td>
-                                        <p>{springLowForecast.compliant}</p>
-                                        <p>{springBaseForecast.compliant}</p>
-                                        <p>
-                                            {springCriticalForecast.compliant}
-                                        </p>
-                                        <p>
-                                            {
-                                                springSubsistenceForecast.compliant
-                                            }
-                                        </p>
-                                    </td>
-                                    <td>
-                                        <p>{summerLowForecast.compliant}</p>
-                                        <p>{summerBaseForecast.compliant}</p>
-                                        <p>
-                                            {summerCriticalForecast.compliant}
-                                        </p>
-                                        <p>
-                                            {
-                                                summerSubsistenceForecast.compliant
-                                            }
-                                        </p>
-                                    </td>
-                                    <td>
-                                        <p>{autumnLowForecast.compliant}</p>
-                                        <p>{autumnBaseForecast.compliant}</p>
-                                        <p>
-                                            {autumnCriticalForecast.compliant}
-                                        </p>
-                                        <p>
-                                            {
-                                                autumnSubsistenceForecast.compliant
-                                            }
-                                        </p>
-                                    </td>
-                                    <td>
-                                        <p>{winterLowForecast.compliant}</p>
-                                        <p>{winterBaseForecast.compliant}</p>
-                                        <p>
-                                            {winterCriticalForecast.compliant}
-                                        </p>
-                                        <p>
-                                            {
-                                                winterSubsistenceForecast.compliant
-                                            }
-                                        </p>
-                                    </td>
-                                </tr>
-                            )}
-                            {forecastingEnabled && (
-                                <tr>
-                                    <th scope="row">
-                                        {gettext('Noncompliant: Predictions')}
-                                    </th>
-                                    <td>
-                                        <p>{gettext('Low')}</p>
-                                        <p>{gettext('Base')}</p>
-                                        <p>{gettext('Critical')}</p>
-                                        <p>{gettext('Subsistence')}</p>
-                                    </td>
-                                    <td>
-                                        <p>{springLowForecast.noncompliant}</p>
-                                        <p>{springBaseForecast.noncompliant}</p>
-                                        <p>
-                                            {
-                                                springCriticalForecast.noncompliant
-                                            }
-                                        </p>
-                                        <p>
-                                            {
-                                                springSubsistenceForecast.noncompliant
-                                            }
-                                        </p>
-                                    </td>
-                                    <td>
-                                        <p>{summerLowForecast.noncompliant}</p>
-                                        <p>{summerBaseForecast.noncompliant}</p>
-                                        <p>
-                                            {
-                                                summerCriticalForecast.noncompliant
-                                            }
-                                        </p>
-                                        <p>
-                                            {
-                                                summerSubsistenceForecast.noncompliant
-                                            }
-                                        </p>
-                                    </td>
-                                    <td>
-                                        <p>{autumnLowForecast.noncompliant}</p>
-                                        <p>{autumnBaseForecast.noncompliant}</p>
-                                        <p>
-                                            {
-                                                autumnCriticalForecast.noncompliant
-                                            }
-                                        </p>
-                                        <p>
-                                            {
-                                                autumnSubsistenceForecast.noncompliant
-                                            }
-                                        </p>
-                                    </td>
-                                    <td>
-                                        <p>{winterLowForecast.noncompliant}</p>
-                                        <p>{winterBaseForecast.noncompliant}</p>
-                                        <p>
-                                            {
-                                                winterCriticalForecast.noncompliant
-                                            }
-                                        </p>
-                                        <p>
-                                            {
-                                                winterSubsistenceForecast.noncompliant
-                                            }
-                                        </p>
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </Table>
+                    {meanLowFlowMethod !== 'RAELFF' ? (
+                        <ComplianceTableEflowsLow
+                            eflowsTS={eflowsTS}
+                            enableForecasting={enableForecasting}
+                        />
+                    ) : (
+                        <ComplianceTableEflowsRAELFF
+                            eflowsTS={eflowsTS}
+                            enableForecasting={enableForecasting}
+                        />
+                    )}
                 </div>
             )}
         </div>
@@ -538,7 +548,14 @@ ComplianceTableEflows.propTypes = {
     startDate: PropTypes.string.isRequired,
     endDate: PropTypes.string.isRequired,
     showProcessingBar: PropTypes.bool.isRequired,
-    forecastingEnabled: PropTypes.bool.isRequired,
+    enableForecasting: PropTypes.bool.isRequired,
+    meanLowFlowMethod: PropTypes.oneOf([
+        'TNT30',
+        'TNT20',
+        'EXCEED95',
+        'EXCEED75',
+        'RAELFF',
+    ]).isRequired,
 };
 
 ComplianceTableEflows.defaultProps = {

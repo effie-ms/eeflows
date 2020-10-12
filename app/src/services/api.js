@@ -69,14 +69,9 @@ const api = createSagaRouter(
             detail: 'stations/${pk}',
             eflows:
                 'stations/${pk}/eflows?fromTime=${fromTime}&toTime=${toTime}&area=${area}&areaFactor=${areaFactor}&' +
-                'fetId=${fetId}&secondAxisType=${secondAxisType}&secondAxisThreshold=${secondAxisThreshold}&' +
-                'fillMissingEflows=${fillMissingEflows}&fillMissingSecondAxis=${fillMissingSecondAxis}&' +
-                'forecastMultiStationsEflows=${forecastMultiStationsEflows}&' +
-                'forecastMultiStationsSecondAxis=${forecastMultiStationsSecondAxis}&' +
-                'forecastEflowsVariable=${forecastEflowsVariable}&' +
-                'forecastSecondAxisVariable=${forecastSecondAxisVariable}&' +
+                'fetId=${fetId}&secondAxisType=${secondAxisType}&' +
                 'meanLowFlowMethod=${meanLowFlowMethod}&meanLowFlowMethodFrequency=${meanLowFlowMethodFrequency}&' +
-                'multiplyByFishCoefficients=${multiplyByFishCoefficients}&enableForecasting=${enableForecasting}',
+                'enableForecasting=${enableForecasting}',
         },
     },
     {

@@ -116,7 +116,6 @@ class StationsTest(TestCase):
         valid_to_time = "2012-12-31"
         valid_sec_axis_ts_type1 = "TW"
         valid_sec_axis_ts_type2 = "WL"
-        valid_sec_axis_threshold = 0
         valid_fet_id = self.station.river_FET.pk
         valid_area = 100
         valid_area_factor = 1
@@ -125,19 +124,12 @@ class StationsTest(TestCase):
             "fromTime": valid_from_time,
             "toTime": valid_to_time,
             "secondAxisType": valid_sec_axis_ts_type1,
-            "secondAxisThreshold": valid_sec_axis_threshold,
             "fetId": valid_fet_id,
             "area": valid_area,
             "areaFactor": valid_area_factor,
-            "fillMissingEflows": False,
-            "fillMissingSecondAxis": False,
-            "forecastMultiStationsEflows": False,
-            "forecastMultiStationsSecondAxis": False,
-            "forecastEflowsVariable": "Q",
-            "forecastSecondAxisVariable": "TW",
             "meanLowFlowMethod": "TNT30",
             "meanLowFlowMethodFrequency": "SEASONAL",
-            "multiplyByFishCoefficients": True,
+            "enableForecasting": False,
         }
 
         import time
@@ -158,19 +150,12 @@ class StationsTest(TestCase):
                 "fromTime": valid_from_time,
                 "toTime": valid_to_time,
                 "secondAxisType": valid_sec_axis_ts_type2,
-                "secondAxisThreshold": valid_sec_axis_threshold,
                 "fetId": valid_fet_id,
                 "area": valid_area,
                 "areaFactor": valid_area_factor,
-                "fillMissingEflows": False,
-                "fillMissingSecondAxis": False,
-                "forecastMultiStationsEflows": False,
-                "forecastMultiStationsSecondAxis": False,
-                "forecastEflowsVariable": "Q",
-                "forecastSecondAxisVariable": "TW",
                 "meanLowFlowMethod": "TNT30",
                 "meanLowFlowMethodFrequency": "LONG-TERM",
-                "multiplyByFishCoefficients": True,
+                "enableForecasting": False,
             },
         )
         self.assertEqual(response.status_code, 404)  # not found
@@ -178,10 +163,7 @@ class StationsTest(TestCase):
         # missing data in query
         response = client.get(
             reverse("api-stations-eflows", kwargs={"pk": valid_pk}),
-            data={
-                "fromTime": valid_from_time,
-                "secondAxisThreshold": valid_sec_axis_threshold,
-            },
+            data={"fromTime": valid_from_time,},
         )
         self.assertEqual(response.status_code, 400)  # bad request
 
@@ -193,19 +175,12 @@ class StationsTest(TestCase):
                 "fromTime": invalid_from_time,
                 "toTime": valid_to_time,
                 "secondAxisType": valid_sec_axis_ts_type2,
-                "secondAxisThreshold": valid_sec_axis_threshold,
                 "fetId": valid_fet_id,
                 "area": valid_area,
                 "areaFactor": valid_area_factor,
-                "fillMissingEflows": False,
-                "fillMissingSecondAxis": False,
-                "forecastMultiStationsEflows": False,
-                "forecastMultiStationsSecondAxis": False,
-                "forecastEflowsVariable": "Q",
-                "forecastSecondAxisVariable": "TW",
                 "meanLowFlowMethod": "TNT30",
                 "meanLowFlowMethodFrequency": "SEASONAL",
-                "multiplyByFishCoefficients": True,
+                "enableForecasting": False,
             },
         )
         self.assertEqual(response.status_code, 400)  # bad request
@@ -217,19 +192,12 @@ class StationsTest(TestCase):
                 "fromTime": valid_to_time,
                 "toTime": valid_from_time,
                 "secondAxisType": valid_sec_axis_ts_type2,
-                "secondAxisThreshold": valid_sec_axis_threshold,
                 "fetId": valid_fet_id,
                 "area": valid_area,
                 "areaFactor": valid_area_factor,
-                "fillMissingEflows": False,
-                "fillMissingSecondAxis": False,
-                "forecastMultiStationsEflows": False,
-                "forecastMultiStationsSecondAxis": False,
-                "forecastEflowsVariable": "Q",
-                "forecastSecondAxisVariable": "TW",
                 "meanLowFlowMethod": "TNT30",
                 "meanLowFlowMethodFrequency": "SEASONAL",
-                "multiplyByFishCoefficients": True,
+                "enableForecasting": False,
             },
         )
         self.assertEqual(response.status_code, 400)  # bad request
@@ -242,44 +210,12 @@ class StationsTest(TestCase):
                 "fromTime": valid_from_time,
                 "toTime": valid_to_time,
                 "secondAxisType": invalid_ts_type,
-                "secondAxisThreshold": valid_sec_axis_threshold,
                 "fetId": valid_fet_id,
                 "area": valid_area,
                 "areaFactor": valid_area_factor,
-                "fillMissingEflows": False,
-                "fillMissingSecondAxis": False,
-                "forecastMultiStationsEflows": False,
-                "forecastMultiStationsSecondAxis": False,
-                "forecastEflowsVariable": "Q",
-                "forecastSecondAxisVariable": "TW",
                 "meanLowFlowMethod": "TNT30",
                 "meanLowFlowMethodFrequency": "SEASONAL",
-                "multiplyByFishCoefficients": True,
-            },
-        )
-        self.assertEqual(response.status_code, 400)  # bad request
-
-        # invalid secondary axis threshold value
-        invalid_threshold = "AAA"
-        response = client.get(
-            reverse("api-stations-eflows", kwargs={"pk": valid_pk}),
-            data={
-                "fromTime": valid_from_time,
-                "toTime": valid_to_time,
-                "secondAxisType": valid_sec_axis_ts_type2,
-                "secondAxisThreshold": invalid_threshold,
-                "fetId": valid_fet_id,
-                "area": valid_area,
-                "areaFactor": valid_area_factor,
-                "fillMissingEflows": False,
-                "fillMissingSecondAxis": False,
-                "forecastMultiStationsEflows": False,
-                "forecastMultiStationsSecondAxis": False,
-                "forecastEflowsVariable": "Q",
-                "forecastSecondAxisVariable": "TW",
-                "meanLowFlowMethod": "TNT30",
-                "meanLowFlowMethodFrequency": "SEASONAL",
-                "multiplyByFishCoefficients": True,
+                "enableForecasting": False,
             },
         )
         self.assertEqual(response.status_code, 400)  # bad request
@@ -291,19 +227,12 @@ class StationsTest(TestCase):
                 "fromTime": valid_from_time,
                 "toTime": valid_to_time,
                 "secondAxisType": valid_sec_axis_ts_type2,
-                "secondAxisThreshold": valid_sec_axis_threshold,
                 "fetId": 100500,
                 "area": valid_area,
                 "areaFactor": valid_area_factor,
-                "fillMissingEflows": False,
-                "fillMissingSecondAxis": False,
-                "forecastMultiStationsEflows": False,
-                "forecastMultiStationsSecondAxis": False,
-                "forecastEflowsVariable": "Q",
-                "forecastSecondAxisVariable": "TW",
                 "meanLowFlowMethod": "TNT30",
                 "meanLowFlowMethodFrequency": "SEASONAL",
-                "multiplyByFishCoefficients": True,
+                "enableForecasting": False,
             },
         )
         self.assertEqual(response.status_code, 400)  # bad request
@@ -314,19 +243,12 @@ class StationsTest(TestCase):
                 "fromTime": valid_from_time,
                 "toTime": valid_to_time,
                 "secondAxisType": valid_sec_axis_ts_type2,
-                "secondAxisThreshold": valid_sec_axis_threshold,
                 "fetId": valid_fet_id,
                 "area": 0,
                 "areaFactor": 0,
-                "fillMissingEflows": False,
-                "fillMissingSecondAxis": False,
-                "forecastMultiStationsEflows": False,
-                "forecastMultiStationsSecondAxis": False,
-                "forecastEflowsVariable": "Q",
-                "forecastSecondAxisVariable": "TW",
                 "meanLowFlowMethod": "TNT30",
                 "meanLowFlowMethodFrequency": "SEASONAL",
-                "multiplyByFishCoefficients": True,
+                "enableForecasting": False,
             },
         )
         self.assertEqual(response.status_code, 200)
@@ -336,7 +258,7 @@ class StationsTest(TestCase):
         to_time = datetime.date(2012, 12, 31)
         pd_excel_file = pd.ExcelFile(self.station.hydrological_data.path)
         fill_missing_values = False
-        avg_forecast_df_with_compatibility = None
+        avg_forecast_ts = None
 
         temperature_min_ts, _ = get_measurement_ts(
             pd_excel_file,
@@ -345,7 +267,7 @@ class StationsTest(TestCase):
             from_time,
             to_time,
             fill_missing_values,
-            avg_forecast_df_with_compatibility,
+            avg_forecast_ts,
         )
         self.assertEqual(len(temperature_min_ts), 366)
 
@@ -356,7 +278,7 @@ class StationsTest(TestCase):
             from_time,
             to_time,
             fill_missing_values,
-            avg_forecast_df_with_compatibility,
+            avg_forecast_ts,
         )
         self.assertEqual(len(discharge_avg_ts), 366)
 
@@ -367,7 +289,7 @@ class StationsTest(TestCase):
             from_time,
             to_time,
             fill_missing_values,
-            avg_forecast_df_with_compatibility,
+            avg_forecast_ts,
         )
         self.assertEqual(len(wlevel_max_df), 366)
 
@@ -380,7 +302,7 @@ class StationsTest(TestCase):
             from_time,
             to_time,
             fill_missing_values,
-            avg_forecast_df_with_compatibility,
+            avg_forecast_ts,
         )
         self.assertEqual(ts, None)
 
@@ -395,7 +317,7 @@ class StationsTest(TestCase):
             out_from,
             to_time,
             fill_missing_values,
-            avg_forecast_df_with_compatibility,
+            avg_forecast_ts,
         )
         self.assertEqual(len(discharge_avg_ts), 365 * 3 + 366 * 2)
 
@@ -406,7 +328,7 @@ class StationsTest(TestCase):
             from_time,
             out_to,
             fill_missing_values,
-            avg_forecast_df_with_compatibility,
+            avg_forecast_ts,
         )
         self.assertEqual(len(discharge_avg_ts), 365 * 6 + 366 * 3)
 
@@ -418,19 +340,19 @@ class StationsTest(TestCase):
             to_time,
             from_time,
             fill_missing_values,
-            avg_forecast_df_with_compatibility,
+            avg_forecast_ts,
         )
         self.assertEqual(len(discharge_avg_ts), 0)
 
         # from_time is same as to_time
-        discharge_avg_df, _ = get_measurement_ts(
+        discharge_avg_ts, _ = get_measurement_ts(
             pd_excel_file,
             SensorType.Discharge,
             MeasurementType.AVG,
             from_time,
             from_time,
             fill_missing_values,
-            avg_forecast_df_with_compatibility,
+            avg_forecast_ts,
         )
         self.assertEqual(len(discharge_avg_ts), 1)
 
@@ -490,7 +412,6 @@ class StationsTest(TestCase):
         pk = self.station.pk
         valid_from_time = "2013-01-01"
         valid_to_time = "2013-04-01"
-        valid_temperature_threshold = 0
 
         # valid payload
         response = client.get(
@@ -499,19 +420,12 @@ class StationsTest(TestCase):
                 "fromTime": valid_from_time,
                 "toTime": valid_to_time,
                 "secondAxisType": "TW",
-                "secondAxisThreshold": valid_temperature_threshold,
                 "fetId": self.station.river_FET.id,
                 "area": 100,
                 "areaFactor": 2,
-                "fillMissingEflows": True,
-                "fillMissingSecondAxis": True,
-                "forecastMultiStationsEflows": True,
-                "forecastMultiStationsSecondAxis": False,
-                "forecastEflowsVariable": "Q",
-                "forecastSecondAxisVariable": "WL",
                 "meanLowFlowMethod": "TNT30",
                 "meanLowFlowMethodFrequency": "SEASONAL",
-                "multiplyByFishCoefficients": True,
+                "enableForecasting": True,
             },
         )
         self.assertEqual(response.status_code, 200)  # success

@@ -34,6 +34,14 @@ export const Graphs = ({
     showFullForecastSecondAxis,
     forecastingSummary,
     graphRef,
+    onSetEflowThreshold,
+    onSetEflowMeasurementType,
+    onSetSecondAxisMeasurementType,
+    setShowSecondaryAxis,
+    setShowFullForecastDischarge,
+    setShowFullForecastSecondAxis,
+    enableForecasting,
+    meanLowFlowMethod,
 }) => {
     const formattedStartDate = moment(startDate).format('DD.MM.YYYY');
     const formattedEndDate = moment(endDate).format('DD.MM.YYYY');
@@ -56,54 +64,64 @@ export const Graphs = ({
                 endDate={formattedEndDate}
                 showFullForecastDischarge={showFullForecastDischarge}
                 showFullForecastSecondAxis={showFullForecastSecondAxis}
+                onSetEflowMeasurementType={onSetEflowMeasurementType}
+                onSetSecondAxisMeasurementType={onSetSecondAxisMeasurementType}
+                setShowSecondaryAxis={setShowSecondaryAxis}
+                onSetEflowThreshold={onSetEflowThreshold}
+                setShowFullForecastDischarge={setShowFullForecastDischarge}
+                setShowFullForecastSecondAxis={setShowFullForecastSecondAxis}
+                enableForecasting={enableForecasting}
+                meanLowFlowMethod={meanLowFlowMethod}
             />
-            <ForecastingSummary
-                forecastingSummary={forecastingSummary}
-                showProcessingBar={showProcessingBar}
-                showSecondaryAxis={showSecondaryAxis}
-            />
+            {enableForecasting && (
+                <ForecastingSummary
+                    forecastingSummary={forecastingSummary}
+                    showProcessingBar={showProcessingBar}
+                    showSecondaryAxis={showSecondaryAxis}
+                />
+            )}
             <div className="d-flex justify-content-between">
                 <UCUTPlotEflows
                     eflowsTS={eflowsTS}
                     stationName={stationName}
                     startDate={formattedStartDate}
                     endDate={formattedEndDate}
-                    forecastingEnabled={showFullForecastDischarge}
+                    enableForecasting={enableForecasting}
                     showProcessingBar={showProcessingBar}
+                    meanLowFlowMethod={meanLowFlowMethod}
                 />
                 <ComplianceTableEflows
                     eflowsTS={eflowsTS}
                     stationName={stationName}
                     startDate={formattedStartDate}
                     endDate={formattedEndDate}
-                    forecastingEnabled={showFullForecastDischarge}
+                    enableForecasting={enableForecasting}
+                    showProcessingBar={showProcessingBar}
+                    meanLowFlowMethod={meanLowFlowMethod}
+                />
+            </div>
+            <div className="d-flex justify-content-between">
+                <UCUTPlotSecondAxis
+                    eflowsTS={eflowsTS}
+                    threshold={secondAxisThreshold}
+                    secondAxisTimeSeriesType={secondAxisTimeSeriesType}
+                    stationName={stationName}
+                    startDate={formattedStartDate}
+                    endDate={formattedEndDate}
+                    enableForecasting={enableForecasting}
+                    showProcessingBar={showProcessingBar}
+                />
+                <ComplianceTableSecondAxis
+                    eflowsTS={eflowsTS}
+                    threshold={secondAxisThreshold}
+                    stationName={stationName}
+                    secondAxisTimeSeriesType={secondAxisTimeSeriesType}
+                    startDate={formattedStartDate}
+                    endDate={formattedEndDate}
+                    enableForecasting={enableForecasting}
                     showProcessingBar={showProcessingBar}
                 />
             </div>
-            {showSecondaryAxis && (
-                <div className="d-flex justify-content-between">
-                    <UCUTPlotSecondAxis
-                        eflowsTS={eflowsTS}
-                        threshold={secondAxisThreshold}
-                        secondAxisTimeSeriesType={secondAxisTimeSeriesType}
-                        stationName={stationName}
-                        startDate={formattedStartDate}
-                        endDate={formattedEndDate}
-                        forecastingEnabled={showFullForecastSecondAxis}
-                        showProcessingBar={showProcessingBar}
-                    />
-                    <ComplianceTableSecondAxis
-                        eflowsTS={eflowsTS}
-                        threshold={secondAxisThreshold}
-                        stationName={stationName}
-                        secondAxisTimeSeriesType={secondAxisTimeSeriesType}
-                        startDate={formattedStartDate}
-                        endDate={formattedEndDate}
-                        forecastingEnabled={showFullForecastSecondAxis}
-                        showProcessingBar={showProcessingBar}
-                    />
-                </div>
-            )}
         </div>
     );
 };
@@ -129,6 +147,20 @@ Graphs.propTypes = {
     showFullForecastSecondAxis: PropTypes.bool.isRequired,
     forecastingSummary: ForecastingSummaryShape,
     graphRef: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+    onSetEflowThreshold: PropTypes.func.isRequired,
+    onSetEflowMeasurementType: PropTypes.func.isRequired,
+    onSetSecondAxisMeasurementType: PropTypes.func.isRequired,
+    setShowSecondaryAxis: PropTypes.func.isRequired,
+    setShowFullForecastDischarge: PropTypes.func.isRequired,
+    setShowFullForecastSecondAxis: PropTypes.func.isRequired,
+    enableForecasting: PropTypes.bool.isRequired,
+    meanLowFlowMethod: PropTypes.oneOf([
+        'TNT30',
+        'TNT20',
+        'EXCEED95',
+        'EXCEED75',
+        'RAELFF',
+    ]).isRequired,
 };
 
 Graphs.defaultProps = {

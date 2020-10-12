@@ -14,16 +14,8 @@ export const fetchEflowsAction = (
     areaFactor,
     fetId,
     secondAxisType,
-    secondAxisThreshold,
-    fillMissingEflows,
-    fillMissingSecondAxis,
-    forecastMultiStationsEflows,
-    forecastMultiStationsSecondAxis,
-    forecastEflowsVariable,
-    forecastSecondAxisVariable,
     meanLowFlowMethod,
     meanLowFlowMethodFrequency,
-    multiplyByFishCoefficients,
     enableForecasting,
 ) => ({
     type: FETCH_EFLOWS_ACTION_TYPE,
@@ -34,16 +26,8 @@ export const fetchEflowsAction = (
     areaFactor,
     fetId,
     secondAxisType,
-    secondAxisThreshold,
-    fillMissingEflows,
-    fillMissingSecondAxis,
-    forecastMultiStationsEflows,
-    forecastMultiStationsSecondAxis,
-    forecastEflowsVariable,
-    forecastSecondAxisVariable,
     meanLowFlowMethod,
     meanLowFlowMethodFrequency,
-    multiplyByFishCoefficients,
     enableForecasting,
 });
 
@@ -55,16 +39,8 @@ function* fetchEflows({
     areaFactor,
     fetId,
     secondAxisType,
-    secondAxisThreshold,
-    fillMissingEflows,
-    fillMissingSecondAxis,
-    forecastMultiStationsEflows,
-    forecastMultiStationsSecondAxis,
-    forecastEflowsVariable,
-    forecastSecondAxisVariable,
     meanLowFlowMethod,
     meanLowFlowMethodFrequency,
-    multiplyByFishCoefficients,
     enableForecasting,
 }) {
     try {
@@ -79,16 +55,8 @@ function* fetchEflows({
             areaFactor,
             fetId,
             secondAxisType,
-            secondAxisThreshold,
-            fillMissingEflows,
-            fillMissingSecondAxis,
-            forecastMultiStationsEflows,
-            forecastMultiStationsSecondAxis,
-            forecastEflowsVariable,
-            forecastSecondAxisVariable,
             meanLowFlowMethod,
             meanLowFlowMethodFrequency,
-            multiplyByFishCoefficients,
             enableForecasting,
         });
         const parsedEflows = JSON.parse(eflows.replace(/\bNaN\b/g, 'null'));
@@ -120,6 +88,7 @@ function* fetchEflows({
                 arr[index].max_second_axis_ts,
             ];
         });
+
         yield put(receiveEflows(parsedEflows));
     } catch (err) {
         console.error('Something went wrong: eflows fetching');
@@ -136,16 +105,8 @@ export const fetchEflowsInitialWorker = ({ params }) => {
         params.areaFactor,
         params.fetId,
         params.secondAxisType,
-        params.secondAxisThreshold,
-        params.fillMissingEflows,
-        params.fillMissingSecondAxis,
-        params.forecastMultiStationsEflows,
-        params.forecastMultiStationsSecondAxis,
-        params.forecastEflowsVariable,
-        params.forecastSecondAxisVariable,
         params.meanLowFlowMethod,
         params.meanLowFlowMethodFrequency,
-        params.multiplyByFishCoefficients,
         params.enableForecasting,
     );
 };

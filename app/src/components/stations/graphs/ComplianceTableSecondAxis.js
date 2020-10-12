@@ -20,7 +20,7 @@ export const ComplianceTableSecondAxis = ({
     startDate,
     endDate,
     showProcessingBar,
-    forecastingEnabled,
+    enableForecasting,
 }) => {
     const winterObserved = getCompliancePercentagesSecondaryAxisTS(
         eflowsTS,
@@ -110,6 +110,7 @@ export const ComplianceTableSecondAxis = ({
                         downloadAsExcelComplianceSummaries(
                             getExportableData(),
                             secondAxisTimeSeriesType,
+                            enableForecasting,
                             stationName,
                             startDate,
                             endDate,
@@ -183,7 +184,7 @@ export const ComplianceTableSecondAxis = ({
                                     <p>{winterObserved.noncompliant}</p>
                                 </td>
                             </tr>
-                            {forecastingEnabled && (
+                            {enableForecasting && (
                                 <tr>
                                     <th scope="row">
                                         {gettext('Compliant: Predictions')}
@@ -202,7 +203,7 @@ export const ComplianceTableSecondAxis = ({
                                     </td>
                                 </tr>
                             )}
-                            {forecastingEnabled && (
+                            {enableForecasting && (
                                 <tr>
                                     <th scope="row">
                                         {gettext('Noncompliant: Predictions')}
@@ -237,7 +238,7 @@ ComplianceTableSecondAxis.propTypes = {
     endDate: PropTypes.string.isRequired,
     secondAxisTimeSeriesType: PropTypes.oneOf(['WL', 'TW']).isRequired,
     showProcessingBar: PropTypes.bool.isRequired,
-    forecastingEnabled: PropTypes.bool.isRequired,
+    enableForecasting: PropTypes.bool.isRequired,
 };
 
 ComplianceTableSecondAxis.defaultProps = {

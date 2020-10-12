@@ -63,6 +63,8 @@ def get_low_flow_method_by_abbr(method_abbr):
         return MeanLowFlowMethod.ExceedanceProbability95
     if method_abbr == "EXCEED75":
         return MeanLowFlowMethod.ExceedanceProbability75
+    if method_abbr == "RAELFF":
+        return MeanLowFlowMethod.PolishRAELFF
     return None
 
 
@@ -135,6 +137,7 @@ def get_measurement_ts(
         forecast_flags_ts = pd.Series(
             data=[(dt not in filtered_dates) for dt in all_dates_within],
             index=all_dates_within,
+            dtype="float64",
         )
 
         # return time series with all the dates in the range and with values that can be calculated

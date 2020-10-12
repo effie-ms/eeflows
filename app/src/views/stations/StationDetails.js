@@ -60,44 +60,12 @@ const StationDetails = ({ station, eflows, onFetchEflows, fets }) => {
         setShowFullForecastSecondAxis,
     ] = useState(true);
 
-    const [
-        fillMissingValuesDischarge,
-        setFillMissingValuesDischarge,
-    ] = useState(true);
-
-    const [
-        fillMissingValuesSecondAxis,
-        setFillMissingValuesSecondAxis,
-    ] = useState(true);
-
-    const [
-        multiStationsForecastDischarge,
-        setMultiStationsForecastDischarge,
-    ] = useState(true);
-
-    const [
-        multiStationsForecastSecondAxis,
-        setMultiStationsForecastSecondAxis,
-    ] = useState(true);
-
-    const [forecastEflowsVariable, setForecastEflowsVariable] = useState('Q');
-
-    const [
-        forecastSecondAxisVariable,
-        setForecastSecondAxisVariable,
-    ] = useState('TW');
-
     // Mean low flow configuration
     const [meanLowFlowMethod, setMeanLowFlowMethod] = useState('TNT30');
     const [
         meanLowFlowMethodFrequency,
         setMeanLowFlowMethodFrequency,
     ] = useState('BIOPERIOD');
-
-    const [
-        multiplyByFishCoefficients,
-        setMultiplyByFishCoefficients,
-    ] = useState(true);
 
     const [enableForecasting, setEnableForecasting] = useState(false);
 
@@ -130,16 +98,10 @@ const StationDetails = ({ station, eflows, onFetchEflows, fets }) => {
         selectedFETId,
         secondAxisTimeSeriesType,
         secondAxisThreshold,
-        fillMissingValuesDischarge,
-        fillMissingValuesSecondAxis,
-        multiStationsForecastDischarge,
-        multiStationsForecastSecondAxis,
-        forecastEflowsVariable,
-        forecastSecondAxisVariable,
         meanLowFlowMethod,
         meanLowFlowMethodFrequency,
-        multiplyByFishCoefficients,
         station,
+        enableForecasting,
     ]);
 
     const onRunEstimation = () => {
@@ -162,16 +124,8 @@ const StationDetails = ({ station, eflows, onFetchEflows, fets }) => {
                 areaFactor,
                 selectedFETId,
                 secondAxisTimeSeriesType,
-                secondAxisThreshold,
-                fillMissingValuesDischarge,
-                fillMissingValuesSecondAxis,
-                multiStationsForecastDischarge,
-                multiStationsForecastSecondAxis,
-                forecastEflowsVariable,
-                forecastSecondAxisVariable,
                 meanLowFlowMethod,
                 meanLowFlowMethodFrequency,
-                multiplyByFishCoefficients,
                 enableForecasting,
             );
         }
@@ -180,6 +134,16 @@ const StationDetails = ({ station, eflows, onFetchEflows, fets }) => {
     const onSetDateRange = ([from, to]) => {
         setStartDate(from);
         setEndDate(to);
+    };
+
+    const onSetMeanLowFlowMethod = _meanLowFlowMethod => {
+        if (_meanLowFlowMethod === 'RAELFF') {
+            setEflowThreshold('base');
+        } else {
+            setEflowThreshold('low');
+        }
+
+        setMeanLowFlowMethod(_meanLowFlowMethod);
     };
 
     const onSetSecondAxisThreshold = thresholdValue => {
@@ -238,85 +202,22 @@ const StationDetails = ({ station, eflows, onFetchEflows, fets }) => {
                             areaFactor={areaFactor}
                             onSetAreaFactor={onSetAreaFactor}
                             eflowThreshold={eflowThreshold}
-                            onSetEflowThreshold={setEflowThreshold}
                             fets={fets}
                             selectedFETId={selectedFETId}
                             onSetSelectedFETId={setSelectedFETId}
-                            eflowMeasurementType={eflowMeasurementType}
-                            onSetEflowMeasurementType={setEflowMeasurementType}
-                            secondAxisMeasurementType={
-                                secondAxisMeasurementType
-                            }
-                            onSetSecondAxisMeasurementType={
-                                setSecondAxisMeasurementType
-                            }
                             secondAxisTimeSeriesType={secondAxisTimeSeriesType}
                             onSetSecondAxisTimeSeriesType={
                                 setSecondAxisTimeSeriesType
                             }
                             secondAxisThreshold={secondAxisThreshold}
                             onSetSecondAxisThreshold={onSetSecondAxisThreshold}
-                            showSecondaryAxis={showSecondaryAxis}
-                            setShowSecondaryAxis={setShowSecondaryAxis}
-                            fillMissingValuesDischarge={
-                                fillMissingValuesDischarge
-                            }
-                            setFillMissingValuesDischarge={
-                                setFillMissingValuesDischarge
-                            }
-                            showFullForecastDischarge={
-                                showFullForecastDischarge
-                            }
-                            setShowFullForecastDischarge={
-                                setShowFullForecastDischarge
-                            }
-                            multiStationsForecastDischarge={
-                                multiStationsForecastDischarge
-                            }
-                            setMultiStationsForecastDischarge={
-                                setMultiStationsForecastDischarge
-                            }
-                            fillMissingValuesSecondAxis={
-                                fillMissingValuesSecondAxis
-                            }
-                            setFillMissingValuesSecondAxis={
-                                setFillMissingValuesSecondAxis
-                            }
-                            showFullForecastSecondAxis={
-                                showFullForecastSecondAxis
-                            }
-                            setShowFullForecastSecondAxis={
-                                setShowFullForecastSecondAxis
-                            }
-                            multiStationsForecastSecondAxis={
-                                multiStationsForecastSecondAxis
-                            }
-                            setMultiStationsForecastSecondAxis={
-                                setMultiStationsForecastSecondAxis
-                            }
-                            forecastEflowsVariable={forecastEflowsVariable}
-                            setForecastEflowsVariable={
-                                setForecastEflowsVariable
-                            }
-                            forecastSecondAxisVariable={
-                                forecastSecondAxisVariable
-                            }
-                            setForecastSecondAxisVariable={
-                                setForecastSecondAxisVariable
-                            }
                             meanLowFlowMethod={meanLowFlowMethod}
-                            onSetMeanLowFlowMethod={setMeanLowFlowMethod}
+                            onSetMeanLowFlowMethod={onSetMeanLowFlowMethod}
                             meanLowFlowMethodFrequency={
                                 meanLowFlowMethodFrequency
                             }
                             onSetMeanLowFlowMethodFrequency={
                                 setMeanLowFlowMethodFrequency
-                            }
-                            multiplyByFishCoefficients={
-                                multiplyByFishCoefficients
-                            }
-                            onSetMultiplyByFishCoefficients={
-                                setMultiplyByFishCoefficients
                             }
                             onRunEstimation={onRunEstimation}
                             watershed={station.catchment_area}
@@ -351,6 +252,22 @@ const StationDetails = ({ station, eflows, onFetchEflows, fets }) => {
                                     }
                                     forecastingSummary={forecastingSummary}
                                     graphRef={graphRef}
+                                    onSetEflowThreshold={setEflowThreshold}
+                                    onSetEflowMeasurementType={
+                                        setEflowMeasurementType
+                                    }
+                                    onSetSecondAxisMeasurementType={
+                                        setSecondAxisMeasurementType
+                                    }
+                                    setShowSecondaryAxis={setShowSecondaryAxis}
+                                    setShowFullForecastDischarge={
+                                        setShowFullForecastDischarge
+                                    }
+                                    setShowFullForecastSecondAxis={
+                                        setShowFullForecastSecondAxis
+                                    }
+                                    enableForecasting={enableForecasting}
+                                    meanLowFlowMethod={meanLowFlowMethod}
                                 />
                             )}
                     </div>
@@ -386,16 +303,8 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
         areaFactor,
         fetId,
         secondAxisType,
-        secondAxisThreshold,
-        fillMissingEflows,
-        fillMissingSecondAxis,
-        forecastMultiStationsEflows,
-        forecastMultiStationsSecondAxis,
-        forecastEflowsVariable,
-        forecastSecondAxisVariable,
         meanLowFlowMethod,
         meanLowFlowMethodFrequency,
-        multiplyByFishCoefficients,
         enableForecasting,
     ) =>
         dispatch(
@@ -407,16 +316,8 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
                 areaFactor,
                 fetId,
                 secondAxisType,
-                secondAxisThreshold,
-                fillMissingEflows,
-                fillMissingSecondAxis,
-                forecastMultiStationsEflows,
-                forecastMultiStationsSecondAxis,
-                forecastEflowsVariable,
-                forecastSecondAxisVariable,
                 meanLowFlowMethod,
                 meanLowFlowMethodFrequency,
-                multiplyByFishCoefficients,
                 enableForecasting,
             ),
         ),
