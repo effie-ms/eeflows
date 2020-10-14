@@ -1,5 +1,3 @@
-import { getEflowValueByType, getSecondaryAxisTSValue } from './flowValues';
-
 const count = arr => {
     return arr.reduce((counter, item) => {
         const p = String(item);
@@ -82,7 +80,13 @@ export const getCumulativeDurationsEflows = (
     isForecast,
 ) => {
     const valueThresholdDateTuples = eflowsTS.map(point => ({
-        ...getEflowValueByType(point, eflowType, isForecast),
+        value: point[`avg_discharge${isForecast ? '_forecast' : ''}`],
+        threshold:
+            point[
+                `avg_${eflowType.toLowerCase()}_eflow_level${
+                    isForecast ? '_forecast' : ''
+                }`
+            ],
         date: point.date,
     }));
 
@@ -96,7 +100,8 @@ export const getCumulativeDurationsSecondaryAxisTS = (
     isUnderThreshold,
 ) => {
     const valueThresholdDateTuples = eflowsTS.map(point => ({
-        ...getSecondaryAxisTSValue(point, threshold, isForecast),
+        value: point[`avg_second_axis_ts${isForecast ? '_forecast' : ''}`],
+        threshold,
         date: point.date,
     }));
 

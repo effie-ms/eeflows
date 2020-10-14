@@ -21,7 +21,6 @@ import {
     getTimeSeriesUnitsByAbbreviation,
     getBioperiodBoundaryShortName,
 } from 'utils/text';
-import { CustomizedDot } from './CustomizedDot';
 import {
     SVGElementCircle,
     SVGElementLine,
@@ -31,109 +30,7 @@ import {
 } from './SVGElements';
 
 import { CustomComplianceTooltip } from './CustomComplianceTooltip';
-
-const getDot = (coord, entityKey, ts2Type, eflowType) => {
-    let exceedsEflow;
-    let forecastEflow;
-
-    if (entityKey === 'min_eflow') {
-        forecastEflow = coord.payload.min_discharge_predicted;
-        if (eflowType === 'base') {
-            exceedsEflow = coord.payload.min_exceeds_base_eflow;
-        }
-        if (eflowType === 'subsistence') {
-            exceedsEflow = coord.payload.min_exceeds_subsistence_eflow;
-        }
-        if (eflowType === 'critical') {
-            exceedsEflow = coord.payload.min_exceeds_critical_eflow;
-        }
-        if (eflowType === 'low') {
-            exceedsEflow = coord.payload.min_exceeds_low_eflow;
-        }
-    }
-    if (entityKey === 'avg_eflow') {
-        forecastEflow = coord.payload.avg_discharge_predicted;
-        if (eflowType === 'base') {
-            exceedsEflow = coord.payload.avg_exceeds_base_eflow;
-        }
-        if (eflowType === 'subsistence') {
-            exceedsEflow = coord.payload.avg_exceeds_subsistence_eflow;
-        }
-        if (eflowType === 'critical') {
-            exceedsEflow = coord.payload.avg_exceeds_critical_eflow;
-        }
-        if (eflowType === 'low') {
-            exceedsEflow = coord.payload.avg_exceeds_low_eflow;
-        }
-    }
-    if (entityKey === 'avg_eflow_forecast') {
-        forecastEflow = true;
-        if (eflowType === 'base') {
-            exceedsEflow = coord.payload.avg_exceeds_base_eflow_forecast;
-        }
-        if (eflowType === 'subsistence') {
-            exceedsEflow = coord.payload.avg_exceeds_subsistence_eflow_forecast;
-        }
-        if (eflowType === 'critical') {
-            exceedsEflow = coord.payload.avg_exceeds_critical_eflow_forecast;
-        }
-        if (eflowType === 'low') {
-            exceedsEflow = coord.payload.avg_exceeds_low_eflow_forecast;
-        }
-    }
-    if (entityKey === 'max_eflow') {
-        forecastEflow = coord.payload.max_discharge_predicted;
-        if (eflowType === 'base') {
-            exceedsEflow = coord.payload.max_exceeds_base_eflow;
-        }
-        if (eflowType === 'subsistence') {
-            exceedsEflow = coord.payload.max_exceeds_subsistence_eflow;
-        }
-        if (eflowType === 'critical') {
-            exceedsEflow = coord.payload.max_exceeds_critical_eflow;
-        }
-        if (eflowType === 'low') {
-            exceedsEflow = coord.payload.max_exceeds_low_eflow;
-        }
-    }
-
-    let exceedsSecondAxis;
-    let forecastSecondAxis;
-
-    if (entityKey === `min_sec_axis`) {
-        exceedsSecondAxis = coord.payload.min_exceeds_second_axis_ts;
-        forecastSecondAxis = coord.payload.min_second_axis_ts_predicted;
-    }
-    if (entityKey === `avg_sec_axis`) {
-        exceedsSecondAxis = coord.payload.avg_exceeds_second_axis_ts;
-        forecastSecondAxis = coord.payload.avg_second_axis_ts_predicted;
-    }
-    if (entityKey === `avg_sec_axis_forecast`) {
-        exceedsSecondAxis = coord.payload.avg_exceeds_second_axis_ts_forecast;
-        forecastSecondAxis = true;
-    }
-    if (entityKey === `max_sec_axis`) {
-        exceedsSecondAxis = coord.payload.max_exceeds_second_axis_ts;
-        forecastSecondAxis = coord.payload.max_second_axis_ts_predicted;
-    }
-
-    return (
-        coord &&
-        coord.cx &&
-        coord.cy && (
-            <CustomizedDot
-                cx={coord.cx}
-                cy={coord.cy}
-                key={`${entityKey}(${coord.cx};${coord.cy})`}
-                exceedsEflow={exceedsEflow}
-                forecastEflow={forecastEflow}
-                exceedsSecondAxis={exceedsSecondAxis}
-                forecastSecondAxis={forecastSecondAxis}
-                entityKey={ts2Type}
-            />
-        )
-    );
-};
+import { CustomizedDot } from './CustomizedDot';
 
 const renderComplianceGraphLegend = (
     showSecondaryAxis,
@@ -299,7 +196,7 @@ export const ComplianceGraph = ({
     showFullForecastDischarge,
     showFullForecastSecondAxis,
 }) => (
-    <div id="compliance-graph">
+    <div id="compliance-graph" className="w-100 mt-3">
         <p style={{ textAlign: 'center', fontSize: '18px' }}>
             {gettext(`${stationName}:
         ${gettext(
@@ -441,9 +338,16 @@ export const ComplianceGraph = ({
                         stroke="#137cbd"
                         strokeWidth={3}
                         connectNulls
-                        dot={coord =>
-                            getDot(coord, 'min_eflow', 'EF', eflowType)
-                        }
+                        dot={coord => (
+                            <CustomizedDot
+                                key={`min-eflow-${coord.key}`}
+                                coord={coord}
+                                measurementType="min"
+                                timeSeriesType="EF"
+                                eflowType={eflowType}
+                                isForecast={false}
+                            />
+                        )}
                         unit={getTimeSeriesUnitsByAbbreviation('EF', factored)}
                     />
                 )}
@@ -458,9 +362,16 @@ export const ComplianceGraph = ({
                         stroke="#137cbd"
                         strokeWidth={3}
                         connectNulls
-                        dot={coord =>
-                            getDot(coord, 'avg_eflow', 'EF', eflowType)
-                        }
+                        dot={coord => (
+                            <CustomizedDot
+                                key={`avg-eflow-${coord.key}`}
+                                coord={coord}
+                                measurementType="avg"
+                                timeSeriesType="EF"
+                                eflowType={eflowType}
+                                isForecast={false}
+                            />
+                        )}
                         unit={getTimeSeriesUnitsByAbbreviation('EF', factored)}
                     />
                 )}
@@ -476,15 +387,16 @@ export const ComplianceGraph = ({
                             stroke="#4F0CF6"
                             connectNulls
                             strokeWidth={1}
-                            dot={
-                                coord =>
-                                    getDot(
-                                        coord,
-                                        'avg_eflow_forecast',
-                                        'EF',
-                                        eflowType,
-                                    ) // TODO
-                            }
+                            dot={coord => (
+                                <CustomizedDot
+                                    key={`avg-eflow-forecast-${coord.key}`}
+                                    coord={coord}
+                                    measurementType="avg"
+                                    timeSeriesType="EF"
+                                    eflowType={eflowType}
+                                    isForecast
+                                />
+                            )}
                             unit={getTimeSeriesUnitsByAbbreviation(
                                 'EF',
                                 factored,
@@ -502,9 +414,16 @@ export const ComplianceGraph = ({
                         stroke="#137cbd"
                         strokeWidth={3}
                         connectNulls
-                        dot={coord =>
-                            getDot(coord, 'max_eflow', 'EF', eflowType)
-                        }
+                        dot={coord => (
+                            <CustomizedDot
+                                key={`max-eflow-${coord.key}`}
+                                coord={coord}
+                                measurementType="max"
+                                timeSeriesType="EF"
+                                eflowType={eflowType}
+                                isForecast={false}
+                            />
+                        )}
                         unit={getTimeSeriesUnitsByAbbreviation('EF', factored)}
                     />
                 )}
@@ -526,13 +445,16 @@ export const ComplianceGraph = ({
                             }
                             connectNulls
                             strokeWidth={3}
-                            dot={coord =>
-                                getDot(
-                                    coord,
-                                    'min_sec_axis',
-                                    secondAxisTimeSeriesType,
-                                )
-                            }
+                            dot={coord => (
+                                <CustomizedDot
+                                    key={`min-sec-axis-${coord.key}`}
+                                    coord={coord}
+                                    measurementType="min"
+                                    timeSeriesType={secondAxisTimeSeriesType}
+                                    isForecast={false}
+                                    thresholdValue={secondAxisThreshold}
+                                />
+                            )}
                             unit={getTimeSeriesUnitsByAbbreviation(
                                 secondAxisTimeSeriesType,
                                 false,
@@ -557,13 +479,16 @@ export const ComplianceGraph = ({
                             }
                             connectNulls
                             strokeWidth={3}
-                            dot={coord =>
-                                getDot(
-                                    coord,
-                                    'avg_sec_axis',
-                                    secondAxisTimeSeriesType,
-                                )
-                            }
+                            dot={coord => (
+                                <CustomizedDot
+                                    key={`avg-sec-axis-${coord.key}`}
+                                    coord={coord}
+                                    measurementType="avg"
+                                    timeSeriesType={secondAxisTimeSeriesType}
+                                    isForecast={false}
+                                    thresholdValue={secondAxisThreshold}
+                                />
+                            )}
                             unit={getTimeSeriesUnitsByAbbreviation(
                                 secondAxisTimeSeriesType,
                                 false,
@@ -589,13 +514,16 @@ export const ComplianceGraph = ({
                             }
                             connectNulls
                             strokeWidth={1}
-                            dot={coord =>
-                                getDot(
-                                    coord,
-                                    'avg_sec_axis_forecast',
-                                    secondAxisTimeSeriesType,
-                                )
-                            }
+                            dot={coord => (
+                                <CustomizedDot
+                                    key={`avg-sec-axis-forecast-${coord.key}`}
+                                    coord={coord}
+                                    measurementType="avg"
+                                    timeSeriesType={secondAxisTimeSeriesType}
+                                    isForecast
+                                    thresholdValue={secondAxisThreshold}
+                                />
+                            )}
                             unit={getTimeSeriesUnitsByAbbreviation(
                                 secondAxisTimeSeriesType,
                                 false,
@@ -620,13 +548,16 @@ export const ComplianceGraph = ({
                             }
                             connectNulls
                             strokeWidth={3}
-                            dot={coord =>
-                                getDot(
-                                    coord,
-                                    'max_sec_axis',
-                                    secondAxisTimeSeriesType,
-                                )
-                            }
+                            dot={coord => (
+                                <CustomizedDot
+                                    key={`max-sec-axis-${coord.key}`}
+                                    coord={coord}
+                                    measurementType="max"
+                                    timeSeriesType={secondAxisTimeSeriesType}
+                                    isForecast={false}
+                                    thresholdValue={secondAxisThreshold}
+                                />
+                            )}
                             unit={getTimeSeriesUnitsByAbbreviation(
                                 secondAxisTimeSeriesType,
                                 false,

@@ -6,8 +6,6 @@ import { Switch } from '@blueprintjs/core';
 import { gettext } from 'utils/text';
 
 export const ForecastingConfiguration = ({
-    fillMissingValues,
-    setFillMissingValues,
     multiStationsForecast,
     setMultiStationsForecast,
     forecastVariable,
@@ -31,17 +29,6 @@ export const ForecastingConfiguration = ({
                 </Input>
             </div>
             <Switch
-                className="mt-3"
-                style={{ fontSize: '1.0rem' }}
-                labelElement={gettext(
-                    'Fill mean missing values with the forecast',
-                )}
-                innerLabelChecked="yes"
-                innerLabel="no"
-                checked={fillMissingValues}
-                onChange={() => setFillMissingValues(!fillMissingValues)}
-            />
-            <Switch
                 className="mt-1"
                 style={{ fontSize: '1.0rem' }}
                 labelElement={gettext(
@@ -59,9 +46,7 @@ export const ForecastingConfiguration = ({
 );
 
 ForecastingConfiguration.propTypes = {
-    fillMissingValues: PropTypes.bool.isRequired,
     multiStationsForecast: PropTypes.bool.isRequired,
-    setFillMissingValues: PropTypes.func.isRequired,
     setMultiStationsForecast: PropTypes.func.isRequired,
     forecastVariable: PropTypes.oneOf(['Q', 'TW', 'WL']).isRequired,
     setForecastVariable: PropTypes.func.isRequired,

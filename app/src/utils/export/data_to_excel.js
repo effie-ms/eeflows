@@ -72,21 +72,26 @@ export const downloadAsExcelComplianceGraph = (
 export const downloadAsExcelUCUT = (
     exportData,
     timeSeriesType,
-    showForecast,
+    enableForecasting,
     stationName,
     startDate,
     endDate,
+    eflowMethod,
 ) => {
     const fileName = `${stationName}-UCUT-${timeSeriesType}-${startDate}-${endDate}`;
     let workbook;
 
     if (timeSeriesType === 'EF') {
-        workbook = createAndFillWorkbookEflowUCUT(exportData, showForecast);
+        workbook = createAndFillWorkbookEflowUCUT(
+            exportData,
+            enableForecasting,
+            eflowMethod,
+        );
     } else {
         workbook = createAndFillWorkbookSecondAxisUCUT(
             exportData,
             timeSeriesType,
-            showForecast,
+            enableForecasting,
         );
     }
 
@@ -96,10 +101,11 @@ export const downloadAsExcelUCUT = (
 export const downloadAsExcelComplianceSummaries = (
     exportData,
     timeSeriesType,
-    showForecast,
+    enableForecasting,
     stationName,
     startDate,
     endDate,
+    eflowMethod,
 ) => {
     const fileName = `${stationName}-CT-${timeSeriesType}-${startDate}-${endDate}`;
     let workbook;
@@ -107,13 +113,14 @@ export const downloadAsExcelComplianceSummaries = (
     if (timeSeriesType === 'EF') {
         workbook = createAndFillWorkbookComplianceTableEflows(
             exportData,
-            showForecast,
+            enableForecasting,
+            eflowMethod,
         );
     } else {
         workbook = createAndFillWorkbookComplianceTableSecondAxis(
             exportData,
             timeSeriesType,
-            showForecast,
+            enableForecasting,
         );
     }
 

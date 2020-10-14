@@ -5,133 +5,6 @@ import {
     getTimeSeriesUnitsByAbbreviation,
 } from 'utils/text';
 
-const getEflowThresholdValue = (item, eflowType, measurementType) => {
-    if (measurementType === 'min') {
-        if (eflowType === 'low') {
-            return item.min_low_eflow_level;
-        }
-        if (eflowType === 'base') {
-            return item.min_base_eflow_level;
-        }
-        if (eflowType === 'subsistence') {
-            return item.min_subsistence_eflow_level;
-        }
-        if (eflowType === 'critical') {
-            return item.min_critical_eflow_level;
-        }
-    }
-    if (measurementType === 'max') {
-        if (eflowType === 'low') {
-            return item.max_low_eflow_level;
-        }
-        if (eflowType === 'base') {
-            return item.max_base_eflow_level;
-        }
-        if (eflowType === 'subsistence') {
-            return item.max_subsistence_eflow_level;
-        }
-        if (eflowType === 'critical') {
-            return item.max_critical_eflow_level;
-        }
-    }
-    if (measurementType === 'avg') {
-        if (eflowType === 'low') {
-            return item.avg_low_eflow_level;
-        }
-        if (eflowType === 'base') {
-            return item.avg_base_eflow_level;
-        }
-        if (eflowType === 'subsistence') {
-            return item.avg_subsistence_eflow_level;
-        }
-        if (eflowType === 'critical') {
-            return item.avg_critical_eflow_level;
-        }
-    }
-
-    return null;
-};
-
-const getEflowForecastThresholdValue = (item, eflowType) => {
-    if (eflowType === 'low') {
-        return item.avg_low_eflow_level_forecast;
-    }
-    if (eflowType === 'base') {
-        return item.avg_base_eflow_level_forecast;
-    }
-    if (eflowType === 'subsistence') {
-        return item.avg_subsistence_eflow_level_forecast;
-    }
-    if (eflowType === 'critical') {
-        return item.avg_critical_eflow_level_forecast;
-    }
-    return null;
-};
-
-const getEflowExceedanceValue = (item, eflowType, measurementType) => {
-    if (measurementType === 'min') {
-        if (eflowType === 'low') {
-            return item.min_exceeds_low_eflow;
-        }
-        if (eflowType === 'base') {
-            return item.min_exceeds_base_eflow;
-        }
-        if (eflowType === 'subsistence') {
-            return item.min_exceeds_subsistence_eflow;
-        }
-        if (eflowType === 'critical') {
-            return item.min_exceeds_critical_eflow;
-        }
-    }
-    if (measurementType === 'max') {
-        if (eflowType === 'low') {
-            return item.max_exceeds_low_eflow;
-        }
-        if (eflowType === 'base') {
-            return item.max_exceeds_base_eflow;
-        }
-        if (eflowType === 'subsistence') {
-            return item.max_exceeds_subsistence_eflow;
-        }
-        if (eflowType === 'critical') {
-            return item.max_exceeds_critical_eflow;
-        }
-    }
-    if (measurementType === 'avg') {
-        if (eflowType === 'low') {
-            return item.avg_exceeds_low_eflow;
-        }
-        if (eflowType === 'base') {
-            return item.avg_exceeds_base_eflow;
-        }
-        if (eflowType === 'subsistence') {
-            return item.avg_exceeds_subsistence_eflow;
-        }
-        if (eflowType === 'critical') {
-            return item.avg_exceeds_critical_eflow;
-        }
-    }
-
-    return null;
-};
-
-const getEflowForecastExceedanceValue = (item, eflowType) => {
-    if (eflowType === 'low') {
-        return item.avg_exceeds_low_eflow_forecast;
-    }
-    if (eflowType === 'base') {
-        return item.avg_exceeds_base_eflow_forecast;
-    }
-    if (eflowType === 'subsistence') {
-        return item.avg_exceeds_subsistence_eflow_forecast;
-    }
-    if (eflowType === 'critical') {
-        return item.avg_exceeds_critical_eflow_forecast;
-    }
-
-    return null;
-};
-
 export const fillExcelContentEflowCompliance = (
     contentArray,
     measurementType,
@@ -277,224 +150,99 @@ export const fillExcelContentEflowCompliance = (
         ];
     }
 
-    if (measurementType === 'min') {
-        if (showFullForecastDischarge) {
-            contentArray.map(arrItem =>
-                worksheet.addRow({
-                    date: arrItem.date,
-                    discharge:
-                        arrItem.min_discharge !== null
-                            ? arrItem.min_discharge
-                            : '-',
-                    threshold:
-                        getEflowThresholdValue(
-                            arrItem,
-                            thresholdType,
-                            measurementType,
-                        ) !== null
-                            ? getEflowThresholdValue(
-                                  arrItem,
-                                  thresholdType,
-                                  measurementType,
-                              )
-                            : '-',
-                    exceedsThreshold: getEflowExceedanceValue(
-                        arrItem,
-                        thresholdType,
-                        measurementType,
-                    )
-                        ? 'yes'
-                        : 'no',
-                    predicted: arrItem.min_discharge_predicted ? 'yes' : 'no',
-                    forecast: '-',
-                    thresholdForecast: '-',
-                    exceedsThresholdForecast: '-',
-                }),
-            );
-        } else {
-            contentArray.map(arrItem =>
-                worksheet.addRow({
-                    date: arrItem.date,
-                    discharge:
-                        arrItem.min_discharge !== null
-                            ? arrItem.min_discharge
-                            : '-',
-                    threshold:
-                        getEflowThresholdValue(
-                            arrItem,
-                            thresholdType,
-                            measurementType,
-                        ) !== null
-                            ? getEflowThresholdValue(
-                                  arrItem,
-                                  thresholdType,
-                                  measurementType,
-                              )
-                            : '-',
-                    exceedsThreshold: getEflowExceedanceValue(
-                        arrItem,
-                        thresholdType,
-                        measurementType,
-                    )
-                        ? 'yes'
-                        : 'no',
-                    predicted: arrItem.min_discharge_predicted ? 'yes' : 'no',
-                }),
-            );
-        }
-    } else if (measurementType === 'avg') {
-        if (showFullForecastDischarge) {
-            contentArray.map(arrItem =>
-                worksheet.addRow({
-                    date: arrItem.date,
-                    discharge:
-                        arrItem.avg_discharge !== null
-                            ? arrItem.avg_discharge
-                            : '-',
-                    threshold:
-                        getEflowThresholdValue(
-                            arrItem,
-                            thresholdType,
-                            measurementType,
-                        ) !== null
-                            ? getEflowThresholdValue(
-                                  arrItem,
-                                  thresholdType,
-                                  measurementType,
-                              )
-                            : '-',
-                    exceedsThreshold: getEflowExceedanceValue(
-                        arrItem,
-                        thresholdType,
-                        measurementType,
-                    )
-                        ? 'yes'
-                        : 'no',
-                    predicted: arrItem.avg_discharge_predicted ? 'yes' : 'no',
-                    forecast:
-                        arrItem.avg_discharge_forecast !== null
-                            ? arrItem.avg_discharge_forecast
-                            : '-',
-                    thresholdForecast:
-                        getEflowForecastThresholdValue(
-                            arrItem,
-                            thresholdType,
-                        ) !== null
-                            ? getEflowForecastThresholdValue(
-                                  arrItem,
-                                  thresholdType,
-                              )
-                            : '-',
-                    exceedsThresholdForecast:
-                        getEflowForecastExceedanceValue(
-                            arrItem,
-                            thresholdType,
-                        ) !== null
-                            ? getEflowForecastExceedanceValue(
-                                  arrItem,
-                                  thresholdType,
-                              )
-                                ? 'yes'
-                                : 'no'
-                            : '-',
-                }),
-            );
-        } else {
-            contentArray.map(arrItem =>
-                worksheet.addRow({
-                    date: arrItem.date,
-                    discharge:
-                        arrItem.avg_discharge !== null
-                            ? arrItem.avg_discharge
-                            : '-',
-                    threshold:
-                        getEflowThresholdValue(
-                            arrItem,
-                            thresholdType,
-                            measurementType,
-                        ) !== null
-                            ? getEflowThresholdValue(
-                                  arrItem,
-                                  thresholdType,
-                                  measurementType,
-                              )
-                            : '-',
-                    exceedsThreshold: getEflowExceedanceValue(
-                        arrItem,
-                        thresholdType,
-                        measurementType,
-                    )
-                        ? 'yes'
-                        : 'no',
-                    predicted: arrItem.avg_discharge_predicted ? 'yes' : 'no',
-                }),
-            );
-        }
-    } else if (measurementType === 'max') {
-        if (showFullForecastDischarge) {
-            contentArray.map(arrItem =>
-                worksheet.addRow({
-                    date: arrItem.date,
-                    discharge:
-                        arrItem.max_discharge !== null
-                            ? arrItem.max_discharge
-                            : '-',
-                    threshold:
-                        getEflowThresholdValue(
-                            arrItem,
-                            thresholdType,
-                            measurementType,
-                        ) !== null
-                            ? getEflowThresholdValue(
-                                  arrItem,
-                                  thresholdType,
-                                  measurementType,
-                              )
-                            : '-',
-                    exceedsThreshold: getEflowExceedanceValue(
-                        arrItem,
-                        thresholdType,
-                        measurementType,
-                    )
-                        ? 'yes'
-                        : 'no',
-                    predicted: arrItem.max_discharge_predicted ? 'yes' : 'no',
-                    forecast: '-',
-                    thresholdForecast: '-',
-                    exceedsThresholdForecast: '-',
-                }),
-            );
-        } else {
-            contentArray.map(arrItem =>
-                worksheet.addRow({
-                    date: arrItem.date,
-                    discharge:
-                        arrItem.max_discharge !== null
-                            ? arrItem.max_discharge
-                            : '-',
-                    threshold:
-                        getEflowThresholdValue(
-                            arrItem,
-                            thresholdType,
-                            measurementType,
-                        ) !== null
-                            ? getEflowThresholdValue(
-                                  arrItem,
-                                  thresholdType,
-                                  measurementType,
-                              )
-                            : '-',
-                    exceedsThreshold: getEflowExceedanceValue(
-                        arrItem,
-                        thresholdType,
-                        measurementType,
-                    )
-                        ? 'yes'
-                        : 'no',
-                    predicted: arrItem.max_discharge_predicted ? 'yes' : 'no',
-                }),
-            );
-        }
+    if (showFullForecastDischarge) {
+        contentArray.map(arrItem =>
+            worksheet.addRow({
+                date: arrItem.date,
+                discharge:
+                    arrItem[`${measurementType}_discharge`] !== null
+                        ? arrItem[`${measurementType}_discharge`]
+                        : '-',
+                threshold:
+                    arrItem[
+                        `${measurementType}_${thresholdType}_eflow_level`
+                    ] !== null
+                        ? arrItem[
+                              `${measurementType}_${thresholdType}_eflow_level`
+                          ]
+                        : '-',
+                exceedsThreshold:
+                    arrItem[
+                        `${measurementType}_${thresholdType}_eflow_level`
+                    ] !== null &&
+                    arrItem[`${measurementType}_discharge`] !== null
+                        ? arrItem[`${measurementType}_discharge`] >
+                          arrItem[
+                              `${measurementType}_${thresholdType}_eflow_level`
+                          ]
+                            ? 'yes'
+                            : 'no'
+                        : '-',
+                predicted: arrItem[`${measurementType}_discharge_predicted`]
+                    ? 'yes'
+                    : 'no',
+                forecast:
+                    measurementType === 'avg' &&
+                    arrItem[`${measurementType}_discharge_forecast`] !== null
+                        ? arrItem[`${measurementType}_discharge_forecast`]
+                        : '-',
+                thresholdForecast:
+                    measurementType === 'avg' &&
+                    arrItem[
+                        `${measurementType}_${thresholdType}_eflow_level_forecast`
+                    ] !== null
+                        ? arrItem[
+                              `${measurementType}_${thresholdType}_eflow_level_forecast`
+                          ]
+                        : '-',
+                exceedsThresholdForecast:
+                    measurementType === 'avg' &&
+                    arrItem[`${measurementType}_discharge_forecast`] !== null &&
+                    arrItem[
+                        `${measurementType}_${thresholdType}_eflow_level_forecast`
+                    ] !== null
+                        ? arrItem[`${measurementType}_discharge_forecast`] >
+                          arrItem[
+                              `${measurementType}_${thresholdType}_eflow_level_forecast`
+                          ]
+                            ? 'yes'
+                            : 'no'
+                        : '-',
+            }),
+        );
+    } else {
+        contentArray.map(arrItem =>
+            worksheet.addRow({
+                date: arrItem.date,
+                discharge:
+                    arrItem[`${measurementType}_discharge`] !== null
+                        ? arrItem[`${measurementType}_discharge`]
+                        : '-',
+                threshold:
+                    arrItem[
+                        `${measurementType}_${thresholdType}_eflow_level`
+                    ] !== null
+                        ? arrItem[
+                              `${measurementType}_${thresholdType}_eflow_level`
+                          ]
+                        : '-',
+                exceedsThreshold:
+                    arrItem[
+                        `${measurementType}_${thresholdType}_eflow_level`
+                    ] !== null &&
+                    arrItem[`${measurementType}_discharge`] !== null
+                        ? arrItem[`${measurementType}_discharge`] >
+                          arrItem[
+                              `${measurementType}_${thresholdType}_eflow_level`
+                          ]
+                            ? 'yes'
+                            : 'no'
+                        : '-',
+                predicted: arrItem[`${measurementType}_discharge_predicted`]
+                    ? 'yes'
+                    : 'no',
+            }),
+        );
     }
     return outWorkbook;
 };
@@ -620,129 +368,74 @@ export const fillExcelContentSecondAxisCompliance = (
             },
         ];
     }
-    if (measurementType === 'min') {
-        if (showFullForecastSecondAxis) {
-            contentArray.map(arrItem =>
-                worksheet.addRow({
-                    date: arrItem.date,
-                    secTS:
-                        arrItem.min_second_axis_ts !== null
-                            ? arrItem.min_second_axis_ts
-                            : '-',
-                    threshold: thresholdValue,
-                    exceedsThreshold: arrItem.min_exceeds_second_axis_ts
-                        ? 'yes'
-                        : 'no',
-                    predicted: arrItem.min_second_axis_ts_predicted
-                        ? 'yes'
-                        : 'no',
-                    forecast: '-',
-                    exceedsThresholdForecast: '-',
-                }),
-            );
-        } else {
-            contentArray.map(arrItem =>
-                worksheet.addRow({
-                    date: arrItem.date,
-                    secTS:
-                        arrItem.min_second_axis_ts !== null
-                            ? arrItem.min_second_axis_ts
-                            : '-',
-                    threshold: thresholdValue,
-                    exceedsThreshold: arrItem.min_exceeds_second_axis_ts
-                        ? 'yes'
-                        : 'no',
-                    predicted: arrItem.min_second_axis_ts_predicted
-                        ? 'yes'
-                        : 'no',
-                }),
-            );
-        }
-    } else if (measurementType === 'avg') {
-        if (showFullForecastSecondAxis) {
-            contentArray.map(arrItem =>
-                worksheet.addRow({
-                    date: arrItem.date,
-                    secTS:
-                        arrItem.avg_second_axis_ts !== null
-                            ? arrItem.avg_second_axis_ts
-                            : '-',
-                    threshold: thresholdValue,
-                    exceedsThreshold: arrItem.avg_exceeds_second_axis_ts
-                        ? 'yes'
-                        : 'no',
-                    predicted: arrItem.avg_second_axis_ts_predicted
-                        ? 'yes'
-                        : 'no',
-                    forecast:
-                        arrItem.avg_second_axis_ts_forecast !== null
-                            ? arrItem.avg_second_axis_ts_forecast
-                            : '-',
-                    exceedsThresholdForecast:
-                        arrItem.avg_exceeds_second_axis_ts_forecast !== null
-                            ? arrItem.avg_exceeds_second_axis_ts_forecast
-                                ? 'yes'
-                                : 'no'
-                            : '-',
-                }),
-            );
-        } else {
-            contentArray.map(arrItem =>
-                worksheet.addRow({
-                    date: arrItem.date,
-                    secTS:
-                        arrItem.avg_second_axis_ts !== null
-                            ? arrItem.avg_second_axis_ts
-                            : '-',
-                    threshold: thresholdValue,
-                    exceedsThreshold: arrItem.avg_exceeds_second_axis_ts
-                        ? 'yes'
-                        : 'no',
-                    predicted: arrItem.avg_second_axis_ts_predicted
-                        ? 'yes'
-                        : 'no',
-                }),
-            );
-        }
-    } else if (measurementType === 'max') {
-        if (showFullForecastSecondAxis) {
-            contentArray.map(arrItem =>
-                worksheet.addRow({
-                    date: arrItem.date,
-                    secTS:
-                        arrItem.max_second_axis_ts !== null
-                            ? arrItem.max_second_axis_ts
-                            : '-',
-                    threshold: thresholdValue,
-                    exceedsThreshold: arrItem.max_exceeds_second_axis_ts
-                        ? 'yes'
-                        : 'no',
-                    predicted: arrItem.max_second_axis_ts_predicted
-                        ? 'yes'
-                        : 'no',
-                    forecast: '-',
-                    exceedsThresholdForecast: '-',
-                }),
-            );
-        } else {
-            contentArray.map(arrItem =>
-                worksheet.addRow({
-                    date: arrItem.date,
-                    secTS:
-                        arrItem.max_second_axis_ts !== null
-                            ? arrItem.max_second_axis_ts
-                            : '-',
-                    threshold: thresholdValue,
-                    exceedsThreshold: arrItem.max_exceeds_second_axis_ts
-                        ? 'yes'
-                        : 'no',
-                    predicted: arrItem.max_second_axis_ts_predicted
-                        ? 'yes'
-                        : 'no',
-                }),
-            );
-        }
+
+    if (showFullForecastSecondAxis) {
+        contentArray.map(arrItem =>
+            worksheet.addRow({
+                date: arrItem.date,
+                secTS:
+                    arrItem[`${measurementType}_second_axis_ts`] !== null
+                        ? arrItem[`${measurementType}_second_axis_ts`]
+                        : '-',
+                threshold: thresholdValue !== null ? thresholdValue : '-',
+                exceedsThreshold:
+                    arrItem[`${measurementType}_second_axis_ts`] !== null &&
+                    thresholdValue !== null
+                        ? arrItem[`${measurementType}_second_axis_ts`] >
+                          thresholdValue
+                            ? 'yes'
+                            : 'no'
+                        : '-',
+                predicted: arrItem[
+                    `${measurementType}_second_axis_ts_predicted`
+                ]
+                    ? 'yes'
+                    : 'no',
+                forecast:
+                    measurementType === 'avg' &&
+                    arrItem[`${measurementType}_second_axis_ts_forecast`] !==
+                        null
+                        ? arrItem[`${measurementType}_second_axis_ts_forecast`]
+                        : '-',
+                exceedsThresholdForecast:
+                    measurementType === 'avg' &&
+                    arrItem[`${measurementType}_second_axis_ts_forecast`] !==
+                        null &&
+                    thresholdValue !== null
+                        ? arrItem[
+                              `${measurementType}_second_axis_ts_forecast`
+                          ] > thresholdValue
+                            ? 'yes'
+                            : 'no'
+                        : '-',
+            }),
+        );
+    } else {
+        contentArray.map(arrItem =>
+            worksheet.addRow({
+                date: arrItem.date,
+                secTS:
+                    arrItem[`${measurementType}_second_axis_ts`] !== null
+                        ? arrItem[`${measurementType}_second_axis_ts`]
+                        : '-',
+                threshold: thresholdValue !== null ? thresholdValue : '-',
+                exceedsThreshold:
+                    arrItem[`${measurementType}_second_axis_ts`] !== null &&
+                    thresholdValue !== null
+                        ? arrItem[`${measurementType}_second_axis_ts`] >
+                          thresholdValue
+                            ? 'yes'
+                            : 'no'
+                        : '-',
+                predicted: arrItem[
+                    `${measurementType}_second_axis_ts_predicted`
+                ]
+                    ? 'yes'
+                    : 'no',
+            }),
+        );
     }
+
     return outWorkbook;
 };
 
