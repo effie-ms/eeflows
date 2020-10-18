@@ -15,31 +15,6 @@ from stations.utils.modelling import (
 logger = logging.getLogger(__name__)
 
 
-def forecast_for_missing_values(
-    df_with_missing_values, avg_eflow_forecast_df_with_compatibility
-):
-    bool_series = pd.isnull(df_with_missing_values)
-    missing_eflows = df_with_missing_values[bool_series].copy()
-    for dt, missing_value in missing_eflows.items():
-        if isinstance(avg_eflow_forecast_df_with_compatibility, pd.Series):
-            forecasted_value = avg_eflow_forecast_df_with_compatibility[dt]
-        elif (
-            isinstance(avg_eflow_forecast_df_with_compatibility, pd.DataFrame)
-            and "discharge" in avg_eflow_forecast_df_with_compatibility.columns
-        ):
-
-            forecasted_value = avg_eflow_forecast_df_with_compatibility.loc[
-                dt, "discharge"
-            ]
-        else:
-            forecasted_value = avg_eflow_forecast_df_with_compatibility.loc[
-                dt, "second_axis_ts"
-            ]
-        df_with_missing_values[dt] = forecasted_value
-
-    return df_with_missing_values
-
-
 def get_mean_values_df_by_ts_type(ts_type):
     if ts_type == SensorType.Discharge:
         path = "static/mean_values/rivers-q-mean.csv"
@@ -57,7 +32,13 @@ def get_mean_values_df_by_ts_type(ts_type):
 
 
 def get_predicted_measurement_df(
-    station, sensor_type, from_time, to_time, multi_stations, forecast_var,
+    station,
+    sensor_type,
+    from_time,
+    to_time,
+    multi_stations,
+    forecast_var,
+    enable_forecasting,
 ):
     from stations.utils.read_data import get_sheet_substring_sensor_type
 
@@ -66,7 +47,16 @@ def get_predicted_measurement_df(
         from_time + datetime.timedelta(days=i) for i in range(delta.days + 1)
     ]
 
-    forecast_df = pd.Series(index=all_dates_within, dtype="float64")
+    forecast_ts = pd.Series(index=all_dates_within, dtype="float64")
+
+    if not enable_forecasting:
+        forecasting_summary = {
+            "algorithm": "-",
+            "variable": "-",
+            "R2": None,
+            "dependent_stations": [],
+        }
+        return forecast_ts, forecasting_summary
 
     whole_input_df = get_mean_values_df_by_ts_type(forecast_var)
     whole_output_df = get_mean_values_df_by_ts_type(sensor_type)
@@ -110,7 +100,7 @@ def get_predicted_measurement_df(
                 "R2": None,
                 "dependent_stations": [],
             }
-            return forecast_df, forecasting_summary
+            return forecast_ts, forecasting_summary
 
         else:
             if multi_stations:
@@ -140,14 +130,14 @@ def get_predicted_measurement_df(
                 predicted_station_name,
             )
 
-            forecast_df = pd.Series(y_test, index=forecast_df.index)
+            forecast_ts = pd.Series(y_test, index=all_dates_within)
             forecasting_summary = {
                 "algorithm": get_algorithm_by_key(alg),
                 "variable": get_sheet_substring_sensor_type(forecast_var),
                 "R2": R2,
                 "dependent_stations": dependent_stations,
             }
-            return forecast_df, forecasting_summary
+            return forecast_ts, forecasting_summary
 
     except Exception as exc:
         logger.error(f"Error while forecasting: {str(exc)}")
@@ -159,6 +149,6 @@ def get_predicted_measurement_df(
             "R2": None,
             "dependent_stations": [],
         }
-        return forecast_df, forecasting_summary
+        return forecast_ts, forecasting_summary
 
     return None, None

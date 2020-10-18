@@ -1,5 +1,4 @@
 import datetime
-import json
 
 import pandas as pd
 
@@ -9,7 +8,6 @@ from stations.constants import (
     MeasurementType,
     SensorType,
 )
-from stations.utils.forecast import forecast_for_missing_values
 
 
 def get_sheet_substring_measurement_type(measurement_type):
@@ -65,6 +63,8 @@ def get_low_flow_method_by_abbr(method_abbr):
         return MeanLowFlowMethod.ExceedanceProbability95
     if method_abbr == "EXCEED75":
         return MeanLowFlowMethod.ExceedanceProbability75
+    if method_abbr == "RAELFF":
+        return MeanLowFlowMethod.PolishRAELFF
     return None
 
 
@@ -88,7 +88,7 @@ def get_sheet_substring(sensor_type, measurement_type):
     return None
 
 
-def get_measurement_df_without_filtering(pd_excel_file, sensor_type, measurement_type):
+def get_measurement_ts_without_filtering(pd_excel_file, sensor_type, measurement_type):
     sheets = pd_excel_file.sheet_names
     sheet_substring = get_sheet_substring(sensor_type, measurement_type)
     sheet_name = [name for name in sheets if sheet_substring in name]
@@ -98,66 +98,58 @@ def get_measurement_df_without_filtering(pd_excel_file, sensor_type, measurement
         df = pd_excel_file.parse(
             sheet_name, parse_dates=True, skiprows=[0, 1], index_col=0
         )
+        # take the first column
         if len(df.columns) > 0:
-            # take the first column
             if df.ndim > 1:
-                df = df.iloc[:, 0]
+                ts = df.iloc[:, 0]
+            else:
+                ts = df
 
             # drop missing values
-            df = pd.to_numeric(df, errors="coerce").dropna()
-            return df
+            ts = pd.to_numeric(ts, errors="coerce").dropna()
+            return ts
+
     return None
 
 
-def get_measurement_df(
+def get_measurement_ts(
     pd_excel_file,
     sensor_type,
     measurement_type,
     from_time,
     to_time,
     fill_missing_values,
-    avg_forecast_df_with_compatibility,
+    avg_forecast_ts,
 ):
-    df = get_measurement_df_without_filtering(
+    ts = get_measurement_ts_without_filtering(
         pd_excel_file, sensor_type, measurement_type
     )
-    if df is not None:
+    if ts is not None:
         # take dates within [from_time..to_time]
-        filtered_dates = [dt for dt in df.index.tolist() if from_time <= dt <= to_time]
+        filtered_dates = [dt for dt in ts.index.tolist() if from_time <= dt <= to_time]
         # take values by selected dates
-        filtered_df = df.loc[filtered_dates]
+        filtered_ts = ts.loc[filtered_dates]
         delta = to_time - from_time  # as timedelta
         all_dates_within = [
             from_time + datetime.timedelta(days=i) for i in range(delta.days + 1)
         ]
         # True if value was forecast, otherwise False
-        forecast_flags_df = pd.DataFrame(all_dates_within, columns=["date"])
-        forecast_flags_df[
-            f"{get_sheet_substring_measurement_type(measurement_type)}_predicted"
-        ] = [(dt not in filtered_dates) for dt in all_dates_within]
-        forecast_flags_df = forecast_flags_df.set_index("date")
+        forecast_flags_ts = pd.Series(
+            data=[(dt not in filtered_dates) for dt in all_dates_within],
+            index=all_dates_within,
+            dtype="float64",
+        )
+
         # return time series with all the dates in the range and with values that can be calculated
         # (can be not all the values)
         if len(filtered_dates) != delta.days:
-            filtered_df = filtered_df.reindex(all_dates_within)
+            filtered_ts = filtered_ts.reindex(all_dates_within)
             if fill_missing_values and measurement_type == MeasurementType.AVG:
                 # forecast null values
-                filtered_df_with_forecast = forecast_for_missing_values(
-                    filtered_df, avg_forecast_df_with_compatibility
-                )
-                return filtered_df_with_forecast, forecast_flags_df
-        return filtered_df, forecast_flags_df
+                bool_series = pd.isnull(filtered_ts)
+                missing_eflows = filtered_ts[bool_series].copy()
+                for dt, missing_value in missing_eflows.items():
+                    filtered_ts[dt] = avg_forecast_ts[dt]
+
+        return filtered_ts, forecast_flags_ts
     return None, None
-
-
-def get_json_with_converted_timestamp(df):
-    """ Serialise DataFrame dates as 'YYYY-MM-DD' in JSON """
-
-    def convert_timestamp(item_date_object):
-        if isinstance(item_date_object, (datetime.date, datetime.datetime)):
-            return item_date_object.strftime("%Y-%m-%d")
-
-    dict_ = df.to_dict(orient="records")
-    data_json = json.dumps(dict_, default=convert_timestamp)
-    data = json.loads(data_json)
-    return data

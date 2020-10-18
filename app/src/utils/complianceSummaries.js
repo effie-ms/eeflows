@@ -1,5 +1,3 @@
-import { getEflowValueByType, getSecondaryAxisTSValue } from 'utils/flowValues';
-
 const getCompliancePercentages = pointsPerType => {
     const existingPoints = pointsPerType.filter(
         point => point.value && point.threshold,
@@ -7,7 +5,7 @@ const getCompliancePercentages = pointsPerType => {
 
     const allCount = existingPoints.length;
     const compliantCount = existingPoints.filter(
-        point => point.value >= point.threshold,
+        point => point.value > point.threshold,
     ).length;
 
     let compliantPercentageValue;
@@ -43,9 +41,16 @@ export const getCompliancePercentagesEflow = (
     const pointsPerBioperiod = eflowsTS.filter(
         point => point.bioperiod === bioperiod,
     );
-    const valueThresholdPairs = pointsPerBioperiod.map(point =>
-        getEflowValueByType(point, eflowType, isForecast),
-    );
+    const valueThresholdPairs = pointsPerBioperiod.map(point => ({
+        value: point[`avg_discharge${isForecast ? '_forecast' : ''}`],
+        threshold:
+            point[
+                `avg_${eflowType.toLowerCase()}_eflow_level${
+                    isForecast ? '_forecast' : ''
+                }`
+            ],
+        date: point.date,
+    }));
 
     return getCompliancePercentages(valueThresholdPairs);
 };
@@ -59,9 +64,10 @@ export const getCompliancePercentagesSecondaryAxisTS = (
     const pointsPerBioperiod = eflowsTS.filter(
         point => point.bioperiod === bioperiod,
     );
-    const valueThresholdPairs = pointsPerBioperiod.map(point =>
-        getSecondaryAxisTSValue(point, threshold, isForecast),
-    );
+    const valueThresholdPairs = pointsPerBioperiod.map(point => ({
+        value: point[`avg_second_axis_ts${isForecast ? '_forecast' : ''}`],
+        threshold,
+    }));
 
     return getCompliancePercentages(valueThresholdPairs);
 };

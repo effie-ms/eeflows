@@ -44,7 +44,6 @@ class StationViewSet(viewsets.ModelViewSet):
 
         sec_axis_ts_type_abbr = input_serializer.validated_data["secondAxisType"]
         sec_axis_ts_type = get_sensor_type_by_abbreviation(sec_axis_ts_type_abbr)
-        sec_axis_threshold = input_serializer.validated_data["secondAxisThreshold"]
 
         fet_id = input_serializer.validated_data["fetId"]
         area = input_serializer.validated_data["area"]
@@ -53,26 +52,10 @@ class StationViewSet(viewsets.ModelViewSet):
         from_time = input_serializer.validated_data["fromTime"]
         to_time = input_serializer.validated_data["toTime"]
 
-        fill_missing_eflows = input_serializer.validated_data["fillMissingEflows"]
-        fill_missing_sec_axis = input_serializer.validated_data["fillMissingSecondAxis"]
-
-        multi_stations_eflows = input_serializer.validated_data[
-            "forecastMultiStationsEflows"
-        ]
-        multi_stations_sec_axis = input_serializer.validated_data[
-            "forecastMultiStationsSecondAxis"
-        ]
-
-        forecast_eflows_var_abbr = input_serializer.validated_data[
-            "forecastEflowsVariable"
-        ]
-        forecast_eflows_var = get_sensor_type_by_abbreviation(forecast_eflows_var_abbr)
-        forecast_sec_axis_var_abbr = input_serializer.validated_data[
-            "forecastSecondAxisVariable"
-        ]
-        forecast_sec_axis_var = get_sensor_type_by_abbreviation(
-            forecast_sec_axis_var_abbr
-        )
+        forecast_eflows_var = get_sensor_type_by_abbreviation("Q")
+        forecast_sec_axis_var = get_sensor_type_by_abbreviation(sec_axis_ts_type_abbr)
+        multi_stations_eflows = True
+        multi_stations_sec_axis = True
 
         low_flow_method_abbr = input_serializer.validated_data["meanLowFlowMethod"]
         low_flow_method = get_low_flow_method_by_abbr(low_flow_method_abbr)
@@ -82,7 +65,8 @@ class StationViewSet(viewsets.ModelViewSet):
         low_flow_method_freq = get_low_flow_method_freq_by_abbr(
             low_flow_method_freq_abbr
         )
-        use_fish_coeff = input_serializer.validated_data["multiplyByFishCoefficients"]
+
+        enable_forecasting = input_serializer.validated_data["enableForecasting"]
 
         fet = FET.objects.filter(pk=fet_id).first()
 
@@ -99,37 +83,26 @@ class StationViewSet(viewsets.ModelViewSet):
             from_time,
             to_time,
             sec_axis_ts_type,
-            sec_axis_threshold,
             area,
             area_factor,
             fet_id,
-            fill_missing_eflows,
-            fill_missing_sec_axis,
             multi_stations_eflows,
             multi_stations_sec_axis,
             forecast_eflows_var,
             forecast_sec_axis_var,
             low_flow_method,
             low_flow_method_freq,
-            use_fish_coeff,
+            enable_forecasting,
         )
 
         payload = {
             "from_time": str(from_time),
             "to_time": str(to_time),
             "second_axis_time_series_type": sec_axis_ts_type_abbr,
-            "second_axis_threshold": sec_axis_threshold,
-            "fill_missing_eflows": fill_missing_eflows,
-            "fill_missing_sec_axis": fill_missing_sec_axis,
-            "multi_stations_eflows": multi_stations_eflows,
-            "multi_stations_sec_axis": multi_stations_sec_axis,
-            "forecast_eflows_var": forecast_eflows_var_abbr,
-            "forecast_sec_axis_var": forecast_sec_axis_var_abbr,
             "area": area,
             "area_factor": area_factor,
             "low_flow_method": low_flow_method_abbr,
             "low_flow_method_freq": low_flow_method_freq_abbr,
-            "use_fish_coeff": use_fish_coeff,
             "selected_fet_id": fet_id,
             "eflows_ts": eflows,
             "bioperiods_boundaries": bioperiods_boundaries,

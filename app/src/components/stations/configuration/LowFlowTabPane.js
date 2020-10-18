@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import { Input, Button } from 'reactstrap';
+import { Input } from 'reactstrap';
+import { Switch } from '@blueprintjs/core';
 
 import { DatePickerCalendar } from 'components/stations/configuration/DatePickerCalendar';
 import { CatchmentAreaConfiguration } from 'components/stations/configuration/CatchmentAreaConfiguration';
@@ -24,6 +25,8 @@ export const LowFlowTabPane = ({
     meanLowFlowMethodFrequency,
     onSetMeanLowFlowMethodFrequency,
     watershed,
+    enableForecasting,
+    setEnableForecasting,
 }) => {
     const [year, setYear] = useState('2016');
 
@@ -39,9 +42,6 @@ export const LowFlowTabPane = ({
     return (
         <div className="d-flex flex-row mt-3">
             <div className="m-3">
-                <Button style={{ opacity: 1 }} color="dark" outline disabled>
-                    <h4 className="mb-0">{gettext('Low flow estimation')}</h4>
-                </Button>
                 <div className="measurement-configuration mt-3 d-flex align-items-center">
                     <h5>{gettext('Select a year:')}</h5>
                     <Input
@@ -71,7 +71,7 @@ export const LowFlowTabPane = ({
                     <div className="second-axis-selector mt-3">
                         <h5>
                             {gettext(
-                                `Select a long-term low flow calculation method`,
+                                `Select an environmental flow calculation method`,
                             )}
                             :
                         </h5>
@@ -100,12 +100,17 @@ export const LowFlowTabPane = ({
                                     'Low flow with 75% exceedance probability',
                                 )}
                             </option>
+                            <option value="RAELFF">
+                                {gettext(
+                                    'Regionally Applicable Env. Low Flow Formula',
+                                )}
+                            </option>
                         </Input>
                     </div>
                     <div className="second-axis-selector d-flex flex-column mt-3">
                         <h5>
                             {gettext(
-                                `Select a long-term low flow calculation frequency`,
+                                `Select an environmental flow calculation frequency`,
                             )}
                             :
                         </h5>
@@ -131,20 +136,17 @@ export const LowFlowTabPane = ({
                                 {gettext('Monthly')}
                             </option>
                         </Input>
-                    </div>
-                    <div className="my-3 mr-3">
-                        <div
-                            className="bp3-callout bp3-intent-primary bp3-icon-info-sign"
-                            style={{ textAlign: 'justify' }}
-                        >
-                            <h4 className="bp3-heading">
-                                {gettext('Long-term low flow calculation')}
-                            </h4>
-                            {gettext(
-                                'Low flow methods use all the available historical data (long-term) up to the ' +
-                                    'right limit of the selected date range.',
-                            )}
-                        </div>
+                        <Switch
+                            className="mt-3"
+                            style={{ fontSize: '1.0rem' }}
+                            labelElement={gettext('Enable forecasting')}
+                            innerLabelChecked="yes"
+                            innerLabel="no"
+                            checked={enableForecasting}
+                            onChange={() =>
+                                setEnableForecasting(!enableForecasting)
+                            }
+                        />
                     </div>
                 </div>
                 <div style={{ flexBasis: '50%' }}>
@@ -174,6 +176,7 @@ LowFlowTabPane.propTypes = {
         'TNT20',
         'EXCEED95',
         'EXCEED75',
+        'RAELFF',
     ]).isRequired,
     onSetMeanLowFlowMethod: PropTypes.func.isRequired,
     meanLowFlowMethodFrequency: PropTypes.oneOf([
@@ -184,6 +187,8 @@ LowFlowTabPane.propTypes = {
     ]).isRequired,
     onSetMeanLowFlowMethodFrequency: PropTypes.func.isRequired,
     watershed: PropTypes.number.isRequired,
+    enableForecasting: PropTypes.bool.isRequired,
+    setEnableForecasting: PropTypes.func.isRequired,
 };
 
 LowFlowTabPane.defaultProps = {

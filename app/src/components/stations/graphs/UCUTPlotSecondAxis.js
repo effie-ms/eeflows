@@ -29,7 +29,7 @@ export const UCUTPlotSecondAxis = ({
     stationName,
     startDate,
     endDate,
-    forecastingEnabled,
+    enableForecasting,
     showProcessingBar,
 }) => {
     const graphType = secondAxisTimeSeriesType === 'TW' ? 'Above' : 'Under';
@@ -72,7 +72,7 @@ export const UCUTPlotSecondAxis = ({
                         downloadAsExcelUCUT(
                             exportData,
                             secondAxisTimeSeriesType,
-                            forecastingEnabled,
+                            enableForecasting,
                             stationName,
                             startDate,
                             endDate,
@@ -146,7 +146,7 @@ export const UCUTPlotSecondAxis = ({
                                 }
                                 line={{ type: 'monotone', strokeWidth: 3 }}
                             />
-                            {forecastingEnabled && (
+                            {enableForecasting && (
                                 <Scatter
                                     name={`${getTimeSeriesNameByAbbreviation(
                                         secondAxisTimeSeriesType,
@@ -179,7 +179,7 @@ UCUTPlotSecondAxis.propTypes = {
     stationName: PropTypes.string.isRequired,
     startDate: PropTypes.string.isRequired,
     endDate: PropTypes.string.isRequired,
-    forecastingEnabled: PropTypes.bool.isRequired,
+    enableForecasting: PropTypes.bool.isRequired,
     showProcessingBar: PropTypes.bool.isRequired,
 };
 

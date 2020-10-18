@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Input, Button } from 'reactstrap';
-import { Switch } from '@blueprintjs/core';
+import { Input } from 'reactstrap';
 
 import { gettext } from 'utils/text';
 import { FETInfoShape } from 'utils/types';
@@ -13,35 +12,11 @@ export const FETConfiguration = ({
     fets,
     selectedFETId,
     onSetSelectedFETId,
-    multiplyByFishCoefficients,
-    onSetMultiplyByFishCoefficients,
 }) => (
     <div className="d-flex flex-row mt-3">
         <div className="m-3" style={{ flexBasis: '50%' }}>
             <div className="fet-configuration">
-                <Button style={{ opacity: 1 }} color="dark" outline disabled>
-                    <h4 className="mb-0">
-                        {gettext('Environmental low flow formula')}
-                    </h4>
-                </Button>
-                <Switch
-                    className="mt-3"
-                    style={{ fontSize: '1.0rem' }}
-                    labelElement={gettext(
-                        'Multiply by bioperiod FET coefficients',
-                    )}
-                    innerLabelChecked="yes"
-                    innerLabel="no"
-                    checked={multiplyByFishCoefficients}
-                    onChange={() =>
-                        onSetMultiplyByFishCoefficients(
-                            !multiplyByFishCoefficients,
-                        )
-                    }
-                />
-                <h5 className="mt-3">
-                    {gettext('Select a fish ecological type (FET)')}:
-                </h5>
+                <h5>{gettext('Select a fish ecological type (FET)')}:</h5>
                 <Input
                     type="select"
                     name="fet"
@@ -96,8 +71,6 @@ FETConfiguration.propTypes = {
     selectedFETId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
         .isRequired,
     onSetSelectedFETId: PropTypes.func.isRequired,
-    multiplyByFishCoefficients: PropTypes.bool.isRequired,
-    onSetMultiplyByFishCoefficients: PropTypes.func.isRequired,
 };
 
 FETConfiguration.defaultProps = {

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Input, Label, Button } from 'reactstrap';
+import { Input, Label } from 'reactstrap';
 
 import {
     gettext,
@@ -17,12 +17,7 @@ export const MeasurementsConfiguration = ({
 }) => (
     <div className="d-flex flex-row justify-content-between mt-3">
         <div className="m-3" style={{ flexBasis: '25%' }}>
-            <div className="second-axis-toggle">
-                <Button style={{ opacity: 1 }} color="dark" outline disabled>
-                    <h4 className="mb-0">{gettext('Secondary axis')}</h4>
-                </Button>
-            </div>
-            <div className="second-axis-selector d-flex flex-column mt-3">
+            <div className="second-axis-selector d-flex flex-column">
                 <h5>{gettext(`Select a secondary axis time series type`)}:</h5>
                 <Input
                     type="select"
