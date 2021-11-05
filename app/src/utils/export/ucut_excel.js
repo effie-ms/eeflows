@@ -1,8 +1,6 @@
 import * as Excel from 'exceljs/dist/exceljs.min.js'; // eslint-disable-line
 
-export const createAndFillWorkbookEflowUCUT = (
-    exportData,
-) => {
+export const createAndFillWorkbookEflowUCUT = (exportData) => {
     try {
         const workbook = new Excel.Workbook();
         const worksheetLow = workbook.addWorksheet('Low Flow UCUT');

@@ -8,6 +8,128 @@
 Browser support is defined in the `eeflows/browserslist` file that is used for autoprefixing CSS.
 
 
+## Software description
+
+EEFlows is a Django/React web application implementing methods of environmental flows estimation and 
+interpreting results of the estimation. In the simplest case, environmental flows define the minimum amount of water 
+needed for aquatic ecosystems and used as compliance thresholds (good ecological status or not) in environmental 
+directives and regulations such as Water Framework Directive.
+
+For demonstration, the application uses river data (daily time series of discharges (flow rates), water levels and 
+water temperatures) from Estonian gauging stations. Daily average discharges (flow rates) and water levels are available
+as open data on the [Estonian weather web-service](https://www.ilmateenistus.ee/siseveed/ajaloolised-vaatlusandmed/vooluhulgad/).
+The extended datasets from the same locations are obtained on request from the government and can be viewed in the 
+`eeflows/static/measurements/` directory of this repository.
+
+To run the project, clone the code and proceed with the instructions in the *Setting up development* and 
+*Running development server* sections.
+
+### Main views
+
+After setting up and running the project, check out port 8000 on localhost: http://127.0.0.1:8000/ in your browser.
+
+#### Map view
+
+The main view is a map with locations of Estonian river gauging stations.
+
+![Alt text](eeflows/static/readme/map-view.png "Map view")
+
+On the map view, gauging stations can searched by the gauging station or river name. The can be selected on the map by
+click on a blue marker, or by clicking on *See on the map* button. To view river data from the selected gauging station,
+click on the corresponding *Analysis* button.
+
+#### Analysis view
+
+Analysis view has the following URL: `http://127.0.0.1:8000/stations/<station_id>`.
+
+Analysis view consists of the environmental flows estimation configuration panel and results (plots and tables). 
+The application allows for the environmental flows estimation using hydrological methods (that use river discharge data) 
+as well as compound event estimation (using other river data and a user-defined threshold to determine exceedance).
+
+Configuration panel includes 2 tabs: *Environmental flow estimation* and *Compound event*:
+
+![Alt text](eeflows/static/readme/config.png "Configuration")
+
+Configuration panel defines parameters for environmental flows estimation that is carried out on the backend (Django)
+side. These are a date range, method (formula) for calculation and frequency (whether a formula should be applied for
+all the data, per summer/winter, bioperiod, month separately). Months of bioperiods are configured in the database (see
+*Access to database entries, administration panel and data formats* section).
+
+*Compound event* tab allows for selecting additional time series and a threshold to estimate exceedance. The available 
+time series are water temperatures and water levels.
+
+Results are estimated after clicking a *Run estimation* button. This will send the selected parameters to the backend 
+(Django) service and return the results that are interpreted below the configuration panel.
+
+**NB**: not all the datasets are complete, for some configuration parameters there can be missing data for certain 
+dates, time series or measurement types.
+
+The first generated plot is a compliance time series plot. It interprets the discharge daily data (for the selected 
+time period) and calculated environmental flows thresholds (depending on the selected method and parameters) on the 
+primary axis and the other selected times series (water temperatures or water levels) for the compound event estimation. 
+Compliance is defined by the exceedance of the calculated environmental flow (for discharge - non-compliance if below 
+threshold) or user-defined threshold (for water temperatures - non-compliance if above threshold and for water levels - 
+non-compliance if below threshold).
+
+![Alt text](eeflows/static/readme/ts-graph.png "Time series plot")
+
+The results are also interpreted as Uniform-Continuous-Under(or Above)-Threshold (UCUT or UCAT) plots and compliance
+summary tables. 
+
+The UCUT and UCAT plots show the number of days of non-compliance ***in a row*** (Y-axis) starting from 
+maximum days of non-compliance and the cumulative duration as a cumulative percentage from the whole period (e.g. if 
+the selected date period is 1 year, then 1 year is 100%) - on X-axis.
+
+Compliance summary tables show overall percentages of days of compliance and non-compliance per each bioperiod.
+
+![Alt text](eeflows/static/readme/ucut-tables-both.png "UCUT plots and tables")
+
+All the visualisations can be exported as PNG images, and their data can be downloaded as Excel files (by clicking and 
+selecting an option in the Export dropdown).
+
+#### References
+
+The implemented environmental flows calculation methods and plots are described in the following paper:
+
+*Reihan, A., Loigu, E. (2010). Ökoloogilise miinimumvooluhulga arvutusmetoodika
+väljatöötamine. Töövõtuleping 18-25/185, Tallinn.* ([available in Estonian](https://old.envir.ee/sites/default/files/okominvooluhulgaarvutusmetoodikavtootamine.koondaruanne.pdf))
+
+Bioperiods and visualisations are also inspired by the following paper:
+
+*Parasiewicz, P., Prus, P., Suska, K., Marcinkowski, P. (2018). “E = mc2” of Environmental Flows: A Conceptual 
+Framework for Establishing a Fish-Biological Foundation for a Regionally Applicable Environmental Low-Flow Formula. 
+Water, 10(11), 1501. doi:10.3390/w10111501*
+
+
+### Access to database entries, administration panel and data formats
+
+Modification of station data can be done through Django administration panel. 
+
+On localhost, it is available from http://127.0.0.1:8000/adminpanel/.
+
+On installation, one superuser is pre-created for testing purposes, use the following credentials: 
+
+    email: user@eeflows.com
+    password: test
+
+After authorisation, the administration panel allows for viewing, modifying and removing the existing data, 
+adding new data to the database. The main database entities are *Stations* and *Bioperiod*. 
+
+*Station* entity includes station name, parameters of its location, river body, used bioperiods object, watershed area,
+and hydrological data - Excel file with time series data, see the format of the files in `eeflows/static/measurements/` 
+directory.
+
+*Bioperiod* entity involves mapping of months to one of 4 bioperiods: Overwintering, Spring Spawning, Rearing and 
+Growth and Fall Spawning. Bioperiods are used for calculations, if the selected environmental flows calculation 
+frequency is `Bioperiodical`.
+
+The database is populated on project installation (see scripts in `eeflows/stations/migrations/`). The metadata of 
+stations and used river data files is included in the `eeflows/static/Stations_Metadata.xlsx` file.
+
+![Alt text](eeflows/static/readme/admin.png "Administration panel")
+
+User accounts are also managed from the administration panel (for this, enter *Accounts/Users*).
+
 ## Setting up development
 
 ### Installing Docker and Docker Compose
@@ -35,6 +157,9 @@ This command:
 - runs `docker-compose up`
 
 Refer to `Makefile` to see what actually happens. You can then use the same commands to set everything up manually.
+
+NB: modifications in the `local.py` configuration file on setup are optional, in the general case, the 
+application should work with the `local.py` as it is provided.
 
 
 ## Running development server

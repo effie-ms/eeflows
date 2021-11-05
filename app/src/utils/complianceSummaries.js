@@ -32,17 +32,13 @@ const getCompliancePercentages = (pointsPerType) => {
     };
 };
 
-export const getCompliancePercentagesEflow = (
-    eflowsTS,
-    bioperiod,
-) => {
+export const getCompliancePercentagesEflow = (eflowsTS, bioperiod) => {
     const pointsPerBioperiod = eflowsTS.filter(
         (point) => point.bioperiod === bioperiod,
     );
     const valueThresholdPairs = pointsPerBioperiod.map((point) => ({
         value: point.avg_discharge,
-        threshold:
-            point.avg_low_eflow_level,
+        threshold: point.avg_low_eflow_level,
         date: point.date,
     }));
 

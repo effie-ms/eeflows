@@ -1,10 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import {
-    BioperiodBoundaryShape,
-    EflowsShape,
-} from 'utils/types';
+import { BioperiodBoundaryShape, EflowsShape } from 'utils/types';
 
 import { MeasurementGraph } from 'components/stations/graphs/MeasurementGraph';
 import { UCUTPlotEflows } from 'components/stations/graphs/UCUTPlotEflows';

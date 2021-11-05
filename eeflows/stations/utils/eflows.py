@@ -43,7 +43,9 @@ def calculate_eflow_threshold(
         data=[q if q else np.NaN for idx, q in low_flow_ts.iteritems()],
         index=low_flow_ts.index,
     )
-    filtered_dates = [dt for dt in eflow_level_ts.index.tolist() if from_time <= dt <= to_time]
+    filtered_dates = [
+        dt for dt in eflow_level_ts.index.tolist() if from_time <= dt <= to_time
+    ]
 
     low_eflow_level_ts = eflow_level_ts.loc[filtered_dates]
 
@@ -74,7 +76,9 @@ def get_eflows_df(
     whole_ts = get_measurement_ts_without_filtering(
         pd_excel_file, SensorType.Discharge, measurement_type
     )
-    filtered_dates = [dt for dt in whole_ts.index.tolist() if dt <= pd.Timestamp(to_time)]
+    filtered_dates = [
+        dt for dt in whole_ts.index.tolist() if dt <= pd.Timestamp(to_time)
+    ]
     all_discharge_to_time_ts = whole_ts.loc[filtered_dates]
 
     measurement_type_prefix = ""
@@ -253,4 +257,3 @@ def get_eflows_compliance(
     eflow_and_sec_axis_df_json = json.loads(data_json)
 
     return eflow_and_sec_axis_df_json
-

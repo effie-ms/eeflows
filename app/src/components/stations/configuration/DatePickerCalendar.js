@@ -38,7 +38,9 @@ export const DatePickerCalendar = ({
                 </div>
                 <Tag intent={Intent.PRIMARY}>
                     {startDate !== null ? (
-                        <span>{formatDate(startDate.toDateString(), true)}</span>
+                        <span>
+                            {formatDate(startDate.toDateString(), true)}
+                        </span>
                     ) : (
                         <span>{gettext('No date')}</span>
                     )}

@@ -104,7 +104,9 @@ class Station(models.Model):
     longitude = models.FloatField(verbose_name="Longitude in degrees", default=0)
     latitude = models.FloatField(verbose_name="Latitude in degrees", default=0)
     river_body = models.CharField(max_length=255)
-    bioperiods_months = models.ForeignKey(BioPeriod, on_delete=models.PROTECT, null=True)
+    bioperiods_months = models.ForeignKey(
+        BioPeriod, on_delete=models.PROTECT, null=True
+    )
 
     def __str__(self):
         return self.name

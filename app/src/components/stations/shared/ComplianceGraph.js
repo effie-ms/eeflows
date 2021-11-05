@@ -225,7 +225,7 @@ export const ComplianceGraph = ({
                     <Area
                         type="monotone"
                         yAxisId="left"
-                        dataKey='low_eflows_level_range'
+                        dataKey="low_eflows_level_range"
                         fill="#3dcc91"
                         stroke="#137cbd"
                         connectNulls
@@ -462,7 +462,7 @@ export const ComplianceGraph = ({
                         dot={false}
                         connectNulls
                         name="Minimum environmental flow threshold"
-                        dataKey='min_low_eflow_level'
+                        dataKey="min_low_eflow_level"
                         stroke="#137cbd"
                         strokeWidth={3}
                         strokeDasharray="5 5"
@@ -478,7 +478,7 @@ export const ComplianceGraph = ({
                         dot={false}
                         connectNulls
                         name="Average environmental flow threshold"
-                        dataKey='avg_low_eflow_level'
+                        dataKey="avg_low_eflow_level"
                         stroke="#137cbd"
                         strokeWidth={3}
                         strokeDasharray="5 5"
@@ -494,7 +494,7 @@ export const ComplianceGraph = ({
                         dot={false}
                         connectNulls
                         name="Maximum environmental flow threshold"
-                        dataKey='max_low_eflow_level'
+                        dataKey="max_low_eflow_level"
                         stroke="#137cbd"
                         strokeWidth={3}
                         strokeDasharray="5 5"

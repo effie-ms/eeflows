@@ -65,22 +65,15 @@ export const fillExcelContentEflowCompliance = (
                     ? arrItem[`${measurementType}_discharge`]
                     : '-',
             threshold:
-                arrItem[
-                    `${measurementType}_${thresholdType}_eflow_level`
-                ] !== null
-                    ? arrItem[
-                          `${measurementType}_${thresholdType}_eflow_level`
-                      ]
+                arrItem[`${measurementType}_${thresholdType}_eflow_level`] !==
+                null
+                    ? arrItem[`${measurementType}_${thresholdType}_eflow_level`]
                     : '-',
             exceedsThreshold:
-                arrItem[
-                    `${measurementType}_${thresholdType}_eflow_level`
-                ] !== null &&
-                arrItem[`${measurementType}_discharge`] !== null
+                arrItem[`${measurementType}_${thresholdType}_eflow_level`] !==
+                    null && arrItem[`${measurementType}_discharge`] !== null
                     ? arrItem[`${measurementType}_discharge`] >
-                      arrItem[
-                          `${measurementType}_${thresholdType}_eflow_level`
-                      ]
+                      arrItem[`${measurementType}_${thresholdType}_eflow_level`]
                         ? 'yes'
                         : 'no'
                     : '-',

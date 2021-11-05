@@ -122,7 +122,11 @@ def get_measurement_ts(
     )
     if ts is not None:
         # take dates within [from_time..to_time]
-        filtered_dates = [dt for dt in ts.index.tolist() if from_time <= dt <= pd.Timestamp(to_time)]
+        filtered_dates = [
+            dt
+            for dt in ts.index.tolist()
+            if pd.Timestamp(from_time) <= dt <= pd.Timestamp(to_time)
+        ]
         # take values by selected dates
         filtered_ts = ts.loc[filtered_dates]
         delta = to_time - from_time  # as timedelta

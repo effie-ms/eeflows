@@ -30,20 +30,11 @@ export const CustomizedDot = ({
     let exceedsThreshold;
 
     if (timeSeriesType === 'EF') {
-        measurementValue =
-            coord.payload[
-                `${measurementType}_discharge`
-            ];
-        const threshold =
-            coord.payload[
-                `${measurementType}_low_eflow_level`
-            ];
+        measurementValue = coord.payload[`${measurementType}_discharge`];
+        const threshold = coord.payload[`${measurementType}_low_eflow_level`];
         exceedsThreshold = measurementValue > threshold;
     } else {
-        measurementValue =
-            coord.payload[
-                `${measurementType}_second_axis_ts`
-            ];
+        measurementValue = coord.payload[`${measurementType}_second_axis_ts`];
         exceedsThreshold = measurementValue > thresholdValue;
     }
 
@@ -57,8 +48,7 @@ export const CustomizedDot = ({
     return (
         coord &&
         coord.cx &&
-        coord.cy &&
-        (
+        coord.cy && (
             <HistoryPointSVG
                 cx={coord.cx}
                 cy={coord.cy}

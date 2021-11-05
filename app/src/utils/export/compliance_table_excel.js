@@ -1,8 +1,6 @@
 import * as Excel from 'exceljs/dist/exceljs.min.js'; // eslint-disable-line
 
-export const createAndFillWorkbookComplianceTableEflows = (
-    exportData,
-) => {
+export const createAndFillWorkbookComplianceTableEflows = (exportData) => {
     try {
         const workbook = new Excel.Workbook();
         const sheetMeasurementType = 'EF';

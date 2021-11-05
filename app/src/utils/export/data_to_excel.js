@@ -73,9 +73,7 @@ export const downloadAsExcelUCUT = (
     let workbook;
 
     if (timeSeriesType === 'EF') {
-        workbook = createAndFillWorkbookEflowUCUT(
-            exportData,
-        );
+        workbook = createAndFillWorkbookEflowUCUT(exportData);
     } else {
         workbook = createAndFillWorkbookSecondAxisUCUT(
             exportData,
@@ -97,9 +95,7 @@ export const downloadAsExcelComplianceSummaries = (
     let workbook;
 
     if (timeSeriesType === 'EF') {
-        workbook = createAndFillWorkbookComplianceTableEflows(
-            exportData,
-        );
+        workbook = createAndFillWorkbookComplianceTableEflows(exportData);
     } else {
         workbook = createAndFillWorkbookComplianceTableSecondAxis(
             exportData,

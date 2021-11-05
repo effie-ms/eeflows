@@ -27,7 +27,7 @@ def generate_eflows_config(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('stations', '0001_initial'),
+        ("stations", "0001_initial"),
     ]
 
     operations = [

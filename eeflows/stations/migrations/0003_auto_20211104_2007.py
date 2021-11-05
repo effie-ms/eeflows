@@ -42,7 +42,7 @@ def populate_stations(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('stations', '0002_auto_20211104_2007'),
+        ("stations", "0002_auto_20211104_2007"),
     ]
 
     operations = [

@@ -73,9 +73,7 @@ const getCumulativeDurations = (valueThresholdDateTuples, isUnderThreshold) => {
     return cumulativeDurationsArray;
 };
 
-export const getCumulativeDurationsEflows = (
-    eflowsTS,
-) => {
+export const getCumulativeDurationsEflows = (eflowsTS) => {
     const valueThresholdDateTuples = eflowsTS.map((point) => ({
         value: point.avg_discharge,
         threshold: point.avg_low_eflow_level,

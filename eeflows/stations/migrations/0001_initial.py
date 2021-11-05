@@ -9,43 +9,217 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='BioPeriod',
+            name="BioPeriod",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255)),
-                ('January', models.IntegerField(choices=[(1, 'Overwintering'), (2, 'Spring Spawning'), (3, 'Rearing and Growth'), (4, 'Fall Spawning')], default=1)),
-                ('February', models.IntegerField(choices=[(1, 'Overwintering'), (2, 'Spring Spawning'), (3, 'Rearing and Growth'), (4, 'Fall Spawning')], default=1)),
-                ('March', models.IntegerField(choices=[(1, 'Overwintering'), (2, 'Spring Spawning'), (3, 'Rearing and Growth'), (4, 'Fall Spawning')], default=2)),
-                ('April', models.IntegerField(choices=[(1, 'Overwintering'), (2, 'Spring Spawning'), (3, 'Rearing and Growth'), (4, 'Fall Spawning')], default=2)),
-                ('May', models.IntegerField(choices=[(1, 'Overwintering'), (2, 'Spring Spawning'), (3, 'Rearing and Growth'), (4, 'Fall Spawning')], default=2)),
-                ('June', models.IntegerField(choices=[(1, 'Overwintering'), (2, 'Spring Spawning'), (3, 'Rearing and Growth'), (4, 'Fall Spawning')], default=2)),
-                ('July', models.IntegerField(choices=[(1, 'Overwintering'), (2, 'Spring Spawning'), (3, 'Rearing and Growth'), (4, 'Fall Spawning')], default=3)),
-                ('August', models.IntegerField(choices=[(1, 'Overwintering'), (2, 'Spring Spawning'), (3, 'Rearing and Growth'), (4, 'Fall Spawning')], default=3)),
-                ('September', models.IntegerField(choices=[(1, 'Overwintering'), (2, 'Spring Spawning'), (3, 'Rearing and Growth'), (4, 'Fall Spawning')], default=3)),
-                ('October', models.IntegerField(choices=[(1, 'Overwintering'), (2, 'Spring Spawning'), (3, 'Rearing and Growth'), (4, 'Fall Spawning')], default=4)),
-                ('November', models.IntegerField(choices=[(1, 'Overwintering'), (2, 'Spring Spawning'), (3, 'Rearing and Growth'), (4, 'Fall Spawning')], default=4)),
-                ('December', models.IntegerField(choices=[(1, 'Overwintering'), (2, 'Spring Spawning'), (3, 'Rearing and Growth'), (4, 'Fall Spawning')], default=4)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=255)),
+                (
+                    "January",
+                    models.IntegerField(
+                        choices=[
+                            (1, "Overwintering"),
+                            (2, "Spring Spawning"),
+                            (3, "Rearing and Growth"),
+                            (4, "Fall Spawning"),
+                        ],
+                        default=1,
+                    ),
+                ),
+                (
+                    "February",
+                    models.IntegerField(
+                        choices=[
+                            (1, "Overwintering"),
+                            (2, "Spring Spawning"),
+                            (3, "Rearing and Growth"),
+                            (4, "Fall Spawning"),
+                        ],
+                        default=1,
+                    ),
+                ),
+                (
+                    "March",
+                    models.IntegerField(
+                        choices=[
+                            (1, "Overwintering"),
+                            (2, "Spring Spawning"),
+                            (3, "Rearing and Growth"),
+                            (4, "Fall Spawning"),
+                        ],
+                        default=2,
+                    ),
+                ),
+                (
+                    "April",
+                    models.IntegerField(
+                        choices=[
+                            (1, "Overwintering"),
+                            (2, "Spring Spawning"),
+                            (3, "Rearing and Growth"),
+                            (4, "Fall Spawning"),
+                        ],
+                        default=2,
+                    ),
+                ),
+                (
+                    "May",
+                    models.IntegerField(
+                        choices=[
+                            (1, "Overwintering"),
+                            (2, "Spring Spawning"),
+                            (3, "Rearing and Growth"),
+                            (4, "Fall Spawning"),
+                        ],
+                        default=2,
+                    ),
+                ),
+                (
+                    "June",
+                    models.IntegerField(
+                        choices=[
+                            (1, "Overwintering"),
+                            (2, "Spring Spawning"),
+                            (3, "Rearing and Growth"),
+                            (4, "Fall Spawning"),
+                        ],
+                        default=2,
+                    ),
+                ),
+                (
+                    "July",
+                    models.IntegerField(
+                        choices=[
+                            (1, "Overwintering"),
+                            (2, "Spring Spawning"),
+                            (3, "Rearing and Growth"),
+                            (4, "Fall Spawning"),
+                        ],
+                        default=3,
+                    ),
+                ),
+                (
+                    "August",
+                    models.IntegerField(
+                        choices=[
+                            (1, "Overwintering"),
+                            (2, "Spring Spawning"),
+                            (3, "Rearing and Growth"),
+                            (4, "Fall Spawning"),
+                        ],
+                        default=3,
+                    ),
+                ),
+                (
+                    "September",
+                    models.IntegerField(
+                        choices=[
+                            (1, "Overwintering"),
+                            (2, "Spring Spawning"),
+                            (3, "Rearing and Growth"),
+                            (4, "Fall Spawning"),
+                        ],
+                        default=3,
+                    ),
+                ),
+                (
+                    "October",
+                    models.IntegerField(
+                        choices=[
+                            (1, "Overwintering"),
+                            (2, "Spring Spawning"),
+                            (3, "Rearing and Growth"),
+                            (4, "Fall Spawning"),
+                        ],
+                        default=4,
+                    ),
+                ),
+                (
+                    "November",
+                    models.IntegerField(
+                        choices=[
+                            (1, "Overwintering"),
+                            (2, "Spring Spawning"),
+                            (3, "Rearing and Growth"),
+                            (4, "Fall Spawning"),
+                        ],
+                        default=4,
+                    ),
+                ),
+                (
+                    "December",
+                    models.IntegerField(
+                        choices=[
+                            (1, "Overwintering"),
+                            (2, "Spring Spawning"),
+                            (3, "Rearing and Growth"),
+                            (4, "Fall Spawning"),
+                        ],
+                        default=4,
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'Bioperiods',
+                "verbose_name_plural": "Bioperiods",
             },
         ),
         migrations.CreateModel(
-            name='Station',
+            name="Station",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255)),
-                ('hydrological_data', models.FileField(null=True, upload_to='uploads/hydrological_data/%Y/%m/%d/', validators=[django.core.validators.FileExtensionValidator(allowed_extensions=['xlsx'])])),
-                ('watershed_area', models.FloatField(default=0, verbose_name='Watershed area in km2')),
-                ('longitude', models.FloatField(default=0, verbose_name='Longitude in degrees')),
-                ('latitude', models.FloatField(default=0, verbose_name='Latitude in degrees')),
-                ('river_body', models.CharField(max_length=255)),
-                ('bioperiods_months', models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, to='stations.BioPeriod')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=255)),
+                (
+                    "hydrological_data",
+                    models.FileField(
+                        null=True,
+                        upload_to="uploads/hydrological_data/%Y/%m/%d/",
+                        validators=[
+                            django.core.validators.FileExtensionValidator(
+                                allowed_extensions=["xlsx"]
+                            )
+                        ],
+                    ),
+                ),
+                (
+                    "watershed_area",
+                    models.FloatField(default=0, verbose_name="Watershed area in km2"),
+                ),
+                (
+                    "longitude",
+                    models.FloatField(default=0, verbose_name="Longitude in degrees"),
+                ),
+                (
+                    "latitude",
+                    models.FloatField(default=0, verbose_name="Latitude in degrees"),
+                ),
+                ("river_body", models.CharField(max_length=255)),
+                (
+                    "bioperiods_months",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="stations.BioPeriod",
+                    ),
+                ),
             ],
         ),
     ]

@@ -10,22 +10,10 @@ import { ProcessingState } from 'components/stations/shared/ProcessingState';
 import { ExportDropdown } from 'components/stations/shared/ExportDropdown';
 
 const getExportDataComplianceTableEflowsLow = (eflowsTS) => ({
-    winterLowObserved: getCompliancePercentagesEflow(
-        eflowsTS,
-        'OW',
-    ),
-    springLowObserved: getCompliancePercentagesEflow(
-        eflowsTS,
-        'SS',
-    ),
-    summerLowObserved: getCompliancePercentagesEflow(
-        eflowsTS,
-        'RG',
-    ),
-    autumnLowObserved: getCompliancePercentagesEflow(
-        eflowsTS,
-        'FS',
-    ),
+    winterLowObserved: getCompliancePercentagesEflow(eflowsTS, 'OW'),
+    springLowObserved: getCompliancePercentagesEflow(eflowsTS, 'SS'),
+    summerLowObserved: getCompliancePercentagesEflow(eflowsTS, 'RG'),
+    autumnLowObserved: getCompliancePercentagesEflow(eflowsTS, 'FS'),
 });
 
 const ComplianceTableEflowsLow = ({ eflowsTS }) => {
@@ -145,9 +133,7 @@ export const ComplianceTableEflows = ({
                             `${stationName}: ${summaryName} (${startDate}-${endDate})`,
                         )}
                     </p>
-                    <ComplianceTableEflowsLow
-                        eflowsTS={eflowsTS}
-                    />
+                    <ComplianceTableEflowsLow eflowsTS={eflowsTS} />
                 </div>
             )}
         </div>
