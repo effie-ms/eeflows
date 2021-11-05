@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
 
-import SETTINGS from 'settings';
+import { SETTINGS } from 'settings';
 
 const DefaultHeader = ({ canonical }) => {
     const { i18n } = useTranslation();
@@ -13,8 +13,8 @@ const DefaultHeader = ({ canonical }) => {
             <html lang={i18n.language} />
             <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
             <meta charSet="utf-8" />
-            <body />
-            <meta name="description" content="Default description" />
+            <body className="bg-light" />
+            <meta name="description" content="EEFlows project" />
             <link rel="canonical" href={`${SETTINGS.SITE_URL}${canonical}`} />
         </Helmet>
     );

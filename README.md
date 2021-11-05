@@ -1,9 +1,11 @@
 # EEFlows
 
- - Python:  3.6
- - DB:      PostgreSQL 10
- - Node:    10.15
- - React:   16.9
+ - Python:  3.8
+ - DB:      PostgreSQL 12
+ - Node:    12
+ - React:   16.8+
+
+Browser support is defined in the `eeflows/browserslist` file that is used for autoprefixing CSS.
 
 
 ## Setting up development
@@ -18,7 +20,7 @@ After installing Docker you need to install [Docker Compose](https://docs.docker
 To run Docker commands without `sudo`, you also need to
 [create a Docker group and add your user to it](https://docs.docker.com/engine/installation/linux/ubuntulinux/#/create-a-docker-group).
 
-### Setting up EEFlows
+### Setting up eeflows
 
 The easy way is to use `make` to set up everything automatically:
 
@@ -43,7 +45,7 @@ Both docker and docker-compose are used to run this project, so the run command 
 
 This builds, (re)creates and starts containers for Django, Node, PostgreSQL and Redis. Refer to `docker-compose.yml` for
 more insight. Django app is running on `3000` port. Front-end server is running on `8000` port.
-For more information see [SPA docs](app/README.md)
+For more information see [SPA docs](app/README.md).
 
 Logs from all running containers are shown in the terminal. To run in "detached mode", pass the `-d` flag to
 docker-compose. To see running containers, use `docker-compose ps`. To see logs from these containers, run
@@ -63,6 +65,13 @@ To _stop and remove_ containers, run
 
 This stops all running containers and removes containers, networks, volumes and images created by `up`.
 
+### Using a different configuration file
+
+By default docker-compose uses the `docker-compose.yml` file in the current directory. To use other configuration files,
+e.g. production configuration, specify the file to use with the `-f` flag.
+
+    docker-compose -f docker-compose.production.yml up
+
 ## Running Django commands in Docker
 
     docker-compose run django python manage.py <command>
@@ -71,9 +80,9 @@ This stops all running containers and removes containers, networks, volumes and 
 
 |Action                                |Makefile shortcut                      |Actual command                                                              |
 |:-------------------------------------|:--------------------------------------|:---------------------------------------------------------------------------|
-|Installing Python packages            |`make pipenv-install cmd=<package>`    |Runs `pipenv install $(cmd)` in its own container                           |
-|(Re)Generate Pipfile.lock             |`make pipenv-lock`                     |Runs `pipenv lock -v` in its own container                                  |
-|Check Python package security warnings|`make pipenv-check`                    |`docker-compose run --rm --workdir / django pipenv check`                   |
+|Installing Python packages            |`make poetry-install cmd=<package>`    |Runs `poetry install $(cmd)` in its own container                           |
+|(Re)Generate poetry.lock              |`make poetry-lock`                     |Runs `poetry lock -v` in its own container                                  |
+|Check Python package security warnings|`make poetry-check`                    |`docker-compose run --rm --workdir / django poetry check`                   |
 |make migrations                       |`make makemigrations cmd=<command>`    |`docker-compose run --rm django ./manage.py makemigrations $(cmd)`          |
 |migrating                             |`make migrate cmd=<command>`           |`docker-compose run --rm django ./manage.py migrate $(cmd)`                 |
 |manage.py commands                    |`make docker-manage cmd=<command>`     |`docker-compose run --rm django ./manage.py $(cmd)`                         |
@@ -84,24 +93,40 @@ This stops all running containers and removes containers, networks, volumes and 
 |run ESLint                            |`make eslint`                          |`docker-compose run --rm node yarn lint`                                    |
 |run Prospector                        |`make prospector`                      |`docker-compose run --rm django prospector`                                 |
 |run isort                             |`make isort`                           |`docker-compose run --rm django isort --recursive --check-only -p . --diff` |
-|run psql                              |`make psql`                            |`docker-compose exec postgres psql --user eeflows --dbname eeflows`         |
+|run psql                              |`make psql`                            |`docker-compose exec postgres psql --user eeflows --dbname eeflows` |
 
-## Installing new pip or npm packages
+
+## Installing new python or npm packages
 
 ### Node
 Since `yarn` is inside the container, currently the easiest way to install new packages is to add them
 to the `package.json` file and rebuild the container.
 
+#### Gotchas
+
+* Keep `react`, `react-dom` and `react-testing-library` node package versions in sync. Otherwise it causes an error when running `jest`.
+
 ### Python
 
-Python package management is handled by `pipenv`, and employs a lock file (`Pipfile.lock`) to store the package version information.
+Python package management is handled by `poetry`, and employs a lock file (`poetry.lock`) to store the package version information.
 The lock file ensures that when we are building production images
 we don't install conflicting packages and everything is resolved to matching version while developing.
 
 To install a new Python package, there are two options.
-* Edit the `Pipfile` and add the required package there, then run `make pipenv-lock` to regenerate the lock file.
-* Or run `make pipenv-install cmd=<package>` -- this will add the package to Pipenv and regenerate Pipfile.lock in one take.
+* Edit the `pyproject.toml` file and add the required package there, then run `make poetry-lock` to regenerate the lock file.
+* Or run `make poetry-install cmd=<package>` -- this will add the package to `pyproject.toml` and regenerate `poetry.lock` in one take.
 
+#### Using poetry locally for pycharm
+
+PyCharm, as of 2020.3, does not yet support locating Poetry virtualenvs out of the box. So you need to do it manually.
+
+* run `poetry install` locally. Given, that you have poetry installed.
+* When you ran previous command, it told you where it created the virtual environment something like 
+  `/home/you/.cache/pypoetry/virtualenvs/projectname-somehash`;
+* if you missed it you can see it by running `poetry run which python`. It should be something like 
+  `/home/you/.cache/pypoetry/virtualenvs/bin/python`;
+* Open your project in pycharm and under settings search for _project interpreter_ or just _interpreter_.
+  Select the python interpreter located as shown above.
 
 ## Rebuilding Docker images
 
@@ -124,10 +149,14 @@ anything.
 You can also use `--reuse-db` or `--nomigrations` flags to the actual command above to speed things up a bit. See also:
 https://pytest-django.readthedocs.org/en/latest/index.html
 
+
+
 ### Coverage
 
-You can also calculate tests coverage with `coverage run -m py.test && coverage html`,
+You can also calculate tests coverage via `make coverage`. The results will be in the following directories:
 
+- python: [`eeflows/cover`](./eeflows/cover)
+- javascript: [`app/coverage`](./app/coverage)
 
 ## Running code formatting tools
 
@@ -165,9 +194,8 @@ make black-format cmd="app/src/index.js" # File path should be relative to proje
 
 There is also option to use file watchers.
 To use pre-built docker helpers for this, import `.idea_template/watchers.xml`.
-To make this process faster the first time then run `make build-formatting-helpers` to pre-build formatting helpers.
 
-Or use `prettier` and `black` directly if NodeJS and/or Python is available for you.
+You can also use `prettier` and `black` directly if NodeJS and/or Python is available for you.
 
 
 ## Running linters
@@ -189,7 +217,7 @@ To use them, run those commands in the Django app dir:
     # Check Python imports with isort:
     make isort
     # Check Python package security vulnerabilities:
-    make pipenv-check
+    make poetry-check
     # Run all of above:
     make quality
 
@@ -198,3 +226,21 @@ To use them, run those commands in the Django app dir:
 
 Tests are ran by `pytest` and `jest` test runners for python and javascript respectively. They can be run with the
 makefile via `make test`.
+
+
+## Django translations
+
+Project contains two commands for updating and compiling translations. Those two are `make makemessages` and `make compilemessages`.
+Howewer if you are adding a new language or are creating translations for the first time after setting up project, you need to run
+different command to create the initial locale files. The command is `add-locale`. After you have used this command once per each
+new language you can safely use `makemessages` and `compilemessages`
+
+
+## SPA translations
+
+Frontend app uses [i18next](https://github.com/i18next/i18next) for translations and locale data is stored in `public/locale/**/translations.json`.
+Translation discovery is handled in runtime and with command `extract-i18n`. During runtime discovered translations
+will be put in `translations.missing.json`, This file can be referred to for new translations added.
+**Notice: Only used translations will be automatically discovered. Other usages require manual extraction.**
+To add extra language, add it to `i18n.json` and run `make extract-i18n`. This will generate required files.
+In development Node server needs to be restarted to see updated translations.

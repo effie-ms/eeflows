@@ -5,20 +5,6 @@ from stations.constants import BIOPERIODS, BioPeriodType, EFlowType
 from stations.utils.bioperiods import get_bioperiod_by_number
 
 
-class FishCoefficients(models.Model):
-    name = models.CharField(max_length=255)
-    winter = models.FloatField(verbose_name=BioPeriodType.OVERWINTERING.value)
-    spring = models.FloatField(verbose_name=BioPeriodType.SPRING_SPAWNING.value)
-    summer = models.FloatField(verbose_name=BioPeriodType.REARING.value)
-    autumn = models.FloatField(verbose_name=BioPeriodType.FALL_SPAWNING.value)
-
-    class Meta:
-        verbose_name_plural = "Fish coefficients"
-
-    def __str__(self):
-        return self.name
-
-
 class BioPeriod(models.Model):
     name = models.CharField(max_length=255)
     January = models.IntegerField(choices=BIOPERIODS, default=1)
@@ -107,44 +93,6 @@ class BioPeriod(models.Model):
         return months
 
 
-class FET(models.Model):
-    fet_name = models.CharField(max_length=255)
-    fet_short_label = models.CharField(max_length=255)
-    bioperiods_months = models.ForeignKey(BioPeriod, on_delete=models.PROTECT)
-    base_p_coefficients = models.ForeignKey(
-        FishCoefficients, on_delete=models.PROTECT, related_name="base_p_coefficients"
-    )
-    critical_p_coefficients = models.ForeignKey(
-        FishCoefficients,
-        on_delete=models.PROTECT,
-        related_name="critical_p_coefficients",
-    )
-    subsistence_p_coefficients = models.ForeignKey(
-        FishCoefficients,
-        on_delete=models.PROTECT,
-        related_name="subsistence_p_coefficients",
-    )
-
-    def __str__(self):
-        return f"FET {self.fet_short_label}: {self.fet_name}"
-
-    class Meta:
-        verbose_name_plural = "FETs"
-
-    def get_fish_coeff_by_flow_type(self, flow_type):
-        p_coeff_pk = -1
-        if flow_type == EFlowType.Base:
-            p_coeff_pk = self.base_p_coefficients.pk
-        if flow_type == EFlowType.Critical:
-            p_coeff_pk = self.critical_p_coefficients.pk
-        if flow_type == EFlowType.Subsistence:
-            p_coeff_pk = self.subsistence_p_coefficients.pk
-
-        if p_coeff_pk != -1:
-            return FishCoefficients.objects.get(pk=p_coeff_pk)
-        return None
-
-
 class Station(models.Model):
     name = models.CharField(max_length=255)
     hydrological_data = models.FileField(
@@ -152,11 +100,11 @@ class Station(models.Model):
         validators=[FileExtensionValidator(allowed_extensions=["xlsx"])],
         null=True,
     )
-    catchment_area = models.FloatField()
-    river_FET = models.ForeignKey(FET, on_delete=models.PROTECT)
-    longitude = models.FloatField()
-    latitude = models.FloatField()
+    watershed_area = models.FloatField(verbose_name="Watershed area in km2", default=0)
+    longitude = models.FloatField(verbose_name="Longitude in degrees", default=0)
+    latitude = models.FloatField(verbose_name="Latitude in degrees", default=0)
     river_body = models.CharField(max_length=255)
+    bioperiods_months = models.ForeignKey(BioPeriod, on_delete=models.PROTECT, null=True)
 
     def __str__(self):
         return self.name

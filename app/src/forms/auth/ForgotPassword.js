@@ -19,7 +19,7 @@ const ForgotPassword = ({ values, status, isSubmitting }) => {
         <>
             <Row>
                 <Col className="pb-4 text-center">
-                    <h5 className="col-form-label">
+                    <h5>
                         <Trans>
                             Please enter your email below to receive a password
                             reset link.
@@ -39,7 +39,7 @@ const ForgotPassword = ({ values, status, isSubmitting }) => {
             />
 
             <Row>
-                <Col md={6} className="mt-3 ml-auto mr-auto">
+                <Col md={5} className="mt-3 ml-auto mr-auto">
                     <Button
                         type="submit"
                         disabled={isSubmitting}
@@ -73,7 +73,7 @@ const ForgotPassword = ({ values, status, isSubmitting }) => {
                     </Col>
                 </Row>
                 <Row>
-                    <Col md={6} className="mt-3">
+                    <Col md={5} className="mt-3">
                         <Button
                             tag={Link}
                             to={urlResolve('auth:forgot-password')}

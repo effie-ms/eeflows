@@ -24,7 +24,7 @@ export const MeasurementTypeConfiguration = ({
             name={`selectMeasurementType-${timeSeriesType}`}
             id={`${timeSeriesType}MeasurementType`}
             value={measurementType}
-            onChange={e => setMeasurementType(e.target.value)}
+            onChange={(e) => setMeasurementType(e.target.value)}
         >
             <option value="all">{gettext('All (range)')}</option>
             <option value="min">{gettext('Minimum')}</option>

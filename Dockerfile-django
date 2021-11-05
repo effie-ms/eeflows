@@ -1,29 +1,25 @@
-# Development Dockerfile for Django app
-FROM python:3.6-slim
+# Development Dockerfile for Django app. Keep the first commands in sync with Dockerfile-poetry
 
-ENV PYTHONUNBUFFERED 0
+FROM python:3.8-slim-buster
 
-# Expose our application port
-EXPOSE 80
+ENV POETRY_VIRTUALENVS_CREATE 0
 
-# Copy wait-for-it.sh script
-COPY ./wait-for-it.sh /usr/bin/
-
-# Install bash, libpq and gettext
-# Bash is required to support `wait-for-it.sh` script, should not add too much to docker image
-RUN apt-get -y update && apt-get -y install bash gettext
+# Install system requirements
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends build-essential gettext libpq-dev zlib1g-dev libjpeg62-turbo-dev && \
+    rm -rf /var/lib/apt/lists/*
 
 # Copy Python requirements dir and Install requirements
-RUN pip install -U pipenv==2018.11.26 pip setuptools wheel
+RUN pip install -U pip setuptools wheel poetry
 
-COPY Pipfile /
-COPY Pipfile.lock /
+COPY ./wait-for-it.sh /usr/bin/
 
-# Install all dependencies from Pipfile.lock file
-RUN pipenv install --system --ignore-pipfile --dev
+COPY pyproject.toml /
+COPY poetry.lock /
 
-# Check for security warnings, will be enabled later when failing dependencies have been updated
-# RUN pipenv check --system
+
+# Install all dependencies from poetry.lock (dev included by default)
+RUN poetry install
 
 # Set the default directory where CMD will execute
 WORKDIR /app

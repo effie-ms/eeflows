@@ -1,5 +1,5 @@
 """
-Django settings for EEFlows project.
+Django settings for eeflows project.
 
 For more information on this file, see
 https://docs.djangoproject.com/en/dev/topics/settings/
@@ -7,8 +7,10 @@ https://docs.djangoproject.com/en/dev/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/dev/ref/settings/
 """
+
 import os
 from datetime import timedelta
+from urllib.parse import quote
 
 import environ
 
@@ -30,15 +32,18 @@ if READ_DOT_ENV_FILE:
     env.read_env(str(ROOT_DIR.path("django.env")))
 
 
+# Set to true during docker image building (e.g. when running collectstatic)
+IS_DOCKER_BUILD = env.bool("DJANGO_DOCKER_BUILD", default=False)
+
+# Shown in error pages and some other places
+PROJECT_TITLE = "eeflows"
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DJANGO_DEBUG", default=True)
 
-ADMINS = (("Admins", "info@TODO.com"),)
+ADMINS = (("Admins", "effie.mias@gmail.com"),)
 MANAGERS = ADMINS
-EMAIL_SUBJECT_PREFIX = "[EEFlows] "  # subject prefix for managers & admins
-
-# Tg React Url configurations should be same as frontend forgot password URL
-TGR_PASSWORD_RECOVERY_URL = "/auth/reset-password/%s"
+EMAIL_SUBJECT_PREFIX = "[eeflows] "  # subject prefix for managers & admins
 
 SESSION_COOKIE_NAME = "eeflows_ssid"
 SESSION_COOKIE_DOMAIN = env.str("DJANGO_SESSION_COOKIE_DOMAIN", default=None)
@@ -46,6 +51,8 @@ SESSION_COOKIE_DOMAIN = env.str("DJANGO_SESSION_COOKIE_DOMAIN", default=None)
 CSRF_COOKIE_DOMAIN = env.str("DJANGO_CSRF_COOKIE_DOMAIN", default=None)
 CSRF_COOKIE_HTTPONLY = False
 
+# Tg React Url configurations should be same as frontend forgot password URL
+TGR_PASSWORD_RECOVERY_URL = "/auth/reset-password/%s"
 
 INSTALLED_APPS = [
     # Local apps
@@ -57,8 +64,8 @@ INSTALLED_APPS = [
     "rest_framework_swagger",
     "django_filters",
     "tg_react",
-    "crispy_forms",
     "corsheaders",
+    "crispy_forms",
     # Django apps
     "django.contrib.admin",
     "django.contrib.auth",
@@ -96,22 +103,26 @@ TEMPLATES = [
                 "django.template.context_processors.static",
                 "django.template.context_processors.tz",
                 "django.contrib.messages.context_processors.messages",
-            ]
+            ],
         },
-    }
+    },
 ]
-
 
 # Database
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "HOST": env.str("DJANGO_DATABASE_HOST", default="postgres"),
-        "PORT": env.int("DJANGO_DATABASE_PORT", default=5432),
-        "NAME": env.str("DJANGO_DATABASE_NAME", default="eeflows"),
-        "USER": env.str("DJANGO_DATABASE_USER", default="eeflows"),
-        "PASSWORD": env.str("DJANGO_DATABASE_PASSWORD", default="eeflows"),
-    }
+    # When using DJANGO_DATABASE_URL, unsafe characters in the url should be encoded.
+    # See: https://django-environ.readthedocs.io/en/latest/#using-unsafe-characters-in-urls
+    "default": env.db_url(
+        "DJANGO_DATABASE_URL",
+        default="psql://{user}:{password}@{host}:{port}/{name}?sslmode={sslmode}".format(
+            host=env.str("DJANGO_DATABASE_HOST", default="postgres"),
+            port=env.int("DJANGO_DATABASE_PORT", default=5432),
+            name=quote(env.str("DJANGO_DATABASE_NAME", default="eeflows")),
+            user=quote(env.str("DJANGO_DATABASE_USER", default="eeflows")),
+            password=quote(env.str("DJANGO_DATABASE_PASSWORD", default="eeflows")),
+            sslmode=env.str("DJANGO_DATABASE_SSLMODE", "disable"),
+        ),
+    )
 }
 
 
@@ -120,18 +131,6 @@ REDIS_URL = env.str("DJANGO_REDIS_URL", default="redis://redis:6379/1")
 REDIS_CACHE_URL = env.str("DJANGO_REDIS_CACHE_URL", default=REDIS_URL)
 REDIS_CELERY_URL = env.str("DJANGO_REDIS_CELERY_URL", default=REDIS_URL)
 
-
-# Celery configuration
-CELERY_RESULT_BACKEND = REDIS_CELERY_URL
-CELERY_REDIS_CONNECT_RETRY = True
-CELERYD_HIJACK_ROOT_LOGGER = False
-BROKER_URL = REDIS_CELERY_URL
-BROKER_TRANSPORT_OPTIONS = {"fanout_prefix": True}
-
-CELERY_TIMEZONE = "UTC"
-
-# Set your Celerybeat tasks/schedule here
-CELERYBEAT_SCHEDULE = {}
 
 # Caching
 CACHES = {
@@ -145,11 +144,14 @@ CACHES = {
 
 # Internationalization
 LANGUAGE_CODE = "en"
-LANGUAGES = (("en", "English"), ("et", "Eesti keel"))
+LANGUAGES = (
+    ("en", "English"),
+    ("et", "Eesti keel"),
+)
 LOCALE_PATHS = ("locale",)
 
 TIME_ZONE = "UTC"
-USE_I18N = False
+USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
@@ -159,24 +161,10 @@ MEDIA_ROOT = env.str("DJANGO_MEDIA_ROOT", default="/files/media")
 MEDIA_URL = env.str("DJANGO_MEDIA_URL", default="/media/")
 MEDIAFILES_LOCATION = env.str("DJANGO_MEDIAFILES_LOCATION", default="media")
 
-# In staging/prod we use S3 for file storage engine
-AWS_ACCESS_KEY_ID = "<unset>"
-AWS_SECRET_ACCESS_KEY = "<unset>"
-AWS_STORAGE_BUCKET_NAME = "<unset>"
-AWS_DEFAULT_ACL = "public-read"
-AWS_IS_GZIPPED = True
-AWS_S3_ENCRYPTION = True
-AWS_S3_FILE_OVERWRITE = False
-AWS_S3_REGION_NAME = "eu-north-1"
-AWS_S3_SIGNATURE_VERSION = "s3v4"
-
-AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=1209600"}  # 2 weeks in seconds
-
 # Static files (CSS, JavaScript, images)
 STATIC_ROOT = "/files/assets"
+
 STATIC_URL = env.str("DJANGO_STATIC_URL", default="/assets/")
-
-
 STATICFILES_DIRS = (os.path.join(SITE_ROOT, "static"),)
 STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.FileSystemFinder",
@@ -188,6 +176,7 @@ STATICFILES_FINDERS = (
 SECRET_KEY = env.str("DJANGO_SECRET_KEY", default="dummy key")
 
 AUTH_USER_MODEL = "accounts.User"
+
 
 # Static site url, used when we need absolute url but lack request object, e.g. in email sending.
 SITE_URL = env.str("RAZZLE_SITE_URL", default="http://127.0.0.1:8000")
@@ -220,8 +209,8 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 
 # Email config
-DEFAULT_FROM_EMAIL = "EEFlows <info@TODO.com>"
-SERVER_EMAIL = "EEFlows server <server@TODO.com>"
+DEFAULT_FROM_EMAIL = "eeflows <info@efmsapp.com>"
+SERVER_EMAIL = "eeflows server <server@efmsapp.com>"
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
@@ -231,8 +220,7 @@ EMAIL_HOST_USER = ""
 EMAIL_HOST_PASSWORD = ""
 
 
-# Base logging config. Logs INFO and higher-level messages to console. Production-specific additions are in
-#  production.py.
+# Base logging config. Logs INFO and higher-level messages to console.
 #  Notably we modify existing Django loggers to propagate and delegate their logging to the root handler, so that we
 #  only have to configure the root handler.
 LOGGING = {
@@ -241,7 +229,7 @@ LOGGING = {
     "formatters": {
         "default": {
             "format": "%(asctime)s [%(levelname)s] %(name)s:%(lineno)d %(funcName)s - %(message)s"
-        }
+        },
     },
     "filters": {"require_debug_false": {"()": "django.utils.log.RequireDebugFalse"}},
     "handlers": {"console": {"class": "logging.StreamHandler", "formatter": "default"}},
@@ -259,17 +247,16 @@ TEST_RUNNER = "django.test.runner.DiscoverRunner"
 # Disable a few system checks. Careful with these, only silence what your really really don't need.
 # TODO: check if this is right for your project.
 SILENCED_SYSTEM_CHECKS = [
-    "security.W001"  # we don't use SecurityMiddleware since security is better applied in nginx config
+    "security.W001",  # we don't use SecurityMiddleware since security is better applied in nginx config
 ]
-
 
 # Rest framework configuration
 REST_FRAMEWORK = {
     # Disable Basic auth
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-        # Used for swagger interface
-        "rest_framework.authentication.SessionAuthentication",
+        # By default api session authentication is not used
+        # "rest_framework.authentication.SessionAuthentication",
     ),
     "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
     # Change default full-url media files to be only stored path, needs /media prepended in frontend
@@ -279,10 +266,20 @@ REST_FRAMEWORK = {
 }
 
 # Default values for sentry
-RAVEN_BACKEND_DSN = env.str("DJANGO_RAVEN_BACKEND_DSN", default="https://TODO:TODO")
-RAVEN_PUBLIC_DSN = env.str("DJANGO_RAVEN_PUBLIC_DSN", default="https://TODO")
-RAVEN_CONFIG = {"dsn": RAVEN_BACKEND_DSN}
+SENTRY_DSN = env.str("DJANGO_SENTRY_DSN", default="")
+SENTRY_ENVIRONMENT = env.str("DJANGO_SENTRY_ENVIRONMENT", default="local")
 
+if SENTRY_DSN and not IS_DOCKER_BUILD:
+    import sentry_sdk  # NOQA
+    from sentry_sdk.integrations.django import DjangoIntegration  # NOQA
+
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[DjangoIntegration()],
+        environment=SENTRY_ENVIRONMENT,
+        # Send authenticated user information with sentry events (needs django.contrib.auth)
+        send_default_pii=True,
+    )
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
@@ -295,13 +292,11 @@ SIMPLE_JWT = {
     "USER_ID_CLAIM": "user_id",
 }
 
-
 SWAGGER_ENABLED = True
 
 SWAGGER_SETTINGS = {
     "USE_SESSION_AUTH": True,
 }
-
 
 # CORS settings
 CORS_ORIGIN_ALLOW_ALL = True

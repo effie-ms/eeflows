@@ -1,5 +1,5 @@
 """
-WSGI config for EEFlows project.
+WSGI config for eeflows project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

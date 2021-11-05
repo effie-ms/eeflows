@@ -6,7 +6,7 @@ import App from 'containers/AppShell';
 import PageNotFound from 'views/PageNotFound';
 
 import activateLanguage from 'sagas/user/activateLanguage';
-import fetchUserDetails from 'sagas/user/fetchUserDetails';
+// import fetchUserDetails from 'sagas/user/fetchUserDetails';
 
 import fetchStationDetailsWatcher, {
     fetchStationDetailsInitialWorker,
@@ -14,8 +14,7 @@ import fetchStationDetailsWatcher, {
 import fetchEflowsWatcher, {
     fetchEflowsInitialWorker,
 } from 'sagas/stations/fetchEflows';
-
-import { fetchStations } from '../sagas/stations/fetchStations';
+import { fetchStations } from 'sagas/stations/fetchStations';
 
 const StationListView = loadable(() => import('views/stations/StationList'));
 const StationDetailsView = loadable(() =>
@@ -31,7 +30,7 @@ const NotFoundRoute = {
 const routes = [
     {
         component: App,
-        initial: [fetchUserDetails],
+        // initial: [fetchUserDetails],
         watcher: [activateLanguage],
         routes: [
             {

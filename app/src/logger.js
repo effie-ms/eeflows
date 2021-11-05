@@ -1,7 +1,8 @@
-import { addColors, createLogger, transports, format } from 'winston';
+// Note: @winston is aliased to node_modules winston on the server and to `client/winston.js` on the client.
 import { join, normalize } from 'path';
 
-import SETTINGS from 'settings';
+import { SETTINGS } from 'settings';
+import { addColors, createLogger, transports, format } from '@winston';
 
 const { combine, colorize, label, splat, printf, timestamp } = format;
 
@@ -21,7 +22,7 @@ function createTransport(level) {
             label({ label: `[worker-${SETTINGS.WORKER_ID}]` }),
             timestamp(),
             printf(
-                info =>
+                (info) =>
                     `${info.timestamp} [${info.level}]${info.label || ''}: ${
                         info.message
                     }`,
@@ -59,7 +60,7 @@ if (process.env.NODE_ENV !== 'production') {
             format: combine(
                 colorize({ all: true }),
                 splat(),
-                printf(nfo => `[${nfo.level}]: ${nfo.message}`),
+                printf((nfo) => `[${nfo.level}]: ${nfo.message}`),
             ),
         }),
     );
@@ -107,7 +108,7 @@ const logger = createLogger({
     exitOnError: false,
 });
 
-// We also hijack console.log, console.warn and console.error
+// On the server we also hijack console.log, console.warn and console.error
 if (process.env.BUILD_TARGET === 'server') {
     // eslint-disable-next-line no-console
     console.log = function log() {

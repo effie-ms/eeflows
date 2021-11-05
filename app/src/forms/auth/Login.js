@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { Row, Col, Alert, Button } from 'reactstrap';
-// import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { withFormik, Form } from 'formik';
 import * as Yup from 'yup';
-// import { resolvePath as urlResolve } from 'tg-named-routes';
+import { resolvePath as urlResolve } from 'tg-named-routes';
 
 import FormField from 'forms/fields/FormField';
 import { tNoop } from 'utils/text';
@@ -43,8 +43,7 @@ const Login = ({ status, isSubmitting }) => {
             )}
 
             <Row>
-                <Col md={4} />
-                <Col md={8} className="mt-3 ml-auto mr-auto">
+                <Col sm={12} md={4} className="mt-3 ml-auto mr-auto">
                     <Button
                         type="submit"
                         disabled={isSubmitting}
@@ -54,17 +53,16 @@ const Login = ({ status, isSubmitting }) => {
                     </Button>
                 </Col>
             </Row>
-            {/* <Row>   */}
-            {/*    <Col md={4} />   */}
-            {/*    <Col md={8} className="mt-3" style={{ textAlign: 'center' }}>    */}
-            {/*        <Link    */}
-            {/*            to={urlResolve('auth:forgot-password')}  */}
-            {/*            className="col-form-label"   */}
-            {/*        >    */}
-            {/*            {t('Forgot password?')}  */}
-            {/*        </Link>  */}
-            {/*    </Col>   */}
-            {/* </Row>  */}
+            <Row>
+                <Col sm={4} className="mt-3 ml-auto mr-auto">
+                    <Link
+                        to={urlResolve('auth:forgot-password')}
+                        className="pt-2"
+                    >
+                        {t('Forgot password?')}
+                    </Link>
+                </Col>
+            </Row>
         </Form>
     );
 };

@@ -22,8 +22,6 @@ export const downloadAsPNG = (contentType, stationName, startDate, endDate) => {
     if (fileName && nodeId) {
         domtoimage
             .toBlob(document.getElementById(nodeId), { bgcolor: 'white' })
-            .then(function(blob) {
-                fileDownload(blob, `${fileName}.png`);
-            });
+            .then((blob) => fileDownload(blob, `${fileName}.png`));
     }
 };

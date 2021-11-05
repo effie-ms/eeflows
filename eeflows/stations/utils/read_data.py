@@ -63,8 +63,6 @@ def get_low_flow_method_by_abbr(method_abbr):
         return MeanLowFlowMethod.ExceedanceProbability95
     if method_abbr == "EXCEED75":
         return MeanLowFlowMethod.ExceedanceProbability75
-    if method_abbr == "RAELFF":
-        return MeanLowFlowMethod.PolishRAELFF
     return None
 
 
@@ -118,38 +116,25 @@ def get_measurement_ts(
     measurement_type,
     from_time,
     to_time,
-    fill_missing_values,
-    avg_forecast_ts,
 ):
     ts = get_measurement_ts_without_filtering(
         pd_excel_file, sensor_type, measurement_type
     )
     if ts is not None:
         # take dates within [from_time..to_time]
-        filtered_dates = [dt for dt in ts.index.tolist() if from_time <= dt <= to_time]
+        filtered_dates = [dt for dt in ts.index.tolist() if from_time <= dt <= pd.Timestamp(to_time)]
         # take values by selected dates
         filtered_ts = ts.loc[filtered_dates]
         delta = to_time - from_time  # as timedelta
         all_dates_within = [
             from_time + datetime.timedelta(days=i) for i in range(delta.days + 1)
         ]
-        # True if value was forecast, otherwise False
-        forecast_flags_ts = pd.Series(
-            data=[(dt not in filtered_dates) for dt in all_dates_within],
-            index=all_dates_within,
-            dtype="float64",
-        )
 
         # return time series with all the dates in the range and with values that can be calculated
         # (can be not all the values)
         if len(filtered_dates) != delta.days:
             filtered_ts = filtered_ts.reindex(all_dates_within)
-            if fill_missing_values and measurement_type == MeasurementType.AVG:
-                # forecast null values
-                bool_series = pd.isnull(filtered_ts)
-                missing_eflows = filtered_ts[bool_series].copy()
-                for dt, missing_value in missing_eflows.items():
-                    filtered_ts[dt] = avg_forecast_ts[dt]
 
-        return filtered_ts, forecast_flags_ts
-    return None, None
+        return filtered_ts
+
+    return None

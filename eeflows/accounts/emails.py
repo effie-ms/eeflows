@@ -12,7 +12,7 @@ logger = logging.getLogger("accounts.emails")
 
 def send_password_reset(user, uid, token):
     try:
-        email_subject = _("EEFlows password reset")
+        email_subject = _("eeflows password reset")
         confirm_reset_url = "%s%s" % (
             settings.SITE_URL,
             reverse("password_reset_confirm", kwargs={"uidb64": uid, "token": token}),

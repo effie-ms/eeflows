@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-
 import { Input } from 'reactstrap';
-import { Switch } from '@blueprintjs/core';
-
 import { DatePickerCalendar } from 'components/stations/configuration/DatePickerCalendar';
-import { CatchmentAreaConfiguration } from 'components/stations/configuration/CatchmentAreaConfiguration';
 import { gettext } from 'utils/text';
 
 const yearsOptions = Array.from({ length: 2018 - 2009 + 1 }, (_, i) =>
@@ -16,17 +12,10 @@ export const LowFlowTabPane = ({
     startDate,
     endDate,
     onSetDateRange,
-    catchmentArea,
-    onSetCatchmentArea,
-    areaFactor,
-    onSetAreaFactor,
     meanLowFlowMethod,
     onSetMeanLowFlowMethod,
     meanLowFlowMethodFrequency,
     onSetMeanLowFlowMethodFrequency,
-    watershed,
-    enableForecasting,
-    setEnableForecasting,
 }) => {
     const [year, setYear] = useState('2016');
 
@@ -49,7 +38,7 @@ export const LowFlowTabPane = ({
                         name="year"
                         id="year"
                         value={year}
-                        onChange={e => setYear(e.target.value)}
+                        onChange={(e) => setYear(e.target.value)}
                     >
                         {yearsOptions.map((item, i) => (
                             <option key={i.toString()} value={item}>
@@ -66,7 +55,7 @@ export const LowFlowTabPane = ({
                     setYear={setYear}
                 />
             </div>
-            <div className="m-3 d-flex flex-row">
+            <div className="m-3 d-flex flex-row w-100">
                 <div style={{ flexBasis: '50%' }}>
                     <div className="second-axis-selector mt-3">
                         <h5>
@@ -80,7 +69,7 @@ export const LowFlowTabPane = ({
                             name="selectMeanLowFlowMethod"
                             id="selectMeanLowFlowMethod"
                             value={meanLowFlowMethod}
-                            onChange={e =>
+                            onChange={(e) =>
                                 onSetMeanLowFlowMethod(e.target.value)
                             }
                         >
@@ -100,11 +89,6 @@ export const LowFlowTabPane = ({
                                     'Low flow with 75% exceedance probability',
                                 )}
                             </option>
-                            <option value="RAELFF">
-                                {gettext(
-                                    'Regionally Applicable Env. Low Flow Formula',
-                                )}
-                            </option>
                         </Input>
                     </div>
                     <div className="second-axis-selector d-flex flex-column mt-3">
@@ -119,7 +103,7 @@ export const LowFlowTabPane = ({
                             name="selectMeanLowFlowMethodFrequency"
                             id="selectMeanLowFlowMethodFrequency"
                             value={meanLowFlowMethodFrequency}
-                            onChange={e =>
+                            onChange={(e) =>
                                 onSetMeanLowFlowMethodFrequency(e.target.value)
                             }
                         >
@@ -136,27 +120,7 @@ export const LowFlowTabPane = ({
                                 {gettext('Monthly')}
                             </option>
                         </Input>
-                        <Switch
-                            className="mt-3"
-                            style={{ fontSize: '1.0rem' }}
-                            labelElement={gettext('Enable forecasting')}
-                            innerLabelChecked="yes"
-                            innerLabel="no"
-                            checked={enableForecasting}
-                            onChange={() =>
-                                setEnableForecasting(!enableForecasting)
-                            }
-                        />
                     </div>
-                </div>
-                <div style={{ flexBasis: '50%' }}>
-                    <CatchmentAreaConfiguration
-                        catchmentArea={catchmentArea}
-                        onSetCatchmentArea={onSetCatchmentArea}
-                        areaFactor={areaFactor}
-                        onSetAreaFactor={onSetAreaFactor}
-                        watershed={watershed}
-                    />
                 </div>
             </div>
         </div>
@@ -167,16 +131,11 @@ LowFlowTabPane.propTypes = {
     startDate: PropTypes.instanceOf(Date),
     endDate: PropTypes.instanceOf(Date),
     onSetDateRange: PropTypes.func.isRequired,
-    catchmentArea: PropTypes.number.isRequired,
-    onSetCatchmentArea: PropTypes.func.isRequired,
-    areaFactor: PropTypes.number.isRequired,
-    onSetAreaFactor: PropTypes.func.isRequired,
     meanLowFlowMethod: PropTypes.oneOf([
         'TNT30',
         'TNT20',
         'EXCEED95',
         'EXCEED75',
-        'RAELFF',
     ]).isRequired,
     onSetMeanLowFlowMethod: PropTypes.func.isRequired,
     meanLowFlowMethodFrequency: PropTypes.oneOf([
@@ -186,9 +145,6 @@ LowFlowTabPane.propTypes = {
         'MONTHLY',
     ]).isRequired,
     onSetMeanLowFlowMethodFrequency: PropTypes.func.isRequired,
-    watershed: PropTypes.number.isRequired,
-    enableForecasting: PropTypes.bool.isRequired,
-    setEnableForecasting: PropTypes.func.isRequired,
 };
 
 LowFlowTabPane.defaultProps = {

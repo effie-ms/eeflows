@@ -24,7 +24,7 @@ export const MeasurementsConfiguration = ({
                     name="selectTimeSeriesType"
                     id="selectTimeSeriesType"
                     value={secondAxisTimeSeriesType}
-                    onChange={e =>
+                    onChange={(e) =>
                         onSetSecondAxisTimeSeriesType(e.target.value)
                     }
                 >
@@ -39,7 +39,6 @@ export const MeasurementsConfiguration = ({
                     )} threshold
                     (${getTimeSeriesUnitsByAbbreviation(
                         secondAxisTimeSeriesType,
-                        false,
                     )})`)}
                     :
                 </Label>
@@ -51,7 +50,7 @@ export const MeasurementsConfiguration = ({
                     placeholder={`${getTimeSeriesNameByAbbreviation(
                         secondAxisTimeSeriesType,
                     )} threshold`}
-                    onChange={e => onSetSecondAxisThreshold(e.target.value)}
+                    onChange={(e) => onSetSecondAxisThreshold(e.target.value)}
                 />
             </div>
         </div>

@@ -6,7 +6,7 @@ import { connectRouter } from 'connected-react-router';
 import { combineReducers } from 'redux';
 import station from 'ducks/station';
 
-export default history =>
+export default (history) =>
     combineReducers({
         router: connectRouter(history),
         error: errorReducer,

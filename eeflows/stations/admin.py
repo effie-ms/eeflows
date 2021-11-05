@@ -1,9 +1,7 @@
 from django.contrib import admin
 
-from stations.models import BioPeriod, FET, FishCoefficients, Station
+from stations.models import BioPeriod, Station
 
 
 admin.site.register(Station)
-admin.site.register(FishCoefficients)
 admin.site.register(BioPeriod)
-admin.site.register(FET)

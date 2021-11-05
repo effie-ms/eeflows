@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 
 export const CustomComplianceTooltip = ({ active, payload, label }) => {
     if (active) {
         return (
             <div className="recharts-default-tooltip custom-tooltip">
-                <p>{label}</p>
+                <p>{moment(label).format('MMMM Do YYYY')}</p>
                 {payload.map(
-                    arrItem =>
+                    (arrItem) =>
                         !Number.isNaN(parseFloat(arrItem.value)) &&
                         !arrItem.dataKey.includes('range') && (
                             <p key={arrItem.dataKey}>
