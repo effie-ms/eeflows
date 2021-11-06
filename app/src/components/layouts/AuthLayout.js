@@ -1,16 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
-import { Container } from 'reactstrap';
+import { Container, Row, Col, Card } from 'reactstrap';
 
 const AuthLayout = ({ children }) => (
     <>
-        <Helmet defaultTitle="Authentication">
-            <body className="auth" />
-        </Helmet>
+        <Helmet defaultTitle="Authentication" />
         <Container>
-            <div className="bg-origin" />
-            <div className="login-form">{children}</div>
+            <Row>
+                <Col lg={8} className="py-5 ml-auto mr-auto">
+                    <Card body>{children}</Card>
+                </Col>
+            </Row>
         </Container>
     </>
 );

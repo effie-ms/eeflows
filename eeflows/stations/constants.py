@@ -19,7 +19,6 @@ class MeanLowFlowMethod(Enum):
     Tennant20 = "Tennant 20% mean"
     ExceedanceProbability95 = "Exceedance Probability 95%"
     ExceedanceProbability75 = "Exceedance Probability 75%"
-    PolishRAELFF = "Regionally Applicable Environmental Low Flow Formula"
 
 
 class MeanLowFlowMethodFrequency(Enum):
@@ -82,6 +81,3 @@ BIOPERIODS = [
 
 class EFlowType(Enum):
     Low = "Mean low flow"
-    Base = "Base eflow"
-    Subsistence = "Subsistence eflow"
-    Critical = "Critical eflow"

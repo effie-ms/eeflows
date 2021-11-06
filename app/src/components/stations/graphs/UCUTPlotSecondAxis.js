@@ -29,7 +29,6 @@ export const UCUTPlotSecondAxis = ({
     stationName,
     startDate,
     endDate,
-    enableForecasting,
     showProcessingBar,
 }) => {
     const graphType = secondAxisTimeSeriesType === 'TW' ? 'Above' : 'Under';
@@ -37,17 +36,10 @@ export const UCUTPlotSecondAxis = ({
     const UCUTObserved = getCumulativeDurationsSecondaryAxisTS(
         eflowsTS,
         threshold,
-        false,
-        graphType === 'Under',
-    );
-    const UCUTForecast = getCumulativeDurationsSecondaryAxisTS(
-        eflowsTS,
-        threshold,
-        true,
         graphType === 'Under',
     );
 
-    const exportData = { UCUTObserved, UCUTForecast };
+    const exportData = { UCUTObserved };
 
     const graphName = gettext(
         `Uniform Continuous ${graphType}-Threshold Graph: ${getTimeSeriesNameByAbbreviation(
@@ -72,7 +64,6 @@ export const UCUTPlotSecondAxis = ({
                         downloadAsExcelUCUT(
                             exportData,
                             secondAxisTimeSeriesType,
-                            enableForecasting,
                             stationName,
                             startDate,
                             endDate,
@@ -123,10 +114,10 @@ export const UCUTPlotSecondAxis = ({
                             <YAxis
                                 type="number"
                                 dataKey="daysDuration"
-                                name="Duration of days"
+                                name="Duration (days)"
                                 unit="d"
                                 label={{
-                                    value: `${gettext('Duration of days')}`,
+                                    value: `${gettext('Duration (days)')}`,
                                     angle: -90,
                                     offset: 0,
                                     position: 'insideLeft',
@@ -146,24 +137,6 @@ export const UCUTPlotSecondAxis = ({
                                 }
                                 line={{ type: 'monotone', strokeWidth: 3 }}
                             />
-                            {enableForecasting && (
-                                <Scatter
-                                    name={`${getTimeSeriesNameByAbbreviation(
-                                        secondAxisTimeSeriesType,
-                                    )}: forecast`}
-                                    data={UCUTForecast}
-                                    fill={
-                                        secondAxisTimeSeriesType === 'TW'
-                                            ? '#ff8000'
-                                            : '#e83e8c'
-                                    }
-                                    line={{
-                                        type: 'monotone',
-                                        strokeWidth: 3,
-                                        strokeDasharray: '5 5',
-                                    }}
-                                />
-                            )}
                         </ScatterChart>
                     </ResponsiveContainer>
                 </div>
@@ -179,7 +152,6 @@ UCUTPlotSecondAxis.propTypes = {
     stationName: PropTypes.string.isRequired,
     startDate: PropTypes.string.isRequired,
     endDate: PropTypes.string.isRequired,
-    enableForecasting: PropTypes.bool.isRequired,
     showProcessingBar: PropTypes.bool.isRequired,
 };
 

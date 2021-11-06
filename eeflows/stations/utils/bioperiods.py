@@ -1,6 +1,5 @@
 import datetime
 
-import numpy as np
 import pandas as pd
 
 from stations.constants import (
@@ -124,7 +123,7 @@ def get_low_flow_value(period_df, low_flow_method, proportion):
 def get_mean_low_flow_periods(
     all_discharge_to_time_df,
     time_axis,
-    fet,
+    station,
     low_flow_method,
     low_flow_method_freq,
     proportion,
@@ -188,19 +187,19 @@ def get_mean_low_flow_periods(
 
             # take each bioperiod months
             if bioperiod_num == 1:
-                months = fet.bioperiods_months.get_months_by_bioperiod(
+                months = station.bioperiods_months.get_months_by_bioperiod(
                     BioPeriodType.OVERWINTERING
                 )
             elif bioperiod_num == 2:
-                months = fet.bioperiods_months.get_months_by_bioperiod(
+                months = station.bioperiods_months.get_months_by_bioperiod(
                     BioPeriodType.SPRING_SPAWNING
                 )
             elif bioperiod_num == 3:
-                months = fet.bioperiods_months.get_months_by_bioperiod(
+                months = station.bioperiods_months.get_months_by_bioperiod(
                     BioPeriodType.REARING
                 )
             elif bioperiod_num == 4:
-                months = fet.bioperiods_months.get_months_by_bioperiod(
+                months = station.bioperiods_months.get_months_by_bioperiod(
                     BioPeriodType.FALL_SPAWNING
                 )
             else:
@@ -258,39 +257,39 @@ def get_mean_low_flows(
     low_flow_method_freq, values_dict, dates_dict, mean_bioperiod_discharge_df
 ):
     if low_flow_method_freq == MeanLowFlowMethodFrequency.LongTerm:
-        mean_bioperiod_discharge_df.loc[
-            dates_dict["all"], "mean bioperiod discharge"
-        ] = [values_dict["all"] for _ in dates_dict["all"]]
+        mean_bioperiod_discharge_df.loc[dates_dict["all"], "eflow"] = [
+            values_dict["all"] for _ in dates_dict["all"]
+        ]
 
     if low_flow_method_freq == MeanLowFlowMethodFrequency.Seasonal:
-        mean_bioperiod_discharge_df.loc[
-            dates_dict["summer"], "mean bioperiod discharge"
-        ] = [values_dict["summer"] for _ in dates_dict["summer"]]
-        mean_bioperiod_discharge_df.loc[
-            dates_dict["winter"], "mean bioperiod discharge"
-        ] = [values_dict["winter"] for _ in dates_dict["winter"]]
+        mean_bioperiod_discharge_df.loc[dates_dict["summer"], "eflow"] = [
+            values_dict["summer"] for _ in dates_dict["summer"]
+        ]
+        mean_bioperiod_discharge_df.loc[dates_dict["winter"], "eflow"] = [
+            values_dict["winter"] for _ in dates_dict["winter"]
+        ]
 
     if low_flow_method_freq == MeanLowFlowMethodFrequency.Bioperiodical:
         mean_bioperiod_discharge_df.loc[
-            dates_dict[BioPeriodType.OVERWINTERING.value], "mean bioperiod discharge"
+            dates_dict[BioPeriodType.OVERWINTERING.value], "eflow"
         ] = [
             values_dict[BioPeriodType.OVERWINTERING.value]
             for _ in dates_dict[BioPeriodType.OVERWINTERING.value]
         ]
         mean_bioperiod_discharge_df.loc[
-            dates_dict[BioPeriodType.SPRING_SPAWNING.value], "mean bioperiod discharge"
+            dates_dict[BioPeriodType.SPRING_SPAWNING.value], "eflow"
         ] = [
             values_dict[BioPeriodType.SPRING_SPAWNING.value]
             for _ in dates_dict[BioPeriodType.SPRING_SPAWNING.value]
         ]
         mean_bioperiod_discharge_df.loc[
-            dates_dict[BioPeriodType.REARING.value], "mean bioperiod discharge"
+            dates_dict[BioPeriodType.REARING.value], "eflow"
         ] = [
             values_dict[BioPeriodType.REARING.value]
             for _ in dates_dict[BioPeriodType.REARING.value]
         ]
         mean_bioperiod_discharge_df.loc[
-            dates_dict[BioPeriodType.FALL_SPAWNING.value], "mean bioperiod discharge"
+            dates_dict[BioPeriodType.FALL_SPAWNING.value], "eflow"
         ] = [
             values_dict[BioPeriodType.FALL_SPAWNING.value]
             for _ in dates_dict[BioPeriodType.FALL_SPAWNING.value]
@@ -301,19 +300,17 @@ def get_mean_low_flows(
         for month_tuple in MONTHS:
             month_name = month_tuple[1]
 
-            mean_bioperiod_discharge_df.loc[
-                dates_dict[month_name], "mean bioperiod discharge"
-            ] = [values_dict[month_name] for _ in dates_dict[month_name]]
+            mean_bioperiod_discharge_df.loc[dates_dict[month_name], "eflow"] = [
+                values_dict[month_name] for _ in dates_dict[month_name]
+            ]
 
     return mean_bioperiod_discharge_df
 
 
 def get_low_flow_series(
-    all_discharge_to_time_df, time_axis, fet, low_flow_method, low_flow_method_freq
+    all_discharge_to_time_df, time_axis, station, low_flow_method, low_flow_method_freq
 ):
-    low_flow_thresholds_df = pd.DataFrame(
-        index=time_axis, columns=["mean bioperiod discharge"]
-    )
+    low_flow_thresholds_df = pd.DataFrame(index=time_axis, columns=["eflow"])
 
     proportion = 0.95  # default
     if low_flow_method == MeanLowFlowMethod.Tennant30:
@@ -331,7 +328,7 @@ def get_low_flow_series(
     values_dict, dates_dict = get_mean_low_flow_periods(
         all_discharge_to_time_df,
         time_axis,
-        fet,
+        station,
         low_flow_method,
         low_flow_method_freq,
         proportion,
@@ -345,58 +342,3 @@ def get_low_flow_series(
         :, 0
     ]  # get pd.Series from pd.DataFrame
     return low_flow_thresholds_ts
-
-
-def get_eflows_all_types(all_discharge_to_time_df):
-    base_value = np.NaN
-    subsistence_value = np.NaN
-    critical_value = np.NaN
-
-    temp_q_df = all_discharge_to_time_df.copy()
-    temp_q_df.dropna(inplace=True)
-
-    if not temp_q_df.empty:
-        # filter discharge by low pulses (long-term mean) and get exceedance probabilities
-        long_term_mean = np.mean(temp_q_df.values)
-        count_all = len(temp_q_df)
-        sorted_q_values = temp_q_df.sort_values(ascending=True).values
-        ranks_minus_1 = list(range(len(sorted_q_values)))  # indices
-        exceedance_probabilities = [
-            (m + 1) / (count_all + 1)
-            if sorted_q_values[m] <= long_term_mean
-            else np.NaN
-            for m in ranks_minus_1
-        ]
-
-        # get percentages of different types of flows
-        crossing_point_prob = max(
-            [prob for prob in exceedance_probabilities if prob != np.NaN]
-        )
-        p_subsistence = 0.25 * crossing_point_prob
-        p_critical = 0.5 * crossing_point_prob
-        p_base = 0.75 * crossing_point_prob
-
-        # get the closest exceedance probability from the existing ones
-        exceedance_prob_arr = np.asarray(
-            [prob for prob in exceedance_probabilities if np.isfinite(prob)]
-        )
-        base_idx = (np.abs(exceedance_prob_arr - p_base)).argmin()
-        subsistence_idx = (np.abs(exceedance_prob_arr - p_subsistence)).argmin()
-        critical_idx = (np.abs(exceedance_prob_arr - p_critical)).argmin()
-
-        base_value = sorted_q_values[base_idx]
-        subsistence_value = sorted_q_values[subsistence_idx]
-        critical_value = sorted_q_values[critical_idx]
-
-    dates_idx = all_discharge_to_time_df.index
-
-    base_eflow_ts = pd.Series(
-        data=[base_value for _ in list(dates_idx)], index=dates_idx
-    )
-    subsistence_eflow_ts = pd.Series(
-        data=[subsistence_value for _ in list(dates_idx)], index=dates_idx
-    )
-    critical_eflow_ts = pd.Series(
-        data=[critical_value for _ in list(dates_idx)], index=dates_idx
-    )
-    return base_eflow_ts, subsistence_eflow_ts, critical_eflow_ts

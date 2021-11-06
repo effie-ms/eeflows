@@ -1,17 +1,16 @@
-const count = arr => {
-    return arr.reduce((counter, item) => {
+const count = (arr) =>
+    arr.reduce((counter, item) => {
         const p = String(item);
         counter[p] = counter.hasOwnProperty(p) ? counter[p] + 1 : 1; // eslint-disable-line
         return counter;
     }, {});
-};
 
 const getCumulativeDurations = (valueThresholdDateTuples, isUnderThreshold) => {
     const sortedPoints = valueThresholdDateTuples.sort(
         (a, b) => b.date - a.date,
     );
 
-    const complianceFlags = sortedPoints.map(point => {
+    const complianceFlags = sortedPoints.map((point) => {
         if (isUnderThreshold) {
             return point.value < point.threshold ? 1 : 0;
         } else {
@@ -45,7 +44,7 @@ const getCumulativeDurations = (valueThresholdDateTuples, isUnderThreshold) => {
     const cumulativeDurationsDict = count(sortedCumDurations);
 
     const durationsArray = Object.keys(cumulativeDurationsDict).map(
-        duration => ({
+        (duration) => ({
             daysDuration: Number(duration),
             cumulativeDuration:
                 ((Number(duration) * cumulativeDurationsDict[duration]) /
@@ -74,19 +73,10 @@ const getCumulativeDurations = (valueThresholdDateTuples, isUnderThreshold) => {
     return cumulativeDurationsArray;
 };
 
-export const getCumulativeDurationsEflows = (
-    eflowsTS,
-    eflowType,
-    isForecast,
-) => {
-    const valueThresholdDateTuples = eflowsTS.map(point => ({
-        value: point[`avg_discharge${isForecast ? '_forecast' : ''}`],
-        threshold:
-            point[
-                `avg_${eflowType.toLowerCase()}_eflow_level${
-                    isForecast ? '_forecast' : ''
-                }`
-            ],
+export const getCumulativeDurationsEflows = (eflowsTS) => {
+    const valueThresholdDateTuples = eflowsTS.map((point) => ({
+        value: point.avg_discharge,
+        threshold: point.avg_low_eflow_level,
         date: point.date,
     }));
 
@@ -96,11 +86,10 @@ export const getCumulativeDurationsEflows = (
 export const getCumulativeDurationsSecondaryAxisTS = (
     eflowsTS,
     threshold,
-    isForecast,
     isUnderThreshold,
 ) => {
-    const valueThresholdDateTuples = eflowsTS.map(point => ({
-        value: point[`avg_second_axis_ts${isForecast ? '_forecast' : ''}`],
+    const valueThresholdDateTuples = eflowsTS.map((point) => ({
+        value: point.avg_second_axis_ts,
         threshold,
         date: point.date,
     }));

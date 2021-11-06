@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from stations.models import FET, FishCoefficients, Station
+from stations.models import Station
 from stations.utils.read_data import (
     get_low_flow_method_by_abbr,
     get_low_flow_method_freq_by_abbr,
@@ -8,55 +8,13 @@ from stations.utils.read_data import (
 )
 
 
-class FishCoefficientsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = FishCoefficients
-        fields = ("id", "name", "winter", "summer", "spring", "autumn")
-        read_only_fields = ("id", "name", "winter", "summer", "spring", "autumn")
-
-
-class FETInfoSerializer(serializers.ModelSerializer):
-    base_p_coefficients = FishCoefficientsSerializer(read_only=True)
-    critical_p_coefficients = FishCoefficientsSerializer(read_only=True)
-    subsistence_p_coefficients = FishCoefficientsSerializer(read_only=True)
-
-    class Meta:
-        model = FET
-        fields = (
-            "id",
-            "fet_short_label",
-            "fet_name",
-            "base_p_coefficients",
-            "critical_p_coefficients",
-            "subsistence_p_coefficients",
-        )
-        read_only_fields = (
-            "id",
-            "fet_short_label",
-            "fet_name",
-            "base_p_coefficients",
-            "critical_p_coefficients",
-            "subsistence_p_coefficients",
-        )
-
-
-class FETSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = FET
-        fields = ("id", "fet_short_label", "fet_name")
-        read_only_fields = ("id", "fet_short_label", "fet_name")
-
-
 class StationSerializer(serializers.ModelSerializer):
-    river_FET = FETSerializer(read_only=True)
-
     class Meta:
         model = Station
         fields = (
             "id",
             "name",
-            "catchment_area",
-            "river_FET",
+            "watershed_area",
             "river_body",
             "longitude",
             "latitude",
@@ -64,8 +22,7 @@ class StationSerializer(serializers.ModelSerializer):
         read_only_fields = (
             "id",
             "name",
-            "catchment_area",
-            "river_FET",
+            "watershed_area",
             "river_body",
             "longitude",
             "latitude",
@@ -79,18 +36,12 @@ class EflowsInputSerializer(serializers.Serializer):
 
     secondAxisType = serializers.CharField()
 
-    area = serializers.FloatField()
-    areaFactor = serializers.FloatField()
-    fetId = serializers.IntegerField()
-
     fromTime = serializers.DateField(
         format="iso-8601"
     )  # year-month-day (e.g. 2020-01-01)
     toTime = serializers.DateField(
         format="iso-8601"
     )  # year-month-day (e.g. 2020-01-02)
-
-    enableForecasting = serializers.BooleanField()
 
     meanLowFlowMethod = serializers.CharField()
     meanLowFlowMethodFrequency = serializers.CharField()
@@ -113,11 +64,6 @@ class EflowsInputSerializer(serializers.Serializer):
 
         if low_flow_method_freq is None:
             raise serializers.ValidationError({"meanLowFlowMethodFrequency": "Unknown"})
-
-        fet_id = attrs["fetId"]
-        fet = FET.objects.filter(pk=fet_id).first()
-        if not fet:
-            raise serializers.ValidationError({"fetId": "Does not exist"})
 
         from_time = attrs["fromTime"]
         to_time = attrs["toTime"]

@@ -10,14 +10,10 @@ export const StationLabel = ({ station, showOnMapButton, onShowOnMap }) => (
             <H6>River body: &nbsp;</H6>
             <p className="m-0">{station.river_body}</p>
         </div>
-        <div className="d-inline-flex flex-wrap">
-            <H6>Fish ecological type: &nbsp;</H6>
-            <p className="m-0">{`FET ${station.river_FET.fet_short_label}: ${station.river_FET.fet_name}`}</p>
-        </div>
         <div className="d-inline-flex">
             <H6>Watershed area: &nbsp;</H6>
             <p className="m-0">
-                {station.catchment_area} km<sup>2</sup>
+                {station.watershed_area} km<sup>2</sup>
             </p>
         </div>
         <div className="d-inline-flex">
@@ -31,7 +27,7 @@ export const StationLabel = ({ station, showOnMapButton, onShowOnMap }) => (
                 href={`/stations/${station.id}`}
                 className="bp3-button-text py-2"
             >
-                Details
+                Analysis
             </AnchorButton>
             {showOnMapButton && (
                 <Button

@@ -6,7 +6,7 @@ from tg_utils.checks import check_production_settings, check_sentry_config
 
 class EeflowsConfig(AppConfig):
     name = "eeflows"
-    verbose_name = "EEFlows"
+    verbose_name = "eeflows"
 
     def ready(self):
         # Import and register the system checks

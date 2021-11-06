@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/node';
 
-import logger from './logger';
+import logger from 'logger';
 
 const SURROGATE_PAIR_REGEXP = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g;
 const NON_ALPHANUMERIC_REGEXP = /([^\\#-~| !])/g;
@@ -8,12 +8,12 @@ const NON_ALPHANUMERIC_REGEXP = /([^\\#-~| !])/g;
 export function encodeEntities(value) {
     return value
         .replace(/&/g, '&amp;')
-        .replace(SURROGATE_PAIR_REGEXP, val => {
+        .replace(SURROGATE_PAIR_REGEXP, (val) => {
             const hi = val.charCodeAt(0);
             const low = val.charCodeAt(1);
             return `&#${(hi - 0xd800) * 0x400 + (low - 0xdc00) + 0x10000};`;
         })
-        .replace(NON_ALPHANUMERIC_REGEXP, val => `&#${val.charCodeAt(0)};`)
+        .replace(NON_ALPHANUMERIC_REGEXP, (val) => `&#${val.charCodeAt(0)};`)
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;');
 }
@@ -25,7 +25,7 @@ const errorTemplate = (title, message, language, errorStack = null) =>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>EEFlows</title>
+    <title>eeflows</title>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400' rel='stylesheet' type='text/css'>
     <style>
         body {
@@ -36,7 +36,7 @@ const errorTemplate = (title, message, language, errorStack = null) =>
             font-size: 42px; line-height: 50px; color: #545454; font-weight: 300; margin: 0.67em 0;
         }
         .panel {
-            margin-bottom: 20px; background-color: #fff; border: 1px solid transparent; 
+            margin-bottom: 20px; background-color: #fff; border: 1px solid transparent;
             border-radius: 4px; box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
         }
         .panel {
@@ -49,7 +49,7 @@ const errorTemplate = (title, message, language, errorStack = null) =>
             margin: 250px auto;
         }
         .panel-message {
-            margin-left: auto; margin-right: auto; max-width: 500px; margin-top: 45px; 
+            margin-left: auto; margin-right: auto; max-width: 500px; margin-top: 45px;
             padding: 30px 40px 50px; text-align: center; font-size: 16px;
         }
         .panel-message .text-muted {
@@ -61,7 +61,7 @@ const errorTemplate = (title, message, language, errorStack = null) =>
             overflow: hidden;
         }
         .panel-background {
-            background: transparent url('data:image/svg+xml;base64,TODO') center top no-repeat; 
+            background: transparent url('data:image/svg+xml;base64,TODO') center top no-repeat;
             position: absolute; left: 0; top: 0; opacity: 0.04; z-index: -1; max-width: 100%; max-height: 100%;
         }
         .wide .panel-message {
@@ -84,10 +84,11 @@ const errorTemplate = (title, message, language, errorStack = null) =>
 </body>
 </html>`;
 
-export default dsn => {
+export default (dsn, environment) => {
     if (process.env.NODE_ENV === 'production') {
         Sentry.init({
             dsn,
+            environment,
         });
     }
 

@@ -20,66 +20,33 @@ export const ComplianceTableSecondAxis = ({
     startDate,
     endDate,
     showProcessingBar,
-    enableForecasting,
 }) => {
     const winterObserved = getCompliancePercentagesSecondaryAxisTS(
         eflowsTS,
         'OW',
         threshold,
-        false,
-    );
-    const winterForecast = getCompliancePercentagesSecondaryAxisTS(
-        eflowsTS,
-        'OW',
-        threshold,
-        true,
     );
     const springObserved = getCompliancePercentagesSecondaryAxisTS(
         eflowsTS,
         'SS',
         threshold,
-        false,
-    );
-    const springForecast = getCompliancePercentagesSecondaryAxisTS(
-        eflowsTS,
-        'SS',
-        threshold,
-        true,
     );
     const summerObserved = getCompliancePercentagesSecondaryAxisTS(
         eflowsTS,
         'RG',
         threshold,
-        false,
-    );
-    const summerForecast = getCompliancePercentagesSecondaryAxisTS(
-        eflowsTS,
-        'RG',
-        threshold,
-        true,
     );
     const autumnObserved = getCompliancePercentagesSecondaryAxisTS(
         eflowsTS,
         'FS',
         threshold,
-        false,
-    );
-    const autumnForecast = getCompliancePercentagesSecondaryAxisTS(
-        eflowsTS,
-        'FS',
-        threshold,
-        true,
     );
 
     const getExportableData = () => ({
         winterObserved,
-        winterForecast,
         springObserved,
-        springForecast,
         summerObserved,
-        summerForecast,
         autumnObserved,
-        autumnForecast,
     });
 
     const summaryName = `${getTimeSeriesNameByAbbreviation(
@@ -110,7 +77,6 @@ export const ComplianceTableSecondAxis = ({
                         downloadAsExcelComplianceSummaries(
                             getExportableData(),
                             secondAxisTimeSeriesType,
-                            enableForecasting,
                             stationName,
                             startDate,
                             endDate,
@@ -184,44 +150,6 @@ export const ComplianceTableSecondAxis = ({
                                     <p>{winterObserved.noncompliant}</p>
                                 </td>
                             </tr>
-                            {enableForecasting && (
-                                <tr>
-                                    <th scope="row">
-                                        {gettext('Compliant: Predictions')}
-                                    </th>
-                                    <td>
-                                        <p>{springForecast.compliant}</p>
-                                    </td>
-                                    <td>
-                                        <p>{summerForecast.compliant}</p>
-                                    </td>
-                                    <td>
-                                        <p>{autumnForecast.compliant}</p>
-                                    </td>
-                                    <td>
-                                        <p>{winterForecast.compliant}</p>
-                                    </td>
-                                </tr>
-                            )}
-                            {enableForecasting && (
-                                <tr>
-                                    <th scope="row">
-                                        {gettext('Noncompliant: Predictions')}
-                                    </th>
-                                    <td>
-                                        <p>{springForecast.noncompliant}</p>
-                                    </td>
-                                    <td>
-                                        <p>{summerForecast.noncompliant}</p>
-                                    </td>
-                                    <td>
-                                        <p>{autumnForecast.noncompliant}</p>
-                                    </td>
-                                    <td>
-                                        <p>{winterForecast.noncompliant}</p>
-                                    </td>
-                                </tr>
-                            )}
                         </tbody>
                     </Table>
                 </div>
@@ -238,7 +166,6 @@ ComplianceTableSecondAxis.propTypes = {
     endDate: PropTypes.string.isRequired,
     secondAxisTimeSeriesType: PropTypes.oneOf(['WL', 'TW']).isRequired,
     showProcessingBar: PropTypes.bool.isRequired,
-    enableForecasting: PropTypes.bool.isRequired,
 };
 
 ComplianceTableSecondAxis.defaultProps = {

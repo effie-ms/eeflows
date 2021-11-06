@@ -1,11 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import { Classes, Icon, Intent, Tag } from '@blueprintjs/core';
 import { DateRangePicker } from '@blueprintjs/datetime';
-
 import { gettext } from 'utils/text';
-import { formatDate2 } from 'utils/dates';
+import { formatDate } from 'utils/dates';
 
 const minDate = new Date(2009, 0, 1); // 01.01.2009
 const maxDate = new Date(2018, 11, 31); // 31.12.2018
@@ -16,7 +14,7 @@ export const DatePickerCalendar = ({
     onSetDateRange,
     setYear,
 }) => {
-    const onSelectDateInCalendar = dates => {
+    const onSelectDateInCalendar = (dates) => {
         setYear('custom');
         onSetDateRange(dates);
     };
@@ -31,7 +29,7 @@ export const DatePickerCalendar = ({
                 minDate={minDate}
                 shortcuts={false}
                 contiguousCalendarMonths={false}
-                onChange={_dateRange => onSelectDateInCalendar(_dateRange)}
+                onChange={(_dateRange) => onSelectDateInCalendar(_dateRange)}
             />
             <div className="d-flex flex-row w-100 my-3 align-items-center">
                 <div>
@@ -40,7 +38,9 @@ export const DatePickerCalendar = ({
                 </div>
                 <Tag intent={Intent.PRIMARY}>
                     {startDate !== null ? (
-                        <span>{formatDate2(startDate.toDateString())}</span>
+                        <span>
+                            {formatDate(startDate.toDateString(), true)}
+                        </span>
                     ) : (
                         <span>{gettext('No date')}</span>
                     )}
@@ -48,7 +48,7 @@ export const DatePickerCalendar = ({
                 <Icon className="mx-2" icon="arrow-right" />
                 <Tag intent={Intent.PRIMARY}>
                     {endDate !== null ? (
-                        <span>{formatDate2(endDate.toDateString())}</span>
+                        <span>{formatDate(endDate.toDateString(), true)}</span>
                     ) : (
                         <span>{gettext('No date')}</span>
                     )}

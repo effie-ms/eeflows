@@ -5,8 +5,8 @@ import { Intent, ProgressBar } from '@blueprintjs/core';
 import { gettext } from 'utils/text';
 
 export const ProcessingState = () => (
-    <>
-        <p style={{ fontSize: 16 }}>{gettext('Loading')}...</p>
+    <div className="w-100">
+        <p style={{ fontSize: 20 }}>{gettext('Loading')}...</p>
         <ProgressBar intent={Intent.PRIMARY} value={null} />
-    </>
+    </div>
 );

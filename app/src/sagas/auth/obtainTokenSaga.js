@@ -1,9 +1,5 @@
-import {
-    createSaveAction,
-    createFormSaveSaga,
-    formErrorsHandler,
-} from '@thorgate/spa-forms';
-import { call, select, takeLatest, put } from 'redux-saga/effects';
+import { createSaveAction, createFormSaveSaga } from '@thorgate/spa-forms';
+import { select, takeLatest, put } from 'redux-saga/effects';
 import { getLocation, push } from 'connected-react-router';
 import qs from 'qs';
 import { resolvePath as urlResolve } from 'tg-named-routes';
@@ -18,7 +14,6 @@ import api from 'services/api';
 export const obtainToken = createSaveAction('@@sagas/auth/OBTAIN_TOKEN');
 
 function* successHook(result) {
-    console.log('SUCCESS');
     const { access, refresh } = result;
     saveToken(access, refresh);
 
@@ -32,23 +27,9 @@ function* successHook(result) {
     yield put(push(next));
 }
 
-function* errorHook(options) {
-    yield call(formErrorsHandler, options);
-    if (
-        options.error !== undefined &&
-        options.error !== null &&
-        options.error.responseText !== undefined
-    ) {
-        options.setStatus({
-            message: JSON.parse(options.error.responseText).detail,
-        });
-    }
-}
-
 const obtainTokenSaga = createFormSaveSaga({
     resource: api.auth.obtain,
     successHook,
-    errorHook,
 });
 
 export default function* loginWatcherSaga() {

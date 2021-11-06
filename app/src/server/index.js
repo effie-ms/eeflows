@@ -26,8 +26,9 @@ import { RenderChildren, stringifyLocation } from 'tg-named-routes';
 
 import configureStore from 'configuration/configureStore';
 import routes from 'configuration/routes';
+import logger from 'logger';
 import { setActiveLanguage } from 'sagas/user/activateLanguage';
-import SETTINGS, { getRuntimeConfig } from 'settings';
+import { SETTINGS, getRuntimeConfig } from 'settings';
 
 import proxyFactory from './appProxy';
 import errorHandler from './errorHandler';
@@ -36,7 +37,6 @@ import {
     missingKeyHandler,
     koaI18NextMiddleware,
 } from './i18n';
-import logger from './logger';
 import { statsFile, publicDir } from './paths';
 
 i18next
@@ -191,6 +191,9 @@ router.get(
                 window.__initial_state__ = ${ctx.state.serializedState};
                 window.__initial_i18n_store__ = ${ctx.state.initialI18nStore};
                 window.__initial_language__ = '${ctx.state.language}';
+                window.__initial_ready__ = true;
+
+                window.maybeInitReactApp && window.maybeInitReactApp();
             </script>
         </body>
     </html>`;
@@ -212,14 +215,18 @@ if (process.env.NODE_ENV !== 'production') {
 proxyFactory(server, SETTINGS.APP_PROXY || {});
 
 server
-    .use(errorHandler(process.env.RAZZLE_RAVEN_BACKEND_DSN))
+    .use(errorHandler(SETTINGS.SENTRY_DSN, SETTINGS.SENTRY_ENVIRONMENT))
     // Add response time to headers
     .use(koaResponseTime())
     // Add user agent parsing
     .use(koaUserAgent)
     // `koa-helmet` provides security headers to help prevent common, well known attacks
     // @see https://helmetjs.github.io/
-    .use(koaHelmet())
+    .use(
+        koaHelmet({
+            hsts: false, // hsts is managed by nginx
+        }),
+    )
     // Parse body of the request, required for adding missing translations
     .use(koaBody())
     // Process language to context state

@@ -61,8 +61,7 @@ const Signup = ({ status, isSubmitting }) => {
             )}
 
             <Row>
-                <Col md={4} />
-                <Col md={8} className="mt-3 ml-auto mr-auto">
+                <Col sm={12} md={4} className="mt-3 ml-auto mr-auto">
                     <Button
                         type="submit"
                         disabled={isSubmitting}
@@ -73,12 +72,7 @@ const Signup = ({ status, isSubmitting }) => {
                 </Col>
             </Row>
             <Row>
-                <Col md={4} />
-                <Col
-                    md={8}
-                    className="mt-3 ml-auto mr-auto"
-                    style={{ textAlign: 'center' }}
-                >
+                <Col sm={4} className="mt-3 ml-auto mr-auto">
                     <Link
                         to={urlResolve('auth:forgot-password')}
                         className="pt-2"

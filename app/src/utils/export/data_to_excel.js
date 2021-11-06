@@ -21,7 +21,7 @@ const EXCEL_TYPE =
 const triggerDownloadExcel = (workbook, fileName) => {
     if (workbook) {
         // Generate Excel File
-        workbook.xlsx.writeBuffer().then(data => {
+        workbook.xlsx.writeBuffer().then((data) => {
             const blob = new Blob([data], { type: EXCEL_TYPE });
             // Given name
             fileDownload(blob, `${fileName}.xlsx`);
@@ -32,15 +32,12 @@ const triggerDownloadExcel = (workbook, fileName) => {
 export const downloadAsExcelComplianceGraph = (
     exportData,
     eflowsMeasurementType,
-    eflowThresholdType,
     secondAxisTimeSeriesType,
     secondAxisMeasurementType,
     secondAxisThreshold,
-    factored,
     stationName,
     startDate,
     endDate,
-    forecastingEnabled,
     compoundEventEnabled,
 ) => {
     const fileName = `${stationName}-compliance-${startDate}-${endDate}`;
@@ -49,9 +46,6 @@ export const downloadAsExcelComplianceGraph = (
     workbook = createAndFillWorkbookEflowCompliance(
         exportData,
         eflowsMeasurementType,
-        eflowThresholdType,
-        factored,
-        forecastingEnabled,
         workbook,
     );
 
@@ -61,7 +55,6 @@ export const downloadAsExcelComplianceGraph = (
             secondAxisMeasurementType,
             secondAxisThreshold,
             secondAxisTimeSeriesType,
-            forecastingEnabled,
             workbook,
         );
     }
@@ -72,26 +65,19 @@ export const downloadAsExcelComplianceGraph = (
 export const downloadAsExcelUCUT = (
     exportData,
     timeSeriesType,
-    enableForecasting,
     stationName,
     startDate,
     endDate,
-    eflowMethod,
 ) => {
     const fileName = `${stationName}-UCUT-${timeSeriesType}-${startDate}-${endDate}`;
     let workbook;
 
     if (timeSeriesType === 'EF') {
-        workbook = createAndFillWorkbookEflowUCUT(
-            exportData,
-            enableForecasting,
-            eflowMethod,
-        );
+        workbook = createAndFillWorkbookEflowUCUT(exportData);
     } else {
         workbook = createAndFillWorkbookSecondAxisUCUT(
             exportData,
             timeSeriesType,
-            enableForecasting,
         );
     }
 
@@ -101,26 +87,19 @@ export const downloadAsExcelUCUT = (
 export const downloadAsExcelComplianceSummaries = (
     exportData,
     timeSeriesType,
-    enableForecasting,
     stationName,
     startDate,
     endDate,
-    eflowMethod,
 ) => {
     const fileName = `${stationName}-CT-${timeSeriesType}-${startDate}-${endDate}`;
     let workbook;
 
     if (timeSeriesType === 'EF') {
-        workbook = createAndFillWorkbookComplianceTableEflows(
-            exportData,
-            enableForecasting,
-            eflowMethod,
-        );
+        workbook = createAndFillWorkbookComplianceTableEflows(exportData);
     } else {
         workbook = createAndFillWorkbookComplianceTableSecondAxis(
             exportData,
             timeSeriesType,
-            enableForecasting,
         );
     }
 

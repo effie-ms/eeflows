@@ -1,9 +1,9 @@
 import React from 'react';
 
-export const upperCaseFirst = str =>
+export const upperCaseFirst = (str) =>
     `${str.charAt(0).toUpperCase()}${str.substr(1).toLowerCase()}`;
 
-export const nl2br = text => {
+export const nl2br = (text) => {
     const res = [];
     text.split('\n').forEach((x, i) => {
         if (i !== 0) {
@@ -16,7 +16,7 @@ export const nl2br = text => {
     return res;
 };
 
-export const tNoop = key => key;
+export const tNoop = (key) => key;
 
 export function gettext(text) {
     return text;
@@ -40,7 +40,7 @@ export function getTimeSeriesNameByAbbreviation(tsAbbr) {
     }
 }
 
-export function getTimeSeriesUnitsByAbbreviation(tsAbbr, factored) {
+export function getTimeSeriesUnitsByAbbreviation(tsAbbr) {
     switch (tsAbbr) {
         case 'TW': {
             return '°C';
@@ -49,11 +49,7 @@ export function getTimeSeriesUnitsByAbbreviation(tsAbbr, factored) {
             return 'cm';
         }
         case 'EF': {
-            if (factored) {
-                return 'm3/s';
-            } else {
-                return 'm3*km2/s';
-            }
+            return 'm3/s';
         }
         default:
             return '';

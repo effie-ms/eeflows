@@ -1,4 +1,4 @@
-/* eslint-disable global-require, no-underscore-dangle */
+/* eslint-disable global-require, no-underscore-dangle, jsx-a11y/control-has-associated-label */
 import React, { useState, useEffect, createRef, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useWindowSize } from 'react-use';
@@ -19,6 +19,7 @@ import { H4, Card, Elevation } from '@blueprintjs/core';
 import { StationShape } from 'utils/types';
 import withView from 'decorators/withView';
 import { StationLabel } from 'components/stations/shared/StationLabel';
+import ServerErrorToaster from 'components/ServerErrorToaster';
 
 const StationList = ({ stations }) => {
     const { width, height } = useWindowSize();
@@ -27,7 +28,7 @@ const StationList = ({ stations }) => {
 
     const stationsRefs = Object.assign(
         {},
-        ...stations.map(s => ({ [s.id]: createRef() })),
+        ...stations.map((s) => ({ [s.id]: createRef() })),
     );
     const leafletRef = useRef(null);
 
@@ -45,9 +46,16 @@ const StationList = ({ stations }) => {
         return () => setSelectedCenter(null);
     }, []);
 
-    const filteredStations = stations.filter(station =>
+    const nameFilter = stations.filter((station) =>
         station.name.toLowerCase().startsWith(enteredStationName.toLowerCase()),
     );
+    const riverFilter = stations.filter((station) =>
+        station.river_body
+            .toLowerCase()
+            .startsWith(enteredStationName.toLowerCase()),
+    );
+
+    const filteredStations = [...new Set([...nameFilter, ...riverFilter])];
 
     const openPopup = (marker, station) => {
         setSelectedCenter([station.latitude, station.longitude]);
@@ -65,6 +73,7 @@ const StationList = ({ stations }) => {
                 <body className="stations-list" />
             </Helmet>
             <div className="d-flex flex-row map-container">
+                <ServerErrorToaster />
                 <div className="d-flex flex-column searchbox">
                     <H4>Select a gauging station:</H4>
                     <div className="bp3-input-group bp3-round bp3-large mb-3">
@@ -73,7 +82,7 @@ const StationList = ({ stations }) => {
                             type="text"
                             className="bp3-input bp3-round bp3-large"
                             placeholder="Search"
-                            onChange={e =>
+                            onChange={(e) =>
                                 setEnteredStationName(e.target.value)
                             }
                             value={enteredStationName}
@@ -85,7 +94,7 @@ const StationList = ({ stations }) => {
                     </div>
                     <div className="items-list px-2 py-1">
                         {filteredStations && filteredStations.length > 0 ? (
-                            filteredStations.map(station => (
+                            filteredStations.map((station) => (
                                 <Card
                                     interactive={false}
                                     elevation={Elevation.ZERO}
@@ -123,7 +132,7 @@ const StationList = ({ stations }) => {
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                     />
-                    {stations.map(station => (
+                    {stations.map((station) => (
                         <Marker
                             position={[station.latitude, station.longitude]}
                             key={station.id}
@@ -165,13 +174,8 @@ StationList.defaultProps = {
     stations: [],
 };
 
-const mapStateToProps = state => ({
-    stations: state.station.stations.stations_list,
+const mapStateToProps = (state) => ({
+    stations: state.station.stations,
 });
 
-export default withView()(
-    connect(
-        mapStateToProps,
-        null,
-    )(StationList),
-);
+export default withView()(connect(mapStateToProps, null)(StationList));

@@ -18,7 +18,7 @@ export const ExportDropdown = ({
 }) => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
-    const toggle = () => setDropdownOpen(prevState => !prevState);
+    const toggle = () => setDropdownOpen((prevState) => !prevState);
 
     return (
         <Dropdown
