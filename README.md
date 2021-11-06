@@ -12,7 +12,7 @@ Browser support is defined in the `eeflows/browserslist` file that is used for a
 
 EEFlows is a Django/React web application implementing methods of environmental flows estimation and 
 interpreting results of the estimation. In the simplest case, environmental flows define the minimum amount of water 
-needed for aquatic ecosystems and used as compliance thresholds (good ecological status or not) in environmental 
+needed for aquatic ecosystems and are used as compliance thresholds (good ecological status or not) in environmental 
 directives and regulations such as Water Framework Directive.
 
 For demonstration, the application uses river data (daily time series of discharges (flow rates), water levels and 
@@ -34,9 +34,9 @@ The main view is a map with locations of Estonian river gauging stations.
 
 ![Alt text](eeflows/static/readme/map-view.png "Map view")
 
-On the map view, gauging stations can searched by the gauging station or river name. The can be selected on the map by
-click on a blue marker, or by clicking on *See on the map* button. To view river data from the selected gauging station,
-click on the corresponding *Analysis* button.
+On the map view, gauging stations can searched by the gauging station or river name. They can be selected on the map by
+clicking on a blue marker, or by clicking on the *See on the map* button. To view river data from the selected gauging
+station, click on the corresponding *Analysis* button.
 
 #### Analysis view
 
@@ -71,14 +71,17 @@ Compliance is defined by the exceedance of the calculated environmental flow (fo
 threshold) or user-defined threshold (for water temperatures - non-compliance if above threshold and for water levels - 
 non-compliance if below threshold).
 
+Depending on the availability of data, there are different options of measurements to be visualised: daily minimum, 
+average, maximum values or ranges. The visibility of the secondary axis time series can be toggled.
+
 ![Alt text](eeflows/static/readme/ts-graph.png "Time series plot")
 
 The results are also interpreted as Uniform-Continuous-Under(or Above)-Threshold (UCUT or UCAT) plots and compliance
 summary tables. 
 
-The UCUT and UCAT plots show the number of days of non-compliance ***in a row*** (Y-axis) starting from 
-maximum days of non-compliance and the cumulative duration as a cumulative percentage from the whole period (e.g. if 
-the selected date period is 1 year, then 1 year is 100%) - on X-axis.
+The UCUT and UCAT plots show the number of days of non-compliance ***in a row*** (Y-axis) starting from the
+maximum number of days of non-compliance and the cumulative duration as a cumulative percentage from the whole period 
+(e.g. if the selected date period is 1 year, then 1 year is 100%) - on X-axis.
 
 Compliance summary tables show overall percentages of days of compliance and non-compliance per each bioperiod.
 
@@ -116,7 +119,7 @@ After authorisation, the administration panel allows for viewing, modifying and 
 adding new data to the database. The main database entities are *Stations* and *Bioperiod*. 
 
 *Station* entity includes station name, parameters of its location, river body, used bioperiods object, watershed area,
-and hydrological data - Excel file with time series data, see the format of the files in `eeflows/static/measurements/` 
+and hydrological data - Excel file with time series data, see the format of files in the `eeflows/static/measurements/` 
 directory.
 
 *Bioperiod* entity involves mapping of months to one of 4 bioperiods: Overwintering, Spring Spawning, Rearing and 
@@ -137,21 +140,21 @@ User accounts are also managed from the administration panel (for this, enter *A
 Refer to original [Docker documentation](https://docs.docker.com/engine/installation/) for installing Docker.
 
 After installing Docker you need to install [Docker Compose](https://docs.docker.com/compose/install/) to run
- multi-container Docker applications (such as ours). The `curl` method is preferred for installation.
+ multi-container Docker applications (such as ours).
 
 To run Docker commands without `sudo`, you also need to
 [create a Docker group and add your user to it](https://docs.docker.com/engine/installation/linux/ubuntulinux/#/create-a-docker-group).
 
 ### Setting up eeflows
 
-The easy way is to use `make` to set up everything automatically:
+The easy way is to use [make](https://www.gnu.org/software/make/) to set up everything automatically:
 
     make setup
 
 This command:
 
-- copies PyCharm project directory
-- creates local settings file from local.py.example
+- copies the project directory
+- creates a local settings file from local.py.example
 - builds Docker images
 - sets up database and runs Django migrations
 - runs `docker-compose up`
