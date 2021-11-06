@@ -147,21 +147,29 @@ To run Docker commands without `sudo`, you also need to
 
 ### Setting up eeflows
 
+Enter the directory of the cloned repository (`eeflows/`) containing `Makefile`. 
+
 The easy way is to use [make](https://www.gnu.org/software/make/) to set up everything automatically:
 
     make setup
 
 This command:
 
-- copies the project directory
-- creates a local settings file from local.py.example
+- copies the Pycharm project directory (useful for those who uses Pycharm as IDE)
+- creates a local settings file from local.py.example (see *NB2*, just write out file as it is and proceed)
 - builds Docker images
-- sets up database and runs Django migrations
-- runs `docker-compose up`
+- sets up database and runs Django migrations (populating the database with river data)
 
 Refer to `Makefile` to see what actually happens. You can then use the same commands to set everything up manually.
 
-NB: modifications in the `local.py` configuration file on setup are optional, in the general case, the 
+After that, to run the application, run
+
+    make docker
+
+*NB1*: Avoid directory names with spaces (for parent directories of the cloned repository directory) - this might cause 
+problems while copying files on setup.
+
+*NB2*: modifications in the `local.py` configuration file on setup are optional, in the general case, the 
 application should work with the `local.py` as it is provided.
 
 
